@@ -1,29 +1,31 @@
 import * as React from 'react';
 import { NextAppProvider } from '@toolpad/core/nextjs';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
+import ElderlyIcon from '@mui/icons-material/Elderly';
+import PaidIcon from '@mui/icons-material/Paid';
 import LinearProgress from '@mui/material/LinearProgress'
 import type { Navigation } from '@toolpad/core/AppProvider';
 
 import theme from '../theme';
 
 export const metadata = {
-  title: 'My Toolpad Core Next.js App',
+  title: process.env.REACT_APP_SITE_TITLE,
   description: 'This is a sample app built with Toolpad Core and Next.js',
 };
 
 const NAVIGATION: Navigation = [
   {
     kind: 'header',
-    title: 'Main items',
+    title: 'Navigation',
   },
   {
     segment: '',
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
+    title: 'Home',
+    icon: <HomeIcon />,
   },
-  {
+  /*{
     segment: 'employees',
     title: 'Employees',
     icon: <PersonIcon />,
@@ -32,19 +34,22 @@ const NAVIGATION: Navigation = [
   {
     segment: 'pension',
     title: 'Pension',
-    icon: <PersonIcon />
+    icon: <ElderlyIcon />
+  },*/
+  {
+    segment: '401k',
+    title: 'Retirement Savings',
+    icon: <PaidIcon />
   }
+
 ];
 
 const BRANDING = {
-  title: 'My Toolpad Core Next.js App',
+  title: process.env.REACT_APP_SITE_TITLE,
 };
-
-
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   
-
   return (
     <html lang="en" data-toolpad-color-scheme="light" suppressHydrationWarning>
       <body>

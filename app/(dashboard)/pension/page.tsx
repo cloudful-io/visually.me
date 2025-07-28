@@ -38,7 +38,7 @@ const PensionCalculator = () => {
   monthlyPension: string;
 };
 
-  const [tableRows, setTableRows] = useState<TableRowData[]>([]);
+const [tableRows, setTableRows] = useState<TableRowData[]>([]);
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -111,17 +111,17 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
         {inputFields.map(({ name, label }) => (
-    <Grid item xs={12} sm={6} md={3} key={name}>
-      <TextField
-        fullWidth
-        type="number"
-        name={name}
-        label={label}
-        value={formValues[name]}
-        onChange={handleChange}
-      />
-    </Grid>
-  ))}
+          <Grid size={{ xs: 12, md: 3, sm: 6 }} key={name}>
+            <TextField
+              fullWidth
+              type="number"
+              name={name}
+              label={label}
+              value={formValues[name]}
+              onChange={handleChange}
+            />
+          </Grid>
+        ))}
       </Grid>
 
       <Button variant="contained" onClick={generateTable}>
@@ -135,7 +135,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               <TableRow>
                 <TableCell>Year</TableCell>
                 <TableCell>My Age</TableCell>
-                <TableCell>Spouse's Age</TableCell>
+                <TableCell>Spouse Age</TableCell>
                 <TableCell>Estimated Raise %</TableCell>
                 <TableCell>Annual Salary</TableCell>
                 <TableCell>Annual Pension</TableCell>
