@@ -1,32 +1,38 @@
-# Stage 1: Build the React app
-FROM node:22-alpine AS build-stage
-
-# Set working directory
+# Stage 1: Dependencies Installation
+FROM node:20-alpine AS deps
 WORKDIR /app
+COPY package.json yarn.lock* package-lock.json* ./
+RUN \
+  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  else npm install; \
+  fi
 
-# Copy only package files to leverage Docker layer caching
-COPY package*.json ./
-
-# Install dependencies (cleaner and faster, omits dev dependencies)
-RUN npm ci
-
-# Copy the rest of the source code
+# Stage 2: Build Application
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Build the React app
+ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
-# Stage 2: Serve the app with Nginx
-FROM nginx:1.27.4-alpine-slim AS prod-stage
+# Stage 3: Runner (Production Image)
+FROM node:20-alpine AS runner
+WORKDIR /app
 
-# Remove default Nginx static assets (optional but keeps image clean)
-RUN rm -rf /usr/share/nginx/html/*
+# Create a non-root user for security
+RUN addgroup --system --gid 1001 nextjs
+RUN adduser --system --uid 1001 nextjs
 
-# Copy built app from build-stage
-COPY --from=build-stage /app/build /usr/share/nginx/html
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public ./public
 
-# Expose port 80 to be used by the container
-EXPOSE 80
+USER nextjs
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+
+ENV PORT 3000
+
+CMD ["npm", "start"]
