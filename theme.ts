@@ -14,7 +14,7 @@
             contrastText: '#ffffff',
           },
           secondary: {
-            main: '#dc004e',
+            main: '#D8A39D',
             contrastText: '#ffffff',
           },
           background: {
@@ -30,7 +30,7 @@
             contrastText: '#000000',
           },
           secondary: {
-            main: '#f48fb1',
+            main: '#D8A39D',
             contrastText: '#000000',
           },
           background: {

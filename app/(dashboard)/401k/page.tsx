@@ -14,6 +14,8 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import TableViewIcon from "@mui/icons-material/TableView";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Papa from "papaparse";
@@ -189,11 +191,11 @@ const RetirementProjection = () => {
         />
       </Grid>
 
-      <Button variant="contained" onClick={generateTable}>
+      <Button variant="contained" startIcon={<TableViewIcon/>} onClick={generateTable}>
         Calculate
       </Button>
 
-      <Button variant="outlined" sx={{ ml: 2 }} onClick={() => exportToCSV(tableRows, "retirement_projection.csv")}>
+      <Button variant="outlined" sx={{ ml: 2 }} startIcon={<FileDownloadIcon/>} onClick={() => exportToCSV(tableRows, "retirement_projection.csv")}>
         Export CSV
       </Button>
       {showChart && tableRows.length > 0 && (
