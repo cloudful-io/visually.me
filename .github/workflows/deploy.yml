@@ -1,0 +1,153 @@
+name: Deploy to ECS Fargate
+
+on:
+  workflow_dispatch:
+  #push:
+    #branches: 
+      #- main  # Or your chosen deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_TAG: latest
+      AWS_REGION: us-east-1  # Change to your region
+      APP_NAME: react-app
+      CLUSTER_NAME: react-app-cluster
+      TASK_NAME: react-app-task
+      SERVICE_NAME: react-app-service
+      SUBNET_ID: ${{ secrets.SUBNET_ID }}
+      SECURITYGROUP_ID: ${{ secrets.SECURITYGROUP_ID }}
+      ECR_REPO: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/react-app
+      EXECUTION_ROLE_NAME: ecsTaskExecutionRole
+      CPU: 256
+      MEMORY: 512
+
+    steps:
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Configure AWS Credentials
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # Login to Amazon ECR
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        mask-password: true
+
+    # Check if ECR Repo exists, create if not
+    - name: Create ECR Repo if not exists
+      run: |
+        aws ecr describe-repositories --repository-names $APP_NAME --region $AWS_REGION || \
+        aws ecr create-repository --repository-name $APP_NAME --region $AWS_REGION
+
+    # Build Docker image for React app
+    - name: Build Docker image
+      run: |
+        docker buildx create --use --platform linux/amd64 || true
+        docker buildx build --platform linux/amd64 -t $ECR_REPO:$IMAGE_TAG --load .
+
+    # Push the Docker image to ECR
+    - name: Push Docker image to ECR
+      run: docker push $ECR_REPO:$IMAGE_TAG
+
+    # Check if ECS cluster exists, create if not
+    - name: Create ECS Cluster if not exists
+      run: |
+        CLUSTER_CHECK=$(aws ecs describe-clusters \
+          --clusters $CLUSTER_NAME \
+          --query "failures[?reason=='MISSING']" \
+          --output text)
+        if [[ -n "$CLUSTER_CHECK" ]]; then
+          echo "Creating ECS Cluster..."
+          aws ecs create-cluster --cluster-name $CLUSTER_NAME
+        fi
+
+    - name: Create IAM task execution role if it doesn't exist
+      run: |
+          if ! aws iam get-role --role-name $EXECUTION_ROLE_NAME > /dev/null 2>&1; then
+            echo "Creating ECS Task Execution Role..."
+            cat > trust-policy.json <<EOF
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "ecs-tasks.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            }
+          EOF
+          aws iam create-role \
+              --role-name $EXECUTION_ROLE_NAME \
+              --assume-role-policy-document file://trust-policy.json
+  
+            aws iam attach-role-policy \
+              --role-name $EXECUTION_ROLE_NAME \
+              --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+          fi
+
+    # Register ECS Task Definition
+    - name: Register ECS Task Definition
+      run: |
+        aws ecs register-task-definition \
+          --family $TASK_NAME \
+          --network-mode awsvpc \
+          --requires-compatibilities FARGATE \
+          --cpu $CPU \
+          --memory $MEMORY \
+          --execution-role-arn arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/$EXECUTION_ROLE_NAME \
+          --container-definitions '[{
+            "name": "'$APP_NAME'",
+            "image": "'$ECR_REPO:$IMAGE_TAG'",
+            "portMappings": [{
+              "containerPort": 80,
+              "protocol": "tcp"
+            }],
+            "essential": true
+          }]'
+
+    # Create ECS Service if not exists
+    - name: Create ECS Service if not exists
+      run: |
+        SERVICE_EXISTS=$(aws ecs describe-services \
+            --cluster $CLUSTER_NAME \
+            --services $SERVICE_NAME \
+            --query "failures[?reason=='MISSING']" \
+            --output text)
+
+        if [[ -n "$SERVICE_EXISTS" ]]; then
+            echo "Creating ECS Service..."
+            aws ecs create-service \
+                --cluster $CLUSTER_NAME \
+                --service-name $SERVICE_NAME \
+                --task-definition $TASK_NAME \
+                --desired-count 1 \
+                --launch-type FARGATE \
+                --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_ID],securityGroups=[$SECURITY_GROUP_ID],assignPublicIp=ENABLED}"
+        else
+            echo "Service exists. Updating..."
+            aws ecs update-service \
+              --cluster $CLUSTER_NAME \
+              --service $SERVICE_NAME \
+              --task-definition $TASK_NAME
+        fi
+
+    # Force new ECS deployment to pull new image
+    - name: Force new ECS deployment
+      run: |
+        aws ecs update-service \
+          --cluster $CLUSTER_NAME \
+          --service $SERVICE_NAME \
+          --force-new-deployment
