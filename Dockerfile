@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Expose port (3000 is default for Toolpad)
-EXPOSE 80
+EXPOSE 3000
 
 # Start the Toolpad app
 CMD ["npm", "start"]
