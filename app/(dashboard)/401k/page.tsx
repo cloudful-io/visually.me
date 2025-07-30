@@ -13,9 +13,18 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CircleIcon from "@mui/icons-material/Circle";
 import { FormControlLabel, Switch } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Papa from "papaparse";
@@ -198,6 +207,7 @@ const RetirementProjection = () => {
       <Button variant="outlined" sx={{ ml: 2 }} startIcon={<FileDownloadIcon/>} onClick={() => exportToCSV(tableRows, "retirement_projection.csv")}>
         Export CSV
       </Button>
+      
       {showChart && tableRows.length > 0 && (
         <Box sx={{ mt: 4 }}>
           <Typography variant="h6" gutterBottom>
@@ -280,6 +290,33 @@ const RetirementProjection = () => {
         </TableContainer>
         </Box>
       )}
+      <Box sx={{ mt: 4 }}>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1-content"
+            id="panel1-header"
+          >
+            <Typography component="span" variant="h6">Assumptions</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <List>
+              <ListItem>
+                <ListItemIcon><CircleIcon/></ListItemIcon>
+                <ListItemText>Assumption 1</ListItemText>
+              </ListItem>
+              <ListItem>
+                <ListItemIcon><CircleIcon/></ListItemIcon>
+                <ListItemText>Assumption 2</ListItemText>
+              </ListItem>
+              <ListItem>
+                <ListItemIcon><CircleIcon/></ListItemIcon>
+                <ListItemText>Assumption 3</ListItemText>
+              </ListItem>
+            </List>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
     </Box>
   );
 };
