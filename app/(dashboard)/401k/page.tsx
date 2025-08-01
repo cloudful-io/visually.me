@@ -7,6 +7,8 @@ import {
 } from '@/configs/retirementFields';
 import { ProjectionChart } from '@/components/ProjectionChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
+import Footer from '@/components/Footer';
+
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
 import { useRetirementProjection } from '@/hooks/useRetirementProjection';
