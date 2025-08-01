@@ -10,6 +10,7 @@ import { ProjectionTable } from '@/components/ProjectionTable';
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
 import { useRetirementProjection } from '@/hooks/useRetirementProjection';
+import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 import {
   Box,
@@ -23,17 +24,20 @@ import { FormControlLabel, Switch } from "@mui/material";
 
 const RetirementProjection = () => {
 
-  const [formValues, setFormValues] = useState<RetirementFormValues>({
-    startYear: new Date().getFullYear(),
-    birthYear: 1970,
-    initialBalance: 200000,
-    initialContribution: 23000,
-    estimatedYield: 6,
-    estimatedWithdrawRate: 5,
-    contributionIncreaseRate: 2,
-    withdrawStartAge: 60,
-    yearsToProject: 40,
-});
+  const [formValues, setFormValues] = usePersistedForm<RetirementFormValues>(
+    'retirementForm',
+    {
+      startYear: new Date().getFullYear(),
+      birthYear: 1970,
+      initialBalance: 200000,
+      initialContribution: 23000,
+      estimatedYield: 6,
+      estimatedWithdrawRate: 5,
+      contributionIncreaseRate: 2,
+      withdrawStartAge: 60,
+      yearsToProject: 40,
+    }
+  );
 
   const {rows, generateTable } = useRetirementProjection(formValues);
   const [showChart, setShowChart] = useState(true);
