@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Box, Typography, Button, Stack, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { signIn } from "@/auth"
 
 export default function HomePage() {
   
-
   return (    
       <Box
       sx={{
@@ -45,6 +45,14 @@ export default function HomePage() {
       <Typography variant="h6" color="text.primary" fontWeight="medium" mb={3}>
         Start building a brighter financial future—<strong>your plan, your pace, your priorities.</strong>
       </Typography>
+      <form
+      action={async () => {
+        "use server"
+        await signIn("google")
+      }}
+    >
+      <button type="submit">Signin with Google</button>
+    </form>
     </Box>
   );
 }

@@ -1,87 +1,30 @@
 'use client';
 import React, { useState } from "react";
+import { FormFields } from '@/components/FormFields';
+import {
+  retirementFieldConfigs,
+  RetirementFormValues,
+} from '@/configs/retirementFields';
+import { ProjectionChart } from '@/components/ProjectionChart';
+import { ProjectionTable } from '@/components/ProjectionTable';
+import Assumptions from '@/components/Assumptions';
+import { exportToCSV } from '@/utils/exportToCSV';
+import { useRetirementProjection } from '@/hooks/useRetirementProjection';
+
 import {
   Box,
   Grid,
-  TextField,
   Button,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
 } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CircleIcon from "@mui/icons-material/Circle";
 import { FormControlLabel, Switch } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import Papa from "papaparse";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
-
-type FormValues = {
-  startYear: number;
-  birthYear: number;
-  initialBalance: number;
-  initialContribution: number;
-  estimatedYield: number;
-  estimatedWithdrawRate: number;
-  contributionIncreaseRate: number;
-  withdrawStartAge: number;
-  yearsToProject: number;
-};
-
-type TableRowData = {
-  year: number;
-  age: number;
-  beginningBalance: number;
-  contribution: number;
-  yieldPercent: number;
-  withdrawRate: number;
-  monthlyWithdraw: number;
-  annualWithdraw: number;
-  endingBalance: number;
-};
-
-const exportToCSV = (data: any[], filename: string) => {
-  const csv = Papa.unparse(data);
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", filename);
-  link.click();
-};
 
 const RetirementProjection = () => {
-  const theme = useTheme();
 
-  const [showChart, setShowChart] = useState(true);
-
-  const currentYear = new Date().getFullYear();
-
-  const [formValues, setFormValues] = useState<FormValues>({
-    startYear: currentYear,
+  const [formValues, setFormValues] = useState<RetirementFormValues>({
+    startYear: new Date().getFullYear(),
     birthYear: 1970,
     initialBalance: 200000,
     initialContribution: 23000,
@@ -90,9 +33,10 @@ const RetirementProjection = () => {
     contributionIncreaseRate: 2,
     withdrawStartAge: 60,
     yearsToProject: 40,
-  });
+});
 
-  const [tableRows, setTableRows] = useState<TableRowData[]>([]);
+  const {rows, generateTable } = useRetirementProjection(formValues);
+  const [showChart, setShowChart] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -102,74 +46,6 @@ const RetirementProjection = () => {
     }));
   };
 
-  const generateTable = () => {
-    const {
-      startYear,
-      birthYear,
-      initialBalance,
-      initialContribution,
-      estimatedYield,
-      estimatedWithdrawRate,
-      contributionIncreaseRate,
-      withdrawStartAge,
-      yearsToProject,
-    } = formValues;
-
-    let balance = initialBalance;
-    let contribution = initialContribution;
-    const rows: TableRowData[] = [];
-
-    for (let i = 0; i < yearsToProject; i++) {
-      const year = startYear + i;
-      const age = year - birthYear;
-      const isWithdrawing = age >= withdrawStartAge;
-
-      if (i > 0) {
-        if (year < (birthYear+withdrawStartAge))
-          contribution *= 1 + contributionIncreaseRate / 100;
-        else
-          contribution = 0;
-      }
-
-      const withdrawRate = isWithdrawing ? estimatedWithdrawRate : 0;
-      const annualWithdraw = isWithdrawing
-        ? (withdrawRate / 100) * balance
-        : 0;
-      const monthlyWithdraw = annualWithdraw / 12;
-
-      const beginningBalance = balance;
-      const yieldAmount = (estimatedYield / 100) * beginningBalance;
-
-      balance = beginningBalance + yieldAmount + contribution - annualWithdraw;
-
-      rows.push({
-        year,
-        age,
-        beginningBalance,
-        contribution,
-        yieldPercent: estimatedYield,
-        withdrawRate,
-        monthlyWithdraw,
-        annualWithdraw,
-        endingBalance: balance,
-      });
-    }
-
-    setTableRows(rows);
-  };
-
-  const inputFields = [
-    { name: "startYear", label: "Start Year" },
-    { name: "birthYear", label: "Birth Year" },
-    { name: "initialBalance", label: "Initial Balance ($)" },
-    { name: "initialContribution", label: "Initial Contribution ($)" },
-    { name: "estimatedYield", label: "Estimated Annual Yield (%)" },
-    { name: "estimatedWithdrawRate", label: "Estimated Withdraw Rate (%)" },
-    { name: "contributionIncreaseRate", label: "Contribution Increase Rate (%)" },
-    { name: "withdrawStartAge", label: "Withdraw Start Age" },
-    { name: "yearsToProject", label: "Years to Project" },
-  ] as const;
-
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h5" gutterBottom>
@@ -177,18 +53,12 @@ const RetirementProjection = () => {
       </Typography>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        {inputFields.map(({ name, label }) => (
-          <Grid size={{ xs: 12, md: 3, sm: 6 }} key={name}>
-            <TextField
-              fullWidth
-              type="number"
-              name={name}
-              label={label}
-              value={formValues[name as keyof FormValues]}
-              onChange={handleChange}
-            />
-          </Grid>
-        ))}
+        
+      <FormFields
+        fields={retirementFieldConfigs}
+        values={formValues}
+        onChange={handleChange}
+      />
         <FormControlLabel
           control={
             <Switch
@@ -204,118 +74,45 @@ const RetirementProjection = () => {
         Calculate
       </Button>
 
-      <Button variant="outlined" sx={{ ml: 2 }} startIcon={<FileDownloadIcon/>} onClick={() => exportToCSV(tableRows, "retirement_projection.csv")}>
+      <Button variant="outlined" sx={{ ml: 2 }} startIcon={<FileDownloadIcon/>} onClick={() => exportToCSV(rows, "retirement_projection.csv")}>
         Export CSV
       </Button>
       
-      {showChart && tableRows.length > 0 && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            End of Year Balance Over Time
-          </Typography>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={tableRows}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" />
-              <YAxis />
-              <Tooltip formatter={(value: number) => `$${value.toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}`} />
-              <Bar dataKey="endingBalance" fill={theme.palette.primary.main} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Box>
+      {showChart && rows.length > 0 && (
+        <ProjectionChart data={rows} dataKey="endingBalance" title="End of Year Balance Over Time" />
       )}
-      {tableRows.length > 0 && (
-        <Box sx={{ width: '100%', overflowX: 'auto' }}>
-
-        <TableContainer component={Paper} sx={{ mt: 4 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Year</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>My Age</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Beginning Balance ($)</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Contribution ($)</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Yield %</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Withdraw %</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Monthly Withdraw ($)</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Annual Withdraw ($)</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Ending Balance ($)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tableRows.map((row, i) => (
-                <TableRow
-                  key={i}
-                  sx={
-                    row.year === currentYear
-                      ? { backgroundColor: theme.palette.action.selected } 
-                      : {}
-                  }
-                >
-                  <TableCell>{row.year}</TableCell>
-                  <TableCell>{row.age}</TableCell>
-                  <TableCell>
-                    {row.beginningBalance.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    {row.contribution.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}
-                  </TableCell>
-                  <TableCell>{row.yieldPercent}%</TableCell>
-                  <TableCell>{row.withdrawRate}%</TableCell>
-                  <TableCell>
-                    {row.monthlyWithdraw.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    {row.annualWithdraw.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    {row.endingBalance.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        </Box>
+      {rows.length > 0 && (
+        <ProjectionTable
+          rows={rows}
+          highlightYear={new Date().getFullYear()}
+          columns={[
+            { key: 'year', label: 'Year' },
+            { key: 'age', label: 'Age' },
+            { key: 'beginningBalance', label: 'Beginning Balance ($)' },
+            { key: 'contribution', label: 'Contribution ($)' },
+            { key: 'yieldPercent', label: 'Yield %' },
+            { key: 'withdrawRate', label: 'Withdraw %' },
+            { key: 'monthlyWithdraw', label: 'Monthly Withdraw ($)' },
+            { key: 'annualWithdraw', label: 'Annual Withdraw ($)' },
+            { key: 'endingBalance', label: 'Ending Balance ($)' },
+          ]}
+        />
       )}
       <Box sx={{ mt: 4 }}>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            <Typography component="span" variant="h6">Assumptions</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <List>
-              <ListItem>
-                <ListItemIcon><CircleIcon/></ListItemIcon>
-                <ListItemText>Assumption 1</ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemIcon><CircleIcon/></ListItemIcon>
-                <ListItemText>Assumption 2</ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemIcon><CircleIcon/></ListItemIcon>
-                <ListItemText>Assumption 3</ListItemText>
-              </ListItem>
-            </List>
-          </AccordionDetails>
-        </Accordion>
+        <Assumptions
+          title="Assumptions"
+          items={[
+            <>
+              Retirement Savings contribution increases at a fixed percentage rate over your lifetime. In reality, if you are contributing at the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits" target="_blank" rel="noopener noreferrer">maximum limit</a> allowed by the Internal Revenue Service (IRS), the growth rate varies year-over-year. For instance, there was no change between 2020 and 2021 at $19,500; while it increased from $20,500 to $22,500 between 2022 and 2023.
+            </>,
+            <>
+              Retirement Savings withdraw can be kept at a fixed percentage rate. In reality, the limiting factor is the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds" target="_blank" rel="noopener noreferrer">Required Minimum Distribution (RMD)</a>, which requires you to withdraw a minimum percentage of your balance, starting at age 73. The exception is if your retirement savings is a Roth 401k or Roth IRA account.
+            </>,
+            <>
+              This calculator simplifies the calculation of annual yield by assuming that the annual contribution is added to your account at the <strong>end of each year</strong>. In reality, contribution is likely deducted from your monthly or bi-weekly paycheck that will benefit from the annual yield / growth of the current year.
+            </>,
+          ]}
+        />
       </Box>
     </Box>
   );

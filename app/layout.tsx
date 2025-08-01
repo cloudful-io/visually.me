@@ -7,6 +7,8 @@ import ElderlyIcon from '@mui/icons-material/Elderly';
 import PaidIcon from '@mui/icons-material/Paid';
 import LinearProgress from '@mui/material/LinearProgress'
 import type { Navigation } from '@toolpad/core/AppProvider';
+import { SessionProvider, signIn, signOut } from 'next-auth/react';
+import { auth } from '../auth';
 
 import theme from '../theme';
 
@@ -48,25 +50,32 @@ const BRANDING = {
   title: process.env.REACT_APP_SITE_TITLE,
 };
 
-export default function RootLayout(props: { children: React.ReactNode }) {
-  
+const AUTHENTICATION = {
+  signIn,
+  signOut,
+};
+
+export default async function RootLayout(props: { children: React.ReactNode }) {
+  const session = await auth();
+
   return (
     <html lang="en" data-toolpad-color-scheme="light" suppressHydrationWarning>
       <body>
-        
+        <SessionProvider session={session}>
+
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <React.Suspense fallback={<LinearProgress />}>
-            <NextAppProvider
-              navigation={NAVIGATION}
-              branding={BRANDING}
-              
-              theme={theme}
-            >
-              {props.children}
-            </NextAppProvider>
+            <React.Suspense fallback={<LinearProgress />}>
+              <NextAppProvider
+                navigation={NAVIGATION}
+                branding={BRANDING}
+                authentication={AUTHENTICATION}
+                theme={theme}
+              >
+                {props.children}
+              </NextAppProvider>
             </React.Suspense>
           </AppRouterCacheProvider>
-        
+        </SessionProvider>
       </body>
     </html>
   );
