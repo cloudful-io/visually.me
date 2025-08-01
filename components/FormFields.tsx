@@ -1,29 +1,33 @@
-import React from "react";
-import { Grid, TextField } from "@mui/material";
+import React from 'react';
 import { FormFieldConfig } from '@/types/forms';
+import { Grid, TextField } from '@mui/material';
 
-type Props<T extends Record<string, any>> = {
+type GenericFormValues = Record<string, number | string>;
+
+type Props<T extends GenericFormValues> = {
   fields: FormFieldConfig<T>[];
   values: T;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function FormFields<T extends Record<string, any>>({
+export function FormFields<T extends GenericFormValues>({
   fields,
   values,
   onChange,
-}: Props<T>): JSX.Element {
+}: Props<T>) {
   return (
     <>
-      {fields.map(({ name, label, type = 'number' }) => (
-        <Grid key={String(name)} size={{xs:12, md: 3, sm: 6}}>
+      {fields.map(({ name, label, type = 'number', min, max, step, helperText }) => (
+        <Grid key={String(name)} size={{ xs: 12, sm: 6, md: 3 }}>
           <TextField
             fullWidth
-            type={type}
             name={String(name)}
             label={label}
+            type={type}
             value={values[name]}
             onChange={onChange}
+            slotProps={{ input: { inputProps: { min, max, step } } }}
+            helperText={helperText}
           />
         </Grid>
       ))}

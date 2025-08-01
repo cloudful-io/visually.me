@@ -1,47 +1,37 @@
 'use client';
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { Box, Grid, Button, Typography, FormControlLabel, Switch } from '@mui/material';
+import TableViewIcon from '@mui/icons-material/TableView';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+
 import { FormFields } from '@/components/FormFields';
-import {
-  retirementSavingsFieldConfigs,
-  RetirementSavingsFormValues,
-} from '@/configs/retirementSavingsFields';
 import { ProjectionChart } from '@/components/ProjectionChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import Footer from '@/components/Footer';
-
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-import { useRetirementSavingsProjection } from '@/hooks/useRetirementSavingsProjection';
-import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 import {
-  Box,
-  Grid,
-  Button,
-  Typography,
-} from "@mui/material";
-import TableViewIcon from "@mui/icons-material/TableView";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import { FormControlLabel, Switch } from "@mui/material";
+  SocialSecurityBenefitsFormValues,
+  socialSecurityFieldConfigs,
+} from '@/configs/socialSecurityBenefitsFields';
+import { useSocialSecurityBenefitsProjection } from '@/hooks/useSocialSecurityBenefitsProjection';
+import { usePersistedForm } from '@/hooks/usePersistedForm';
 
-const RetirementProjection = () => {
-
-  const [formValues, setFormValues] = usePersistedForm<RetirementSavingsFormValues>(
-    'retirementSavingsForm',
+const SocialSecurityProjection = () => {
+  const [formValues, setFormValues] = usePersistedForm<SocialSecurityBenefitsFormValues>(
+    'socialSecurityForm',
     {
       startYear: new Date().getFullYear(),
       birthYear: 1970,
-      initialBalance: 200000,
-      initialContribution: 23000,
-      estimatedYield: 6,
-      estimatedWithdrawRate: 5,
-      contributionIncreaseRate: 2,
-      withdrawStartAge: 60,
-      yearsToProject: 40,
+      claimingAge: 67,
+      averageIncome: 60000,
+      averageCOLA: 2.5,
+      yearsToDisplay: 25,
     }
   );
 
-  const {rows, generateTable } = useRetirementSavingsProjection(formValues);
+  const { rows, generateTable } = useSocialSecurityBenefitsProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,16 +45,15 @@ const RetirementProjection = () => {
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h5" gutterBottom>
-        Retirement Savings and Withdrawal Projection
+        Social Security Benefit Projection
       </Typography>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        
-      <FormFields
-        fields={retirementSavingsFieldConfigs}
-        values={formValues}
-        onChange={handleChange}
-      />
+        <FormFields
+          fields={socialSecurityFieldConfigs}
+          values={formValues}
+          onChange={handleChange}
+        />
         <FormControlLabel
           control={
             <Switch
@@ -76,17 +65,31 @@ const RetirementProjection = () => {
         />
       </Grid>
 
-      <Button variant="contained" startIcon={<TableViewIcon/>} onClick={generateTable}>
+      <Button
+        variant="contained"
+        startIcon={<TableViewIcon />}
+        onClick={generateTable}
+      >
         Calculate
       </Button>
 
-      <Button variant="outlined" sx={{ ml: 2 }} startIcon={<FileDownloadIcon/>} onClick={() => exportToCSV(rows, "retirement_projection.csv")}>
+      <Button
+        variant="outlined"
+        sx={{ ml: 2 }}
+        startIcon={<FileDownloadIcon />}
+        onClick={() => exportToCSV(rows, 'social_security_projection.csv')}
+      >
         Export CSV
       </Button>
-      
+
       {showChart && rows.length > 0 && (
-        <ProjectionChart data={rows} dataKey="endingBalance" title="End of Year Balance Over Time" />
+        <ProjectionChart
+          data={rows}
+          dataKey="annualBenefit"
+          title="Annual Social Security Benefit Over Time"
+        />
       )}
+
       {rows.length > 0 && (
         <ProjectionTable
           rows={rows}
@@ -94,28 +97,24 @@ const RetirementProjection = () => {
           columns={[
             { key: 'year', label: 'Year' },
             { key: 'age', label: 'Age' },
-            { key: 'beginningBalance', label: 'Beginning Balance ($)' },
-            { key: 'contribution', label: 'Contribution ($)' },
-            { key: 'yieldPercent', label: 'Yield %' },
-            { key: 'withdrawRate', label: 'Withdraw %' },
-            { key: 'monthlyWithdraw', label: 'Monthly Withdraw ($)' },
-            { key: 'annualWithdraw', label: 'Annual Withdraw ($)' },
-            { key: 'endingBalance', label: 'Ending Balance ($)' },
+            { key: 'monthlyBenefit', label: 'Monthly Benefit ($)' },
+            { key: 'annualBenefit', label: 'Annual Benefit ($)' },
           ]}
         />
       )}
+
       <Box sx={{ mt: 4 }}>
         <Assumptions
           title="Assumptions"
           items={[
             <>
-              This calculator assumes that contribution increases at a fixed percentage rate over your lifetime. In reality, if you are contributing at the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits" target="_blank" rel="noopener noreferrer">maximum limit</a> allowed by the Internal Revenue Service (IRS), the growth rate varies year-over-year. For instance, there was no change between 2020 and 2021 at $19,500; while it increased from $20,500 to $22,500 between 2022 and 2023.
+              This calculator uses a simplified formula to estimate Social Security benefits. It assumes a linear relationship between income and the Primary Insurance Amount (PIA), and uses your claiming age to adjust the benefit according to Social Security Administration (SSA) rules.
             </>,
             <>
-              This calculator assumes that withdrawal is kept at a fixed percentage rate. In reality, the limiting factor is the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds" target="_blank" rel="noopener noreferrer">Required Minimum Distribution (RMD)</a>, which requires you to withdraw a minimum percentage of your balance, starting at age 73. The exception is if your retirement savings is a Roth 401k or Roth IRA account.
+              The annual benefit increases each year after claiming based on your specified Cost-of-Living Adjustment (COLA), which averages around 2.6% historically but is not guaranteed.
             </>,
             <>
-              This calculator simplifies the calculation of annual yield by assuming that the annual contribution is added to your account at the <strong>end of each year</strong>. In reality, contribution is likely deducted from your monthly or bi-weekly paycheck that will benefit from the annual yield / growth of the current year.
+              This tool assumes you begin collecting benefits at a fixed age and continue receiving them annually for the number of years you specify. It does not account for taxes, spousal benefits, or income-related reductions.
             </>,
           ]}
         />
@@ -124,4 +123,4 @@ const RetirementProjection = () => {
   );
 };
 
-export default RetirementProjection;
+export default SocialSecurityProjection;

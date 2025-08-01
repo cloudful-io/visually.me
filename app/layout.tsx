@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import ElderlyIcon from '@mui/icons-material/Elderly';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PaidIcon from '@mui/icons-material/Paid';
 import LinearProgress from '@mui/material/LinearProgress'
 import type { Navigation } from '@toolpad/core/AppProvider';
@@ -42,7 +43,7 @@ const NAVIGATION: Navigation = [
   {
       segment: 'retirement-incomes',
       title: 'Retirement Incomes',
-      icon: <PaidIcon />,
+      icon: <ElderlyIcon />,
       children: [
         {
           segment: 'retirement-savings',
@@ -52,7 +53,7 @@ const NAVIGATION: Navigation = [
         {
           segment: 'social-security',
           title: 'Social Security Benefits',
-          icon: <PaidIcon />,
+          icon: <AccountBalanceIcon />,
         },
       ],
     },
