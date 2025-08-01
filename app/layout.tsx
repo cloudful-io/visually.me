@@ -38,11 +38,24 @@ const NAVIGATION: Navigation = [
     title: 'Pension',
     icon: <ElderlyIcon />
   },*/
+
   {
-    segment: '401k',
-    title: 'Retirement Savings',
-    icon: <PaidIcon />
-  }
+      segment: 'retirement-incomes',
+      title: 'Retirement Incomes',
+      icon: <PaidIcon />,
+      children: [
+        {
+          segment: 'retirement-savings',
+          title: 'Retirement Savings',
+          icon: <PaidIcon />,
+        },
+        {
+          segment: 'social-security',
+          title: 'Social Security Benefits',
+          icon: <PaidIcon />,
+        },
+      ],
+    },
 
 ];
 

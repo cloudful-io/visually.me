@@ -1,6 +1,6 @@
 import { FormFieldConfig } from '@/types/forms';
 
-export type RetirementFormValues = {
+export type RetirementSavingsFormValues = {
   startYear: number;
   birthYear: number;
   initialBalance: number;
@@ -12,7 +12,7 @@ export type RetirementFormValues = {
   yearsToProject: number;
 };
 
-export const retirementFieldConfigs: FormFieldConfig<RetirementFormValues>[] = [
+export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsFormValues>[] = [
   { name: 'startYear', label: 'Start Year' },
   { name: 'birthYear', label: 'Birth Year' },
   { name: 'initialBalance', label: 'Initial Balance ($)' },

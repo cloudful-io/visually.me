@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function useRetirementProjection(formValues: any) {
+export function useRetirementSavingsProjection(formValues: any) {
   const [rows, setRows] = useState<any[]>([]);
 
   const generateTable = () => {

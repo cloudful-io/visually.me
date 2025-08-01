@@ -2,16 +2,16 @@
 import React, { useState } from "react";
 import { FormFields } from '@/components/FormFields';
 import {
-  retirementFieldConfigs,
-  RetirementFormValues,
-} from '@/configs/retirementFields';
+  retirementSavingsFieldConfigs,
+  RetirementSavingsFormValues,
+} from '@/configs/retirementSavingsFields';
 import { ProjectionChart } from '@/components/ProjectionChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import Footer from '@/components/Footer';
 
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-import { useRetirementProjection } from '@/hooks/useRetirementProjection';
+import { useRetirementSavingsProjection } from '@/hooks/useRetirementSavingsProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 import {
@@ -24,10 +24,10 @@ import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
 
-const RetirementProjection = () => {
+const RetirementSavingsProjection = () => {
 
-  const [formValues, setFormValues] = usePersistedForm<RetirementFormValues>(
-    'retirementForm',
+  const [formValues, setFormValues] = usePersistedForm<RetirementSavingsFormValues>(
+    'retirementSavingsForm',
     {
       startYear: new Date().getFullYear(),
       birthYear: 1970,
@@ -41,7 +41,7 @@ const RetirementProjection = () => {
     }
   );
 
-  const {rows, generateTable } = useRetirementProjection(formValues);
+  const {rows, generateTable } = useRetirementSavingsProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +61,7 @@ const RetirementProjection = () => {
       <Grid container spacing={2} sx={{ mb: 2 }}>
         
       <FormFields
-        fields={retirementFieldConfigs}
+        fields={retirementSavingsFieldConfigs}
         values={formValues}
         onChange={handleChange}
       />
@@ -109,10 +109,10 @@ const RetirementProjection = () => {
           title="Assumptions"
           items={[
             <>
-              Retirement Savings contribution increases at a fixed percentage rate over your lifetime. In reality, if you are contributing at the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits" target="_blank" rel="noopener noreferrer">maximum limit</a> allowed by the Internal Revenue Service (IRS), the growth rate varies year-over-year. For instance, there was no change between 2020 and 2021 at $19,500; while it increased from $20,500 to $22,500 between 2022 and 2023.
+              This calculator assumes that contribution increases at a fixed percentage rate over your lifetime. In reality, if you are contributing at the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits" target="_blank" rel="noopener noreferrer">maximum limit</a> allowed by the Internal Revenue Service (IRS), the growth rate varies year-over-year. For instance, there was no change between 2020 and 2021 at $19,500; while it increased from $20,500 to $22,500 between 2022 and 2023.
             </>,
             <>
-              Retirement Savings withdraw can be kept at a fixed percentage rate. In reality, the limiting factor is the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds" target="_blank" rel="noopener noreferrer">Required Minimum Distribution (RMD)</a>, which requires you to withdraw a minimum percentage of your balance, starting at age 73. The exception is if your retirement savings is a Roth 401k or Roth IRA account.
+              This calculator assumes that withdrawal is kept at a fixed percentage rate. In reality, the limiting factor is the <a href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds" target="_blank" rel="noopener noreferrer">Required Minimum Distribution (RMD)</a>, which requires you to withdraw a minimum percentage of your balance, starting at age 73. The exception is if your retirement savings is a Roth 401k or Roth IRA account.
             </>,
             <>
               This calculator simplifies the calculation of annual yield by assuming that the annual contribution is added to your account at the <strong>end of each year</strong>. In reality, contribution is likely deducted from your monthly or bi-weekly paycheck that will benefit from the annual yield / growth of the current year.
@@ -124,4 +124,4 @@ const RetirementProjection = () => {
   );
 };
 
-export default RetirementProjection;
+export default RetirementSavingsProjection;

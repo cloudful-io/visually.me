@@ -1,4 +1,3 @@
-// components/Assumptions.tsx
 'use client';
 import React from "react";
 import {
@@ -12,7 +11,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CircleIcon from "@mui/icons-material/Circle";
+import CheveronRightIcon from "@mui/icons-material/ChevronRight";
 
 type AssumptionsProps = {
   title: string;
@@ -33,7 +32,7 @@ const Assumptions = ({ title, items }: AssumptionsProps) => (
         {items.map((item, index) => (
           <ListItem key={index} alignItems="flex-start">
             <ListItemIcon>
-              <CircleIcon />
+              <CheveronRightIcon />
             </ListItemIcon>
             <ListItemText primary={item} />
           </ListItem>
