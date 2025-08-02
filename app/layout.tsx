@@ -6,6 +6,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import ElderlyIcon from '@mui/icons-material/Elderly';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PaidIcon from '@mui/icons-material/Paid';
+import CalculateIcon from '@mui/icons-material/Calculate';
 import LinearProgress from '@mui/material/LinearProgress'
 import type { Navigation } from '@toolpad/core/AppProvider';
 import { SessionProvider, signIn, signOut } from 'next-auth/react';
@@ -41,9 +42,9 @@ const NAVIGATION: Navigation = [
   },*/
 
   {
-      segment: 'retirement-incomes',
-      title: 'Retirement Incomes',
-      icon: <ElderlyIcon />,
+      segment: 'calculators',
+      title: 'Calculators',
+      icon: <CalculateIcon />,
       children: [
         {
           segment: 'fers-pension',
