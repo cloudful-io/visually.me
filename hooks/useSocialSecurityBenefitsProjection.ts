@@ -10,7 +10,7 @@ export function useSocialSecurityBenefitsProjection(formValues: any) {
       claimingAge,
       averageIncome,
       averageCOLA,
-      yearsToDisplay,
+      yearsToProject,
     } = formValues;
 
     const fullRetirementAge = getFullRetirementAge(birthYear);
@@ -25,7 +25,7 @@ export function useSocialSecurityBenefitsProjection(formValues: any) {
     const data: any[] = [];
     let benefit = initialAnnualBenefit;
 
-    for (let i = 0; i < yearsToDisplay; i++) {
+    for (let i = 0; i < yearsToProject; i++) {
       const year = startYear + i;
       const age = year - birthYear;
 

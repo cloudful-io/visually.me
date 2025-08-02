@@ -43,13 +43,37 @@ const RetirementSavingsProjection = () => {
 
   const {rows, generateTable } = useRetirementSavingsProjection(formValues);
   const [showChart, setShowChart] = useState(true);
+  const [errors, setErrors] = useState<Partial<Record<keyof RetirementSavingsFormValues, string>>>({});
+  const hasErrors = Object.values(errors).some((e) => e);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const parsedValue = parseFloat(value);
+
     setFormValues((prev) => ({
       ...prev,
-      [name]: parseFloat(value),
+      [name]: parsedValue,
     }));
+
+    // Validate against min/max
+    const fieldConfig = retirementSavingsFieldConfigs.find((f) => String(f.name) === name);
+    if (fieldConfig) {
+      const { min, max, label } = fieldConfig;
+      let error = '';
+
+      if (!isNaN(parsedValue)) {
+        if (typeof min === 'number' && parsedValue < min) {
+          error = `${label} must be ≥ ${min}`;
+        } else if (typeof max === 'number' && parsedValue > max) {
+          error = `${label} must be ≤ ${max}`;
+        }
+      }
+
+      setErrors((prev) => ({
+        ...prev,
+        [name]: error,
+      }));
+    }
   };
 
   return (
@@ -64,6 +88,7 @@ const RetirementSavingsProjection = () => {
         fields={retirementSavingsFieldConfigs}
         values={formValues}
         onChange={handleChange}
+        errors={errors}
       />
         <FormControlLabel
           control={
@@ -76,7 +101,12 @@ const RetirementSavingsProjection = () => {
         />
       </Grid>
 
-      <Button variant="contained" startIcon={<TableViewIcon/>} onClick={generateTable}>
+      <Button 
+        variant="contained" 
+        startIcon={<TableViewIcon/>} 
+        onClick={generateTable}
+        disabled={hasErrors}
+      >
         Calculate
       </Button>
 

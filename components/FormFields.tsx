@@ -8,12 +8,14 @@ type Props<T extends GenericFormValues> = {
   fields: FormFieldConfig<T>[];
   values: T;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: Partial<Record<keyof T, string>>;
 };
 
 export function FormFields<T extends GenericFormValues>({
   fields,
   values,
   onChange,
+  errors = {},
 }: Props<T>) {
   return (
     <>
@@ -26,8 +28,9 @@ export function FormFields<T extends GenericFormValues>({
             type={type}
             value={values[name]}
             onChange={onChange}
+            error={!!errors[name]}
             slotProps={{ input: { inputProps: { min, max, step } } }}
-            helperText={helperText}
+            helperText={errors[name] || helperText}
           />
         </Grid>
       ))}

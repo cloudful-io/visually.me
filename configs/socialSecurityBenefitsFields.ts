@@ -6,16 +6,16 @@ export type SocialSecurityBenefitsFormValues = {
   claimingAge: number;
   averageIncome: number;
   averageCOLA: number;
-  yearsToDisplay: number;
+  yearsToProject: number;
 };
 
 export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitsFormValues>[] = [
   {
     name: 'startYear',
     label: 'Start Year',
-    min: new Date().getFullYear(),
+    min: 1900,
     step: 1,
-    helperText: 'Year to begin displaying Social Security benefits',
+    helperText: 'Year to begin displaying data',
   },
   {
     name: 'birthYear',
@@ -48,11 +48,11 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitsF
     helperText: 'Cost-of-Living Adjustment applied annually after claiming',
   },
   {
-    name: 'yearsToDisplay',
-    label: 'Years to Display',
+    name: 'yearsToProject',
+    label: 'Years to Project',
     min: 1,
-    max: 40,
+    max: 80,
     step: 1,
-    helperText: 'Number of years to show benefit projections after claiming',
+    helperText: 'Number of years to show benefit projections',
   },
 ];

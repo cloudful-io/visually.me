@@ -25,21 +25,45 @@ const SocialSecurityProjection = () => {
       startYear: new Date().getFullYear(),
       birthYear: 1970,
       claimingAge: 67,
-      averageIncome: 60000,
+      averageIncome: 100000,
       averageCOLA: 2.5,
-      yearsToDisplay: 25,
+      yearsToProject: 45,
     }
   );
 
-  const { rows, generateTable } = useSocialSecurityBenefitsProjection(formValues);
+  const {rows, generateTable } = useSocialSecurityBenefitsProjection(formValues);
   const [showChart, setShowChart] = useState(true);
+  const [errors, setErrors] = useState<Partial<Record<keyof SocialSecurityBenefitsFormValues, string>>>({});
+  const hasErrors = Object.values(errors).some((e) => e);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const parsedValue = parseFloat(value);
+
     setFormValues((prev) => ({
       ...prev,
-      [name]: parseFloat(value),
+      [name]: parsedValue,
     }));
+
+    // Validate against min/max
+    const fieldConfig = socialSecurityFieldConfigs.find((f) => String(f.name) === name);
+    if (fieldConfig) {
+      const { min, max, label } = fieldConfig;
+      let error = '';
+
+      if (!isNaN(parsedValue)) {
+        if (typeof min === 'number' && parsedValue < min) {
+          error = `${label} must be ≥ ${min}`;
+        } else if (typeof max === 'number' && parsedValue > max) {
+          error = `${label} must be ≤ ${max}`;
+        }
+      }
+
+      setErrors((prev) => ({
+        ...prev,
+        [name]: error,
+      }));
+    }
   };
 
   return (
@@ -53,6 +77,7 @@ const SocialSecurityProjection = () => {
           fields={socialSecurityFieldConfigs}
           values={formValues}
           onChange={handleChange}
+          errors={errors}
         />
         <FormControlLabel
           control={
@@ -69,6 +94,7 @@ const SocialSecurityProjection = () => {
         variant="contained"
         startIcon={<TableViewIcon />}
         onClick={generateTable}
+        disabled={hasErrors}
       >
         Calculate
       </Button>
