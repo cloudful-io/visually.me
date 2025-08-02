@@ -104,6 +104,7 @@ const SocialSecurityProjection = () => {
         sx={{ ml: 2 }}
         startIcon={<FileDownloadIcon />}
         onClick={() => exportToCSV(rows, 'social_security_projection.csv')}
+        disabled={rows.length === 0}
       >
         Export CSV
       </Button>

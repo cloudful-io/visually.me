@@ -35,7 +35,6 @@ export function useFersPensionProjection(formValues: any) {
       salaries.slice(-3).reduce((sum, s) => sum + s, 0) / Math.min(3, salaries.length);
 
     const yearsOfService = retirementAge - (serviceStartYear - birthYear);
-    const pensionMultiplierDecimal = pensionMultiplier / 100;
 
     let adjustedMultiplier = pensionMultiplier;
     let pensionReduction = 0; // percentage points to subtract

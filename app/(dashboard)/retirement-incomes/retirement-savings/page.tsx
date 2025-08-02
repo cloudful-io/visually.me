@@ -109,7 +109,12 @@ const RetirementSavingsProjection = () => {
         Calculate
       </Button>
 
-      <Button variant="outlined" sx={{ ml: 2 }} startIcon={<FileDownloadIcon/>} onClick={() => exportToCSV(rows, "retirement_projection.csv")}>
+      <Button 
+        variant="outlined" sx={{ ml: 2 }} 
+        startIcon={<FileDownloadIcon/>} 
+        onClick={() => exportToCSV(rows, "retirement_projection.csv")}
+        disabled={rows.length === 0}
+      >
         Export CSV
       </Button>
       
