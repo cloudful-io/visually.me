@@ -46,6 +46,11 @@ const NAVIGATION: Navigation = [
       icon: <ElderlyIcon />,
       children: [
         {
+          segment: 'fers-pension',
+          title: 'FERS Pension',
+          icon: <PersonIcon />,
+        },
+        {
           segment: 'retirement-savings',
           title: 'Retirement Savings',
           icon: <PaidIcon />,
