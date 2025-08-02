@@ -30,6 +30,7 @@ const SocialSecurityProjection = () => {
     }
   );
 
+
   const {rows, generateTable } = useSocialSecurityBenefitsProjection(formValues);
   const [showChart, setShowChart] = useState(true);
   const [errors, setErrors] = useState<Partial<Record<keyof SocialSecurityBenefitsFormValues, string>>>({});
