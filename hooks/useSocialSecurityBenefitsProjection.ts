@@ -50,10 +50,10 @@ export function useSocialSecurityBenefitsProjection(formValues: any) {
   return { rows, generateTable };
 }
 
-// Rough SSA formula: first 996 @ 90%, next 5,006 @ 32%, rest @ 15% (2023 bend points)
+// Rough SSA formula: first bend point @ 90%, next bend point @ 32%, rest @ 15% (2025 bend points)
 function estimatePIA(averageIncome: number): number {
-  const bendPoint1 = 1174;
-  const bendPoint2 = 7078;
+  const bendPoint1 = 1226;
+  const bendPoint2 = 7391;
 
   const monthlyIncome = averageIncome / 12;
   let pia = 0;
