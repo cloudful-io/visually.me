@@ -7,7 +7,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PaidIcon from '@mui/icons-material/Paid';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import LinearProgress from '@mui/material/LinearProgress'
-import type { Navigation } from '@toolpad/core/AppProvider';
+import {type Navigation, type Session } from '@toolpad/core/AppProvider';
 import { SessionProvider, signIn, signOut } from 'next-auth/react';
 import { auth } from '../auth';
 
@@ -83,6 +83,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                 navigation={NAVIGATION}
                 branding={BRANDING}
                 authentication={AUTHENTICATION}
+                session={session}
                 theme={theme}
               >
                 {props.children}
