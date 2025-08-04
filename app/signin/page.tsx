@@ -1,4 +1,4 @@
-'use client'; // only needed for App Router
+'use client';
 
 import { useEffect, useState } from 'react';
 import { signIn, getProviders } from 'next-auth/react';
@@ -23,7 +23,7 @@ import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import SecurityIcon from '@mui/icons-material/Security';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 
-export const providerIcons: Record<string, React.ReactNode> = {
+const providerIcons: Record<string, React.ReactNode> = {
   google: <GoogleIcon />,
   github: <GitHubIcon />,
   facebook: <FacebookIcon />,

@@ -9,6 +9,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import LinearProgress from '@mui/material/LinearProgress'
 import {type Navigation, type Session } from '@toolpad/core/AppProvider';
 import { SessionProvider, signIn, signOut } from 'next-auth/react';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { auth } from '../auth';
 
 import theme from '../theme';
@@ -75,6 +76,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" data-toolpad-color-scheme="light" suppressHydrationWarning>
       <body>
+        <GoogleAnalytics />
         <SessionProvider session={session}>
 
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
