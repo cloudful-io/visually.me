@@ -37,8 +37,13 @@ const SocialSecurityProjection = () => {
   const hasErrors = Object.values(errors).some((e) => e);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const parsedValue = parseFloat(value);
+    const { name, value, type } = e.target;
+    let parsedValue: any = value;
+
+    // parse number fields
+    if (type === 'number') {
+      parsedValue = value === '' ? '' : parseFloat(value);
+    }
 
     setFormValues((prev) => ({
       ...prev,
@@ -51,12 +56,14 @@ const SocialSecurityProjection = () => {
       const { min, max, label } = fieldConfig;
       let error = '';
 
-      if (!isNaN(parsedValue)) {
+      if (typeof parsedValue === 'number' && !isNaN(parsedValue)) {
         if (typeof min === 'number' && parsedValue < min) {
           error = `${label} must be ≥ ${min}`;
         } else if (typeof max === 'number' && parsedValue > max) {
           error = `${label} must be ≤ ${max}`;
         }
+      } else if (parsedValue === '') {
+        error = `${label} is required`;
       }
 
       setErrors((prev) => ({
@@ -64,6 +71,7 @@ const SocialSecurityProjection = () => {
         [name]: error,
       }));
     }
+    if (value.length == 0) return;
   };
 
   return (

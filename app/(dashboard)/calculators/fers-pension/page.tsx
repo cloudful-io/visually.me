@@ -47,6 +47,7 @@ const FersPensionProjection = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
+    
     let parsedValue: any = value;
 
     // parse number fields
@@ -79,7 +80,9 @@ const FersPensionProjection = () => {
         ...prev,
         [name]: error,
       }));
+
     }
+    if (value.length == 0) return;
   };
 
   return (
