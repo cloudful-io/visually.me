@@ -63,6 +63,8 @@ const NAVIGATION: Navigation = [
 
 const BRANDING = {
   title: process.env.REACT_APP_SITE_TITLE,
+  logo: <img src="/images/logo.png" alt="Visually.Me" />,
+
 };
 
 const AUTHENTICATION = {
