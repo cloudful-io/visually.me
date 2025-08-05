@@ -88,7 +88,7 @@ const FersPensionProjection = () => {
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h5" gutterBottom>
-        FERS Pension Projection
+        Federal Employee Retirement System (FERS) Pension Projection
       </Typography>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>

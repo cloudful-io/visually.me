@@ -11,18 +11,20 @@ export default function HomePage() {
     <Box
       sx={{
         px: 4,
-        py: 8,
-        maxWidth: 800,
+        py: 0,
+        maxWidth: 960,
         mx: 'auto',
         textAlign: 'center',
       }}
     >
+      <Box component="img" src="/images/logo512.png" alt="Visually.Me" sx={{ height: 240 }} />
+
       <Typography variant="h4" fontWeight="bold" gutterBottom>
         Plan Smarter. Live Better. Visually Me.
       </Typography>
 
-      <Typography variant="h6" color="text.secondary" paragraph>
-        Take control of your financial future with our all-in-one planning platform. Whether you&apos;re preparing for retirement, estimating Social Security income, mapping out college savings, or managing housing and living expenses — our interactive tools and intuitive charts make it easy to visualize your goals and stay on track.
+      <Typography variant="h6" color="text.secondary">
+        Take control of your financial future with our all-in-one planning platform. Whether you are preparing for retirement, estimating Social Security income, mapping out college savings, or managing housing and living expenses — our interactive calculators and intuitive charts make it easy to visualize your goals and stay on track.
       </Typography>
 
       <List sx={{ mt: 4, mb: 4, textAlign: 'left' }}>
