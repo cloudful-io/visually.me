@@ -144,11 +144,11 @@ const FersPensionProjection = () => {
           columns={[
             { key: 'year', label: 'Year' },
             { key: 'age', label: 'Age' },
-            { key: 'salary', label: 'Salary ($)' },
+            { key: 'salary', label: 'Salary ($)', currency: true },
             { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)' },
             { key: 'colaApplied', label: 'COLA Applied (%)' },
-            { key: 'pension', label: 'Annual Pension ($)' },
-            { key: 'monthlyPension', label: 'Monthly Pension ($)' },
+            { key: 'pension', label: 'Annual Pension ($)', currency: true },
+            { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true },
             
           ]}
         />

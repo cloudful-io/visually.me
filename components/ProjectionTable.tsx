@@ -4,7 +4,7 @@ import {
 
 export function ProjectionTable({ rows, columns, highlightYear }: {
   rows: any[];
-  columns: { key: string; label: string }[];
+  columns: { key: string; label: string; currency?: boolean }[];
   highlightYear?: number;
 }) {
   return (
@@ -27,8 +27,8 @@ export function ProjectionTable({ rows, columns, highlightYear }: {
             >
               {columns.map(col => (
                 <TableCell key={col.key}>
-                  {typeof row[col.key] === 'number'
-                    ? row[col.key].toLocaleString(undefined, { maximumFractionDigits: 0 })
+                  {typeof row[col.key] === 'number' && col.currency
+                    ? row[col.key].toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
                     : row[col.key]}
                 </TableCell>
               ))}

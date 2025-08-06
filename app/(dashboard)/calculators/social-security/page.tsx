@@ -132,8 +132,8 @@ const SocialSecurityProjection = () => {
           columns={[
             { key: 'year', label: 'Year' },
             { key: 'age', label: 'Age' },
-            { key: 'monthlyBenefit', label: 'Monthly Benefit ($)' },
-            { key: 'annualBenefit', label: 'Annual Benefit ($)' },
+            { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
+            { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
           ]}
         />
       )}

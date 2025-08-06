@@ -136,13 +136,13 @@ const RetirementSavingsProjection = () => {
           columns={[
             { key: 'year', label: 'Year' },
             { key: 'age', label: 'Age' },
-            { key: 'beginningBalance', label: 'Beginning Balance ($)' },
-            { key: 'contribution', label: 'Contribution ($)' },
+            { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
+            { key: 'contribution', label: 'Contribution ($)', currency: true },
             { key: 'yieldPercent', label: 'Yield %' },
             { key: 'withdrawRate', label: 'Withdraw %' },
-            { key: 'monthlyWithdraw', label: 'Monthly Withdraw ($)' },
-            { key: 'annualWithdraw', label: 'Annual Withdraw ($)' },
-            { key: 'endingBalance', label: 'Ending Balance ($)' },
+            { key: 'monthlyWithdraw', label: 'Monthly Withdraw ($)', currency: true },
+            { key: 'annualWithdraw', label: 'Annual Withdraw ($)', currency: true },
+            { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
           ]}
         />
       )}
