@@ -6,6 +6,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PaidIcon from '@mui/icons-material/Paid';
 import CalculateIcon from '@mui/icons-material/Calculate';
+import StorageIcon from '@mui/icons-material/Storage';
+import SchoolIcon from '@mui/icons-material/School';
+import RealEstateAgentIcon from '@mui/icons-material/RealEstateAgent';
 import LinearProgress from '@mui/material/LinearProgress'
 import {type Navigation, type Session } from '@toolpad/core/AppProvider';
 import { SessionProvider, signIn, signOut } from 'next-auth/react';
@@ -42,6 +45,10 @@ const NAVIGATION: Navigation = [
       icon: <CalculateIcon />,
       children: [
         {
+          kind: 'header',
+          title: 'Incomes',
+        },
+        {
           segment: 'fers-pension',
           title: 'FERS Pension',
           icon: <PersonIcon />,
@@ -56,7 +63,26 @@ const NAVIGATION: Navigation = [
           title: 'Social Security Benefits',
           icon: <AccountBalanceIcon />,
         },
+        {
+          kind: 'header',
+          title: 'Expenses',
+        },
+        {
+          segment: 'college-tuition',
+          title: 'College Tuition',
+          icon: <SchoolIcon />,
+        },
+        {
+          segment: 'mortgage',
+          title: 'Mortgage Amortization',
+          icon: <RealEstateAgentIcon />,
+        },
       ],
+    },
+    {
+      segment: 'database',
+      title: 'Database',
+      icon: <StorageIcon />,
     },
 
 ];
@@ -77,6 +103,13 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="en" data-toolpad-color-scheme="light" suppressHydrationWarning>
+      <head>
+        <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+        <link rel="shortcut icon" href="/images/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+        <link rel="manifest" href="/images/site.webmanifest" />
+      </head>
       <body>
         <GoogleAnalytics />
         <SessionProvider session={session}>
