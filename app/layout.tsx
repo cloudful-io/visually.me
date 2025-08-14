@@ -79,11 +79,11 @@ const NAVIGATION: Navigation = [
         },
       ],
     },
-    {
+    /*{
       segment: 'database',
       title: 'Database',
       icon: <StorageIcon />,
-    },
+    },*/
 
 ];
 
