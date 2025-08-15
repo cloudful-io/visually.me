@@ -23,6 +23,7 @@ import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
 
+
 const FersPensionProjection = () => {
   const [formValues, setFormValues] = usePersistedForm<FersPensionFormValues>(
     'fersPensionForm',
@@ -40,7 +41,7 @@ const FersPensionProjection = () => {
     }
   );
 
-  const { rows, generateTable } = useFersPensionProjection(formValues);
+  const {rows, generateTable } = useFersPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
   const [errors, setErrors] = useState<Partial<Record<keyof FersPensionFormValues, string>>>({});
   const hasErrors = Object.values(errors).some((e) => e);

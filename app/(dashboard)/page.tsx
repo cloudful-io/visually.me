@@ -1,10 +1,47 @@
 import * as React from 'react';
-import { Box, Typography, Button, Stack, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Link } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
 export default function HomePage() {
-  
+  const features = [
+  {
+    segments: [
+      { text: 'Model your ' },
+      { text: 'retirement savings', link: '/calculators/retirement-savings' },
+      { text: ' and see how your income grows' },
+    ],
+  },
+  {
+    segments: [
+      { text: 'Forecast ' },
+      { text: 'social security', link: '/calculators/social-security' },
+      { text: ' and ' },
+      { text: 'pension benefits', link: '/calculators/fers-pension' },
+      { text: ' with ease' },
+    ],
+  },
+  {
+    segments: [
+      { text: 'Plan for major life expenses like ' },
+      { text: 'college tuition', link: '/calculators/college-tuition' },
+      { text: ', ' },
+      { text: 'home ownership', link: '/calculators/mortgage-amortization' },
+      { text: ', and more' },
+    ],
+  },
+  {
+    segments: [
+      { text: 'Explore what-if scenarios and make informed decisions' },
+    ],
+  },
+  {
+    segments: [
+      { text: 'Stay organized with clear visualizations, projections, and personalized insights' },
+    ],
+  },
+  ];
+
   return (    
     <Box
       sx={{
@@ -15,7 +52,7 @@ export default function HomePage() {
         textAlign: 'center',
       }}
     >
-      <Box component="img" src="/images/logo512.png" alt="Visually.Me" sx={{ height: 240 }} />
+      <Box component="img" src="/images/logo512.png" alt="Visually.Me" sx={{ height: 180 }} />
 
       <Typography variant="h4" fontWeight="bold" gutterBottom>
         Plan Smarter. Live Better. Visually Me.
@@ -26,19 +63,30 @@ export default function HomePage() {
       </Typography>
 
       <List sx={{ mt: 4, mb: 4, textAlign: 'left' }}>
-        {[
-          'Model your retirement savings and see how your income grows',
-          'Forecast Social Security and pension benefits with ease',
-          'Plan for major life expenses like college tuition, home ownership, and more',
-          'Explore what-if scenarios and make informed decisions',
-          'Stay organized with clear visualizations, projections, and personalized insights',
-        ].map((text, index) => (
+        {features.map((feature, index) => (
           <ListItem key={index} disableGutters>
             <ListItemIcon sx={{ minWidth: 36 }}>
               <CheckCircleIcon color="primary" />
             </ListItemIcon>
             <ListItemText
-              primary={<Typography variant="body1"><strong>{text}</strong></Typography>}
+              primary={
+                <Typography variant="body1" fontWeight="bold">
+                  {feature.segments.map((segment, i) =>
+                    segment.link ? (
+                      <Link
+                        key={i}
+                        href={segment.link}
+                        rel="noopener"
+                        underline="hover"
+                      >
+                        {segment.text}
+                      </Link>
+                    ) : (
+                      <span key={i}>{segment.text}</span>
+                    )
+                  )}
+                </Typography>
+              }
             />
           </ListItem>
         ))}
