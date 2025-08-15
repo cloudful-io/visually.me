@@ -5,7 +5,7 @@ import {
   fersPensionFieldConfigs,
   FersPensionFormValues,
 } from '@/configs/fersPensionFields';
-import { ProjectionChart } from '@/components/ProjectionChart';
+import { MUIBarChart } from '@/components/MUIBarChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
 
 import Assumptions from '@/components/Assumptions';
@@ -131,10 +131,11 @@ const FersPensionProjection = () => {
       </Button>
 
       {showChart && rows.length > 0 && (
-        <ProjectionChart
+        <MUIBarChart
           data={rows}
           dataKey="pension"
           title="FERS Pension Over Time"
+          yLabel="FERS Pension ($)"
         />
       )}
 

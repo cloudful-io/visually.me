@@ -5,8 +5,8 @@ import {
   retirementSavingsFieldConfigs,
   RetirementSavingsFormValues,
 } from '@/configs/retirementSavingsFields';
-import { ProjectionChart } from '@/components/ProjectionChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
+import { MUIBarChart } from '@/components/MUIBarChart';
 
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
@@ -127,7 +127,7 @@ const RetirementSavingsProjection = () => {
       </Button>
       
       {showChart && rows.length > 0 && (
-        <ProjectionChart data={rows} dataKey="endingBalance" title="End of Year Balance Over Time" />
+        <MUIBarChart data={rows} dataKey="endingBalance" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
       )}
       {rows.length > 0 && (
         <ProjectionTable

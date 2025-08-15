@@ -5,7 +5,7 @@ import TableViewIcon from '@mui/icons-material/TableView';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 import { FormFields } from '@/components/FormFields';
-import { ProjectionChart } from '@/components/ProjectionChart';
+import { MUIBarChart } from '@/components/MUIBarChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
@@ -118,10 +118,11 @@ const SocialSecurityProjection = () => {
       </Button>
 
       {showChart && rows.length > 0 && (
-        <ProjectionChart
+        <MUIBarChart
           data={rows}
           dataKey="annualBenefit"
           title="Annual Social Security Benefit Over Time"
+          yLabel="Annual Social Security Benefit ($)"
         />
       )}
 
