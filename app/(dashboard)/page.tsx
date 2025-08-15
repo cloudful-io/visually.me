@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Box, Typography, Button, Stack, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import Footer from '@/components/Footer'
 
-import { signIn } from "@/auth"
 
 export default function HomePage() {
   
