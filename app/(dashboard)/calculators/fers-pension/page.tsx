@@ -13,6 +13,7 @@ import { exportToCSV } from '@/utils/exportToCSV';
 import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 
+
 import {
   Box,
   Grid,
@@ -22,6 +23,8 @@ import {
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
+
+import { calculateFersProjection } from "financial-calcs";
 
 
 const FersPensionProjection = () => {
@@ -40,7 +43,11 @@ const FersPensionProjection = () => {
       retirementType: 'regular',
     }
   );
-
+  /*const rows = React.useMemo(() => {
+    return calculateFersProjection(formValues);
+  }, [formValues]);
+  const generateTable = () => calculateFersProjection(formValues);
+*/
   const {rows, generateTable } = useFersPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
   const [errors, setErrors] = useState<Partial<Record<keyof FersPensionFormValues, string>>>({});
@@ -134,7 +141,7 @@ const FersPensionProjection = () => {
         <MUIBarChart
           data={rows}
           dataKey="pension"
-          xKey="year"
+          xKey="year" 
           title="FERS Pension Over Time"
           yLabel="FERS Pension ($)"
         />
