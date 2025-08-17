@@ -127,7 +127,7 @@ const RetirementSavingsProjection = () => {
       </Button>
       
       {showChart && rows.length > 0 && (
-        <MUIBarChart data={rows} dataKey="endingBalance" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
+        <MUIBarChart data={rows} dataKey="endingBalance" xKey="year" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
       )}
       {rows.length > 0 && (
         <ProjectionTable

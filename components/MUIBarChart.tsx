@@ -2,20 +2,23 @@ import { Box, Typography } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
 
-type DataItem = {
-  year: string | number;
-  [key: string]: number | string;
-};
-
-type Props = {
-  data: DataItem[];
-  dataKey: string;
+type Props<T extends Record<string, any>> = {
+  data: T[];
+  dataKey: keyof T; // Y-axis
+  xKey: keyof T;    // X-axis
   title: string;
   yLabel?: string;
   height?: number;
 };
 
-export function MUIBarChart({ data, dataKey, title, yLabel, height = 300 }: Props) {
+export function MUIBarChart<T extends Record<string, any>>({
+  data,
+  dataKey,
+  xKey,
+  title,
+  yLabel,
+  height = 300,
+}: Props<T>) {
   const theme = useTheme();
 
   return (
@@ -26,15 +29,15 @@ export function MUIBarChart({ data, dataKey, title, yLabel, height = 300 }: Prop
       <BarChart
         xAxis={[
           {
-            id: 'year',
-            data: data.map((item) => String(item.year)),
+            id: String(xKey),
+            data: data.map((item) => String(item[xKey] ?? '')),
           },
         ]}
         yAxis={[
           {
             label: yLabel,
-            width: 90, // This will allow a 7-digit number to display without truncation
-          }  
+            width: 90, // allows large numbers to display
+          },
         ]}
         series={[
           {

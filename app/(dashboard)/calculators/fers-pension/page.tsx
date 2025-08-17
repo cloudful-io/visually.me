@@ -134,6 +134,7 @@ const FersPensionProjection = () => {
         <MUIBarChart
           data={rows}
           dataKey="pension"
+          xKey="year"
           title="FERS Pension Over Time"
           yLabel="FERS Pension ($)"
         />

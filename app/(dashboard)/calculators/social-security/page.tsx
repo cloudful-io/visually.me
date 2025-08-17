@@ -121,6 +121,7 @@ const SocialSecurityProjection = () => {
         <MUIBarChart
           data={rows}
           dataKey="annualBenefit"
+          xKey="year"
           title="Annual Social Security Benefit Over Time"
           yLabel="Annual Social Security Benefit ($)"
         />
