@@ -14,7 +14,7 @@ import {
   SocialSecurityBenefitsFormValues,
   socialSecurityFieldConfigs,
 } from '@/configs/socialSecurityBenefitsFields';
-import { useSocialSecurityBenefitsProjection } from '@/hooks/useSocialSecurityBenefitsProjection';
+import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBenefitProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 const SocialSecurityProjection = () => {
@@ -31,7 +31,7 @@ const SocialSecurityProjection = () => {
   );
 
 
-  const {rows, generateTable } = useSocialSecurityBenefitsProjection(formValues);
+  const {rows, generateTable } = useSocialSecurityBenefitProjection(formValues);
   const [showChart, setShowChart] = useState(true);
   const [errors, setErrors] = useState<Partial<Record<keyof SocialSecurityBenefitsFormValues, string>>>({});
   const hasErrors = Object.values(errors).some((e) => e);
@@ -134,6 +134,7 @@ const SocialSecurityProjection = () => {
           columns={[
             { key: 'year', label: 'Year' },
             { key: 'age', label: 'Age' },
+            { key: 'colaApplied', label: 'COLA Applied (%)' },
             { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
             { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
           ]}
