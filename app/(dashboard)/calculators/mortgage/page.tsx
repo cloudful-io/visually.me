@@ -4,9 +4,9 @@ import { FormFields } from '@/components/FormFields';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import { MUIBarChart } from '@/components/MUIBarChart';
 
+import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
 import { useMortgageAmortization } from '@/hooks/useMortgageAmortization';
-import { groupByYear } from "@/hooks/useMortgageAmortization";
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -37,7 +37,7 @@ const MortgageProjection = () => {
     }
   );
 
-  const {rows, generateTable } = useMortgageAmortization(formValues);
+  const {rows, yearlyRows, generateTable } = useMortgageAmortization(formValues);
   const [displayBy, setDisplayBy] = useState<'month' | 'year'>('month');
   const [showChart, setShowChart] = useState(true);
   const [errors, setErrors] = useState<Partial<Record<keyof MortgageFormValues, string>>>({});
@@ -45,7 +45,7 @@ const MortgageProjection = () => {
 
   const tableRows =
     displayBy === 'year'
-      ? groupByYear(rows)
+      ? yearlyRows
       : rows;
 
   type YearlyBalanceRow = {
@@ -151,7 +151,7 @@ const MortgageProjection = () => {
         variant="outlined"
         sx={{ ml: 2 }}
         startIcon={<FileDownloadIcon />}
-        onClick={() => exportToCSV(rows, "mortgage_amortization.csv")}
+        onClick={() => exportToCSV(tableRows, "mortgage_amortization.csv")}
         disabled={rows.length === 0}
       >
         Export CSV
@@ -175,6 +175,7 @@ const MortgageProjection = () => {
             displayBy === 'year'
               ? [
                   { key: 'year', label: 'Year' },
+                  { key: 'date', label: 'Date' },
                   { key: 'payment', label: 'Payment ($)', currency: true },
                   { key: 'principal', label: 'Principal ($)', currency: true },
                   { key: 'interest', label: 'Interest ($)', currency: true },
@@ -191,6 +192,29 @@ const MortgageProjection = () => {
           }
         />
       )}
+
+      <Box sx={{ mt: 4 }}>
+        <Assumptions
+          title="Assumptions"
+          items={[
+            <>
+              Mortgage has a fixed interest rate that never changes during the life of the loan.  
+            </>,
+            <>
+              Monthly principal and interest payments remain constant throughout the term.
+            </>,
+            <>
+              Amortization chart and table does not include property taxes, homeowners insurance, Homeowner Association (HOA) fees, or Private Mortgage Insurance (PMI) in the payment calculation.
+            </>,
+            <>
+              Any extra payments are applied directly to the loan principal without penalties or restrictions.
+            </>,
+            <>
+              Loan begins immediately and the first payment occurs one month after the start date.
+            </>,
+          ]}
+        />
+      </Box>
     </Box>
   );
 };

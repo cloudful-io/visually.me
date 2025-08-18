@@ -1,4 +1,4 @@
-import { useState } from 'react';
+/*import { useState } from 'react';
 
 export interface MortgageFormValues {
   loanAmount: number;
@@ -99,4 +99,27 @@ export function useMortgageAmortization(formValues: MortgageFormValues) {
   };
 
   return { rows, generateTable };
+}
+*/
+import { useState } from 'react';
+import {
+  calculateMortgageAmortization,
+  groupByYear,
+  MortgageAmortizationInput,
+  AmortizationRow,
+  YearlyAmortizationRow
+} from 'financial-calcs';
+
+export function useMortgageAmortization(input: MortgageAmortizationInput) {
+  const [rows, setRows] = useState<AmortizationRow[]>([]);
+  const [yearlyRows, setYearlyRows] = useState<YearlyAmortizationRow[]>([]);
+
+  const generateTable = () => {
+    const monthlyRows = calculateMortgageAmortization(input);
+    const yearly = groupByYear(monthlyRows);
+    setRows(monthlyRows);
+    setYearlyRows(yearly);
+  };
+
+  return { rows, yearlyRows, generateTable };
 }
