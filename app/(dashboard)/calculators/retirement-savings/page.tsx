@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from "react";
+import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
 import { retirementSavingsFieldConfigs } from '@/configs/retirementSavingsFields';
 import { RetirementSavingsInput } from 'financial-calcs';
@@ -83,9 +84,7 @@ const RetirementSavingsProjection = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Retirement Savings and Withdrawal Projection
-      </Typography>
+      <FormTitle title="Retirement Savings and Withdrawal Projection"/>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
         

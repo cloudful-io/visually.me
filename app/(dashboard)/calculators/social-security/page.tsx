@@ -4,6 +4,7 @@ import { Box, Grid, Button, Typography, FormControlLabel, Switch } from '@mui/ma
 import TableViewIcon from '@mui/icons-material/TableView';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
+import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
 import { MUIBarChart } from '@/components/MUIBarChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
@@ -74,9 +75,7 @@ const SocialSecurityProjection = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Social Security Benefit Projection
-      </Typography>
+      <FormTitle title="Social Security Benefit Projection"/>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <FormFields

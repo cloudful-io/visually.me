@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from "react";
+import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
 import { FersPensionInput } from 'financial-calcs';
 import { fersPensionFieldConfigs } from '@/configs/fersPensionFields';
@@ -85,9 +86,7 @@ const FersPensionProjection = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Federal Employee Retirement System (FERS) Pension Projection
-      </Typography>
+      <FormTitle title="Federal Employee Retirement System (FERS) Pension Projection"/>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <FormFields

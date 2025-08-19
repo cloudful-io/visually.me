@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from "react";
+import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import { MUIBarChart } from '@/components/MUIBarChart';
@@ -100,9 +101,7 @@ const MortgageProjection = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h5" gutterBottom>
-        Mortgage Amortization Calculator
-      </Typography>
+      <FormTitle title="Mortgage Amortization Calculator"/>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
