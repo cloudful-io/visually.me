@@ -22,11 +22,11 @@ import {
 } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
-import { mortgageAmortizationFieldConfigs, MortgageFormValues } from '@/configs/mortgageAmortizationFields';
+import { MortgageAmortizationInput } from 'financial-calcs';
+import { mortgageAmortizationFieldConfigs } from '@/configs/mortgageAmortizationFields';
 
 const MortgageProjection = () => {
-  const [formValues, setFormValues] = usePersistedForm<MortgageFormValues>(
+  const [formValues, setFormValues] = usePersistedForm<MortgageAmortizationInput>(
     'mortgageForm',
     {
       loanAmount: 300000,
@@ -40,7 +40,7 @@ const MortgageProjection = () => {
   const {rows, yearlyRows, generateTable } = useMortgageAmortization(formValues);
   const [displayBy, setDisplayBy] = useState<'month' | 'year'>('month');
   const [showChart, setShowChart] = useState(true);
-  const [errors, setErrors] = useState<Partial<Record<keyof MortgageFormValues, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof MortgageAmortizationInput, string>>>({});
   const hasErrors = Object.values(errors).some((e) => e);
 
   const tableRows =

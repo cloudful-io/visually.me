@@ -3,7 +3,7 @@ export type FormFieldOption = {
   label: string;
 };
 
-export type FormFieldConfig<T extends Record<string, any>> = {
+export type FormFieldConfig<T> = {
   name: keyof T;
   label: string;
   type?: 'number' | 'text' | 'date' | 'select';

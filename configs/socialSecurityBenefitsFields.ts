@@ -1,15 +1,7 @@
 import { FormFieldConfig } from '@/types/forms';
+import { SocialSecurityBenefitInput } from 'financial-calcs';
 
-export type SocialSecurityBenefitsFormValues = {
-  startYear: number;
-  birthYear: number;
-  claimingAge: number;
-  averageIncome: number;
-  averageCOLA: number;
-  yearsToProject: number;
-};
-
-export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitsFormValues>[] = [
+export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitInput>[] = [
   {
     name: 'startYear',
     label: 'Start Year',

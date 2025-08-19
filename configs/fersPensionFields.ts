@@ -1,19 +1,7 @@
 import { FormFieldConfig } from '@/types/forms';
+import { FersPensionInput } from 'financial-calcs';
 
-export type FersPensionFormValues = {
-  startYear: number;
-  birthYear: number;
-  serviceStartYear: number;
-  retirementAge: number;
-  currentSalary: number;
-  salaryGrowthRate: number;
-  colaPercent: number;
-  retirementType: 'regular' | 'mra10' | 'early' | 'deferred';
-  pensionMultiplier: number;
-  yearsToProject: number;
-};
-
-export const fersPensionFieldConfigs: FormFieldConfig<FersPensionFormValues>[] = [
+export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
   {
     name: 'startYear',
     label: 'Start Year',

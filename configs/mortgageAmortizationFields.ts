@@ -1,14 +1,7 @@
 import { FormFieldConfig } from '@/types/forms';
+import { MortgageAmortizationInput } from 'financial-calcs';
 
-export type MortgageFormValues = {
-  loanAmount: number;
-  annualRate: number;
-  termYears: number;
-  extraPayment: number;
-  startDate?: Date;
-};
-
-export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageFormValues>[] = [
+export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizationInput>[] = [
   {
     name: 'loanAmount',
     label: 'Loan Amount ($)',

@@ -1,10 +1,8 @@
 'use client';
 import React, { useState } from "react";
 import { FormFields } from '@/components/FormFields';
-import {
-  fersPensionFieldConfigs,
-  FersPensionFormValues,
-} from '@/configs/fersPensionFields';
+import { FersPensionInput } from 'financial-calcs';
+import { fersPensionFieldConfigs } from '@/configs/fersPensionFields';
 import { MUIBarChart } from '@/components/MUIBarChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
 
@@ -24,7 +22,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
 
 const FersPensionProjection = () => {
-  const [formValues, setFormValues] = usePersistedForm<FersPensionFormValues>(
+  const [formValues, setFormValues] = usePersistedForm<FersPensionInput>(
     'fersPensionForm',
     {
       startYear: new Date().getFullYear(),
@@ -42,7 +40,7 @@ const FersPensionProjection = () => {
 
   const {rows, generateTable } = useFersPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
-  const [errors, setErrors] = useState<Partial<Record<keyof FersPensionFormValues, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof FersPensionInput, string>>>({});
   const hasErrors = Object.values(errors).some((e) => e);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

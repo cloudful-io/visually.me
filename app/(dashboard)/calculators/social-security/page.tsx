@@ -10,15 +10,13 @@ import { ProjectionTable } from '@/components/ProjectionTable';
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
 
-import {
-  SocialSecurityBenefitsFormValues,
-  socialSecurityFieldConfigs,
-} from '@/configs/socialSecurityBenefitsFields';
+import { socialSecurityFieldConfigs } from '@/configs/socialSecurityBenefitsFields';
+import { SocialSecurityBenefitInput } from 'financial-calcs';
 import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBenefitProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 const SocialSecurityProjection = () => {
-  const [formValues, setFormValues] = usePersistedForm<SocialSecurityBenefitsFormValues>(
+  const [formValues, setFormValues] = usePersistedForm<SocialSecurityBenefitInput>(
     'socialSecurityForm',
     {
       startYear: new Date().getFullYear(),
@@ -33,7 +31,7 @@ const SocialSecurityProjection = () => {
 
   const {rows, generateTable } = useSocialSecurityBenefitProjection(formValues);
   const [showChart, setShowChart] = useState(true);
-  const [errors, setErrors] = useState<Partial<Record<keyof SocialSecurityBenefitsFormValues, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof SocialSecurityBenefitInput, string>>>({});
   const hasErrors = Object.values(errors).some((e) => e);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

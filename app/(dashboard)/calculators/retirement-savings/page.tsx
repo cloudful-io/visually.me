@@ -1,10 +1,8 @@
 'use client';
 import React, { useState } from "react";
 import { FormFields } from '@/components/FormFields';
-import {
-  retirementSavingsFieldConfigs,
-  RetirementSavingsFormValues,
-} from '@/configs/retirementSavingsFields';
+import { retirementSavingsFieldConfigs } from '@/configs/retirementSavingsFields';
+import { RetirementSavingsInput } from 'financial-calcs';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import { MUIBarChart } from '@/components/MUIBarChart';
 
@@ -25,7 +23,7 @@ import { FormControlLabel, Switch } from "@mui/material";
 
 const RetirementSavingsProjection = () => {
 
-  const [formValues, setFormValues] = usePersistedForm<RetirementSavingsFormValues>(
+  const [formValues, setFormValues] = usePersistedForm<RetirementSavingsInput>(
     'retirementSavingsForm',
     {
       startYear: new Date().getFullYear(),
@@ -42,7 +40,7 @@ const RetirementSavingsProjection = () => {
 
   const {rows, generateTable } = useRetirementSavingsProjection(formValues);
   const [showChart, setShowChart] = useState(true);
-  const [errors, setErrors] = useState<Partial<Record<keyof RetirementSavingsFormValues, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof RetirementSavingsInput, string>>>({});
   const hasErrors = Object.values(errors).some((e) => e);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
