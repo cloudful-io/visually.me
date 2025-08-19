@@ -25,7 +25,7 @@ export const metadata = {
 const NAVIGATION: Navigation = [
   {
     kind: 'header',
-    title: 'Navigation',
+    title: 'Menu',
   },
   {
     segment: '',
@@ -46,6 +46,21 @@ const NAVIGATION: Navigation = [
       children: [
         {
           kind: 'header',
+          title: 'Expenses',
+        },
+        {
+          segment: 'college-tuition',
+          title: 'College Tuition',
+          icon: <SchoolIcon />,
+        },
+        {
+          segment: 'mortgage',
+          title: 'Mortgage Amortization',
+          icon: <RealEstateAgentIcon />,
+        },
+
+        {
+          kind: 'header',
           title: 'Incomes',
         },
         {
@@ -62,20 +77,6 @@ const NAVIGATION: Navigation = [
           segment: 'social-security',
           title: 'Social Security Benefits',
           icon: <AccountBalanceIcon />,
-        },
-        {
-          kind: 'header',
-          title: 'Expenses',
-        },
-        {
-          segment: 'college-tuition',
-          title: 'College Tuition',
-          icon: <SchoolIcon />,
-        },
-        {
-          segment: 'mortgage',
-          title: 'Mortgage Amortization',
-          icon: <RealEstateAgentIcon />,
         },
       ],
     },

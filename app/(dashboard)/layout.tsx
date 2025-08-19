@@ -12,7 +12,7 @@ export default function Layout(props: { children: React.ReactNode }) {
         src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
         strategy="afterInteractive"
       />
-      <DashboardLayout defaultSidebarCollapsed>
+      <DashboardLayout /*defaultSidebarCollapsed*/>
         <div className="flex flex-col min-h-screen">
           <main className="flex-grow">{props.children}</main>
         </div>
