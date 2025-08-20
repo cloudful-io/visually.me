@@ -39,7 +39,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput>[] 
     label: 'Initial Balance ($)',
     min: 0,
     step: 1000,
-    helperText: 'Balance of retirement savings at Start Year',
+    helperText: 'Balance of college savings at Start Year',
   },
   {
     name: 'annualContribution',
@@ -52,6 +52,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput>[] 
     name: 'estimatedYield',
     label: 'Estimated Annual Yield (%)',
     min: 0,
+    max: 100,
     step: 0.1,
   },
   {
@@ -74,8 +75,8 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput>[] 
     name: 'yearsToProject',
     label: 'Years to Project',
     min: 1,
-    max: 80,
+    max: 40,
     step: 1,
-    helperText: 'Number of years to show benefit projections after claiming',
+    helperText: 'Number of years to show savings and withdraw projections',
   },
 ];
