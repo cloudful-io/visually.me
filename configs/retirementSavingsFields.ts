@@ -1,18 +1,6 @@
 import { FormFieldConfig } from '@/types/forms';
 import { RetirementSavingsInput } from 'financial-calcs';
 
-/*export type RetirementSavingsFormValues = {
-  startYear: number;
-  birthYear: number;
-  initialBalance: number;
-  initialContribution: number;
-  estimatedYield: number;
-  estimatedWithdrawRate: number;
-  contributionIncreaseRate: number;
-  withdrawStartAge: number;
-  yearsToProject: number;
-};*/
-
 export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInput>[] = [
   {
     name: 'startYear',
