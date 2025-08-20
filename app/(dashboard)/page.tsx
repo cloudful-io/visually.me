@@ -26,7 +26,7 @@ export default function HomePage() {
       { text: 'Plan for major life expenses like ' },
       { text: 'college tuition', link: '/calculators/college-tuition' },
       { text: ', ' },
-      { text: 'home ownership', link: '/calculators/mortgage-amortization' },
+      { text: 'home ownership', link: '/calculators/mortgage' },
       { text: ', and more' },
     ],
   },
