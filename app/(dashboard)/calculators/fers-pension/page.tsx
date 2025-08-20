@@ -16,14 +16,19 @@ import {
   Box,
   Grid,
   Button,
-  Typography,
 } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
 
 const FersPensionProjection = () => {
-  const [formValues, setFormValues] = usePersistedForm<FersPensionInput>(
+  const {
+    values: formValues,
+    handleChange,
+    errors,
+    hasErrors,
+    //setValues,
+  } = usePersistedForm<FersPensionInput>(
     'fersPensionForm',
     {
       startYear: new Date().getFullYear(),
@@ -36,53 +41,12 @@ const FersPensionProjection = () => {
       pensionMultiplier: 1.1,
       yearsToProject: 40,
       retirementType: 'regular',
-    }
+    },
+    fersPensionFieldConfigs
   );
 
   const {rows, generateTable } = useFersPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
-  const [errors, setErrors] = useState<Partial<Record<keyof FersPensionInput, string>>>({});
-  const hasErrors = Object.values(errors).some((e) => e);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    
-    let parsedValue: any = value;
-
-    // parse number fields
-    if (type === 'number') {
-      parsedValue = value === '' ? '' : parseFloat(value);
-    }
-
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: parsedValue,
-    }));
-
-    // Validate against min/max
-    const fieldConfig = fersPensionFieldConfigs.find((f) => String(f.name) === name);
-    if (fieldConfig) {
-      const { min, max, label } = fieldConfig;
-      let error = '';
-
-      if (typeof parsedValue === 'number' && !isNaN(parsedValue)) {
-        if (typeof min === 'number' && parsedValue < min) {
-          error = `${label} must be ≥ ${min}`;
-        } else if (typeof max === 'number' && parsedValue > max) {
-          error = `${label} must be ≤ ${max}`;
-        }
-      } else if (parsedValue === '') {
-        error = `${label} is required`;
-      }
-
-      setErrors((prev) => ({
-        ...prev,
-        [name]: error,
-      }));
-
-    }
-    if (value.length == 0) return;
-  };
 
   return (
     <Box sx={{ p: 4 }}>

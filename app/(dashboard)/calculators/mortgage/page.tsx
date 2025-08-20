@@ -17,7 +17,6 @@ import {
   Box,
   Grid,
   Button,
-  Typography,
   FormControlLabel,
   Switch,
 } from "@mui/material";
@@ -27,7 +26,13 @@ import { MortgageAmortizationInput } from 'financial-calcs';
 import { mortgageAmortizationFieldConfigs } from '@/configs/mortgageAmortizationFields';
 
 const MortgageProjection = () => {
-  const [formValues, setFormValues] = usePersistedForm<MortgageAmortizationInput>(
+  const {
+    values: formValues,
+    handleChange,
+    errors,
+    hasErrors,
+    setValues,
+  } = usePersistedForm<MortgageAmortizationInput>(
     'mortgageForm',
     {
       loanAmount: 300000,
@@ -35,15 +40,15 @@ const MortgageProjection = () => {
       termYears: 30,
       extraPayment: 0,
       startDate: new Date(),
-    }
+    },
+    mortgageAmortizationFieldConfigs
   );
+  
 
   const {rows, yearlyRows, generateTable } = useMortgageAmortization(formValues);
   const [displayBy, setDisplayBy] = useState<'month' | 'year'>('month');
   const [showChart, setShowChart] = useState(true);
-  const [errors, setErrors] = useState<Partial<Record<keyof MortgageAmortizationInput, string>>>({});
-  const hasErrors = Object.values(errors).some((e) => e);
-
+  
   const tableRows =
     displayBy === 'year'
       ? yearlyRows
@@ -60,44 +65,6 @@ const MortgageProjection = () => {
       balance: row.balance,
     }));
       
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-
-    let parsedValue: any = value;
-
-    if (type === 'number') {
-      parsedValue = value === '' ? '' : parseFloat(value);
-    } else if (type === 'date') {
-      parsedValue = value ? new Date(value) : undefined;
-    }
-
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: parsedValue,
-    }));
-
-    // Validate against min/max
-    const fieldConfig = mortgageAmortizationFieldConfigs.find((f) => String(f.name) === name);
-    if (fieldConfig) {
-      const { min, max, label } = fieldConfig;
-      let error = '';
-
-      if (typeof parsedValue === 'number' && !isNaN(parsedValue)) {
-        if (typeof min === 'number' && parsedValue < min) {
-          error = `${label} must be ≥ ${min}`;
-        } else if (typeof max === 'number' && parsedValue > max) {
-          error = `${label} must be ≤ ${max}`;
-        }
-      } else if (parsedValue === '' || parsedValue === undefined) {
-        error = `${label} is required`;
-      }
-
-      setErrors((prev) => ({
-        ...prev,
-        [name]: error,
-      }));
-    }
-  };
 
   return (
     <Box sx={{ p: 4 }}>
@@ -110,7 +77,7 @@ const MortgageProjection = () => {
             values={formValues}
             onChange={handleChange}
             onDateChange={(name, value) =>
-              setFormValues((prev) => ({ ...prev, [name]: value || undefined }))
+              setValues((prev) => ({ ...prev, [name]: value || undefined }))
             }
             errors={errors}
           />

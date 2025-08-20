@@ -6,7 +6,7 @@ import dayjs, { Dayjs } from 'dayjs';
 
 type GenericFormValues = Record<string, number | string | Date | undefined>;
 
-type Props<T extends GenericFormValues> = {
+type Props<T> = {
   fields: FormFieldConfig<T>[];
   values: T;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -14,7 +14,7 @@ type Props<T extends GenericFormValues> = {
   errors?: Partial<Record<keyof T, string>>;
 };
 
-export function FormFields<T extends GenericFormValues>({
+export function FormFields<T>({
   fields,
   values,
   onChange,

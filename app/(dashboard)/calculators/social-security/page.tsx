@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Box, Grid, Button, Typography, FormControlLabel, Switch } from '@mui/material';
+import { Box, Grid, Button, FormControlLabel, Switch } from '@mui/material';
 import TableViewIcon from '@mui/icons-material/TableView';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
@@ -17,7 +17,12 @@ import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBen
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 const SocialSecurityProjection = () => {
-  const [formValues, setFormValues] = usePersistedForm<SocialSecurityBenefitInput>(
+  const {
+    values: formValues,
+    handleChange,
+    errors,
+    hasErrors,
+  } = usePersistedForm<SocialSecurityBenefitInput>(
     'socialSecurityForm',
     {
       startYear: new Date().getFullYear(),
@@ -26,52 +31,12 @@ const SocialSecurityProjection = () => {
       averageIncome: 100000,
       averageCOLA: 2.5,
       yearsToProject: 45,
-    }
+    },
+    socialSecurityFieldConfigs
   );
-
-
+  
   const {rows, generateTable } = useSocialSecurityBenefitProjection(formValues);
   const [showChart, setShowChart] = useState(true);
-  const [errors, setErrors] = useState<Partial<Record<keyof SocialSecurityBenefitInput, string>>>({});
-  const hasErrors = Object.values(errors).some((e) => e);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    let parsedValue: any = value;
-
-    // parse number fields
-    if (type === 'number') {
-      parsedValue = value === '' ? '' : parseFloat(value);
-    }
-
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: parsedValue,
-    }));
-
-    // Validate against min/max
-    const fieldConfig = socialSecurityFieldConfigs.find((f) => String(f.name) === name);
-    if (fieldConfig) {
-      const { min, max, label } = fieldConfig;
-      let error = '';
-
-      if (typeof parsedValue === 'number' && !isNaN(parsedValue)) {
-        if (typeof min === 'number' && parsedValue < min) {
-          error = `${label} must be ≥ ${min}`;
-        } else if (typeof max === 'number' && parsedValue > max) {
-          error = `${label} must be ≤ ${max}`;
-        }
-      } else if (parsedValue === '') {
-        error = `${label} is required`;
-      }
-
-      setErrors((prev) => ({
-        ...prev,
-        [name]: error,
-      }));
-    }
-    if (value.length == 0) return;
-  };
 
   return (
     <Box sx={{ p: 4 }}>
