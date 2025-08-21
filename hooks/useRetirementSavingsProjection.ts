@@ -43,7 +43,11 @@ export function getSummaryMessage(
           style: 'currency', 
           currency: 'USD', 
           maximumFractionDigits: 0 
-        })} annually.`
+        })} annually, with a balance of ${last.endingBalance.toLocaleString(undefined, { 
+          style: 'currency', 
+          currency: 'USD', 
+          maximumFractionDigits: 0 
+        })}`
       };
     } else {
       // Compare to previous year
