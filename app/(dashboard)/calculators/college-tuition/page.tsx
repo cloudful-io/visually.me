@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
+import { FormSummary } from "@/components/FormSummary";
 import { collegeTuitionFieldConfigs } from '@/configs/collegeTuitionFields';
 import { CollegeTuitionInput } from 'financial-calcs';
+import { CollegeTuitionProjectionRow } from 'financial-calcs';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import { MUIBarChart } from '@/components/MUIBarChart';
 
@@ -48,6 +50,25 @@ const CollegeTuitionProjection = () => {
   const {rows, generateTable } = useCollegeTuitionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
+  function getSummaryMessage(rows: CollegeTuitionProjectionRow[]): { type: 'success' | 'warning' | 'error', message: string } {
+    // Find first year balance goes negative
+    const deficitRow = rows.find(r => r.endingBalance == 0);
+  
+    if (!deficitRow) {
+      // Never goes negative
+      const last = rows[rows.length - 1];
+      return {
+        type: 'success',
+        message: `You will not run out of money. After the last year of tuition, you will still have ${last.endingBalance.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}.`
+      };
+    } else {
+      return {
+        type: 'warning',
+        message: `You will run out of money in year ${deficitRow.year}, with a shortfall of ${Math.abs(deficitRow.tuitionAmount-deficitRow.annualWithdraw).toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}.`
+      };
+    }
+  }
+
   return (
     <Box sx={{ p: 4 }}>
       <FormTitle title="College Savings and Tuition Projection"/>
@@ -89,6 +110,15 @@ const CollegeTuitionProjection = () => {
         Export CSV
       </Button>
       
+      {rows.length > 0 && (() => {
+        const summary = getSummaryMessage(rows); // from Step 2
+        return (
+          <FormSummary
+            type={summary.type}
+            message={summary.message}
+          />
+        );
+      })()}
       {showChart && rows.length > 0 && (
         <MUIBarChart data={rows} dataKey="endingBalance" xKey="year" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
       )}
