@@ -4,13 +4,13 @@ import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
 import { FormSummary } from "@/components/FormSummary";
 import { retirementSavingsFieldConfigs } from '@/configs/retirementSavingsFields';
-import { RetirementSavingsInput, RetirementSavingsProjectionRow } from 'financial-calcs';
+import { RetirementSavingsInput } from 'financial-calcs';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import { MUIBarChart } from '@/components/MUIBarChart';
 
 import Assumptions from '@/components/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-import { useRetirementSavingsProjection } from '@/hooks/useRetirementSavingsProjection';
+import { useRetirementSavingsProjection, getSummaryMessage } from '@/hooks/useRetirementSavingsProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 import {
@@ -88,6 +88,15 @@ const RetirementSavingsProjection = () => {
         Export CSV
       </Button>
       
+      {rows.length > 0 && (() => {
+        const summary = getSummaryMessage(rows); 
+        return (
+          <FormSummary
+            type={summary.type}
+            message={summary.message}
+          />
+        );
+      })()}
       {showChart && rows.length > 0 && (
         <MUIBarChart data={rows} dataKey="endingBalance" xKey="year" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
       )}
