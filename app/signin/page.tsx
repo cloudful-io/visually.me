@@ -22,6 +22,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import SecurityIcon from '@mui/icons-material/Security';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
+import Image from 'next/image'
 
 const providerIcons: Record<string, React.ReactNode> = {
   google: <GoogleIcon />,
@@ -79,7 +80,7 @@ export default function SignInPage() {
         textAlign="center"
       >
         <Box mb={3}>
-          <img src="/images/logo.png" alt="Logo" />
+          <Image src="/images/logo.png" alt="Visually.Me" width="40" height="48"/>
         </Box>
 
         <Typography variant="h5" gutterBottom>

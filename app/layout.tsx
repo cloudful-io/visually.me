@@ -10,6 +10,7 @@ import StorageIcon from '@mui/icons-material/Storage';
 import SchoolIcon from '@mui/icons-material/School';
 import RealEstateAgentIcon from '@mui/icons-material/RealEstateAgent';
 import LinearProgress from '@mui/material/LinearProgress'
+import Image from 'next/image'
 import {type Navigation, type Session } from '@toolpad/core/AppProvider';
 import { SessionProvider, signIn, signOut } from 'next-auth/react';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
@@ -90,7 +91,7 @@ const NAVIGATION: Navigation = [
 
 const BRANDING = {
   title: process.env.REACT_APP_SITE_TITLE,
-  logo: <img src="/images/logo.png" alt="Visually.Me" />,
+  logo: <Image src="/images/logo.png" alt="Visually.Me" width="40" height="48"/>,
 
 };
 
