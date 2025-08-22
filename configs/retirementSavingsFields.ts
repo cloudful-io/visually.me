@@ -47,7 +47,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'contributionIncreaseRate',
     label: 'Contribution Increase Rate (%)',
-    min: 0,
+    min: -99,
     max: 100,
     step: 0.1,
     helperText: 'Percentage of increase of annual contribution ',
