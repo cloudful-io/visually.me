@@ -7,19 +7,37 @@ import {
 
 export function useRetirementSavingsProjection(formValues: RetirementSavingsInput) {
   const [rows, setRows] = useState<RetirementSavingsProjectionRow[]>([]);
+  const [error, setError] = useState<Error | null>(null);
 
   const generateTable = () => {
-    const results = calculateRetirementSavingsProjection(formValues);
-    setRows(results);
+    try {
+      const results = calculateRetirementSavingsProjection(formValues);
+      setRows(results);
+      setError(null); // clear any previous error
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        setError(err);
+      } else {
+        setError(new Error("Unknown error occurred"));
+      }
+      setRows([]);
+    }
   };
 
-  return { rows, generateTable };
+  return { rows, error, generateTable };
 }
 
 export function getSummaryMessage(
-    rows: RetirementSavingsProjectionRow[]
+    rows: RetirementSavingsProjectionRow[], error?: Error | null
   ): { type: 'success' | 'info' | 'warning' | 'error'; message: string } {
-    if (rows.length < 2) {
+    if (error ) {
+      return {
+        type: 'error',
+        message: error.message
+      }
+    }
+    else if (rows.length < 2) {
       return {
         type: 'info',
         message: "Not enough data to analyze withdrawal trends."

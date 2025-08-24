@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
+import { FormSummary } from "@/components/FormSummary";
 import { ProjectionTable } from '@/components/ProjectionTable';
 import { MUIBarChart } from '@/components/MUIBarChart';
 
@@ -45,7 +46,7 @@ const MortgageProjection = () => {
   );
   
 
-  const {rows, yearlyRows, generateTable } = useMortgageAmortization(formValues);
+  const {rows, yearlyRows, error, generateTable } = useMortgageAmortization(formValues);
   const [displayBy, setDisplayBy] = useState<'month' | 'year'>('month');
   const [showChart, setShowChart] = useState(true);
   
@@ -123,7 +124,16 @@ const MortgageProjection = () => {
         Export CSV
       </Button>
 
-      {showChart && rows.length > 0 && (
+      {(error) && (() => {
+        return (
+          <FormSummary
+            type='error'
+            message={error!.message}
+          />
+        );
+      })()}
+
+      {showChart && rows.length > 0 && !error && (
         <MUIBarChart<YearlyBalanceRow>
           data={chartData}
           dataKey="balance"
@@ -133,7 +143,7 @@ const MortgageProjection = () => {
         />
       )}
 
-      {rows.length > 0 && (
+      {rows.length > 0 && !error && (
         <ProjectionTable
           rows={tableRows}
           highlightYear={new Date().getFullYear()}

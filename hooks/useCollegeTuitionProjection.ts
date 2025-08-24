@@ -7,22 +7,40 @@ import {
 
 export function useCollegeTuitionProjection(formValues: CollegeTuitionInput) {
   const [rows, setRows] = useState<CollegeTuitionProjectionRow[]>([]);
+  const [error, setError] = useState<Error | null>(null);
 
   const generateTable = () => {
-    const results = calculateCollegeTuitionProjection(formValues);
-    setRows(results);
+    try {
+      const results = calculateCollegeTuitionProjection(formValues);
+      setRows(results);
+      setError(null); // clear any previous error
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        setError(err);
+      } else {
+        setError(new Error("Unknown error occurred"));
+      }
+      setRows([]);
+    }
   };
 
-  return { rows, generateTable };
+  return { rows, error, generateTable };
 }
 
 export function getSummaryMessage(
-    rows: CollegeTuitionProjectionRow[]
+    rows: CollegeTuitionProjectionRow[], error?: Error | null
   ): { type: 'success' | 'warning' | 'error'; message: string } {
     // All deficit rows
     const deficitRows = rows.filter(r => r.annualWithdraw < r.tuitionAmount);
 
-    if (deficitRows.length === 0) {
+    if (error ) {
+      return {
+        type: 'error',
+        message: error.message
+      }
+    }
+    else if (deficitRows.length === 0) {
       const last = rows[rows.length - 1];
       return {
         type: 'success',

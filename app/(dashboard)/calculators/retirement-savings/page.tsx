@@ -44,7 +44,9 @@ const RetirementSavingsProjection = () => {
     retirementSavingsFieldConfigs
   );
 
-  const {rows, generateTable } = useRetirementSavingsProjection(formValues);
+  
+  const {rows, error, generateTable } = useRetirementSavingsProjection(formValues);
+
   const [showChart, setShowChart] = useState(true);
 
   return (
@@ -88,8 +90,8 @@ const RetirementSavingsProjection = () => {
         Export CSV
       </Button>
       
-      {rows.length > 0 && (() => {
-        const summary = getSummaryMessage(rows); 
+      {(rows.length > 0 || error) && (() => {
+        const summary = getSummaryMessage(rows, error); 
         return (
           <FormSummary
             type={summary.type}
@@ -97,10 +99,10 @@ const RetirementSavingsProjection = () => {
           />
         );
       })()}
-      {showChart && rows.length > 0 && (
+      {showChart && rows.length > 0 && !error && (
         <MUIBarChart data={rows} dataKey="endingBalance" xKey="year" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
       )}
-      {rows.length > 0 && (
+      {rows.length > 0 && !error && (
         <ProjectionTable
           rows={rows}
           highlightYear={new Date().getFullYear()}

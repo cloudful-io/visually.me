@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
+import { FormSummary } from "@/components/FormSummary";
 import { FersPensionInput } from 'financial-calcs';
 import { fersPensionFieldConfigs } from '@/configs/fersPensionFields';
 import { MUIBarChart } from '@/components/MUIBarChart';
@@ -27,7 +28,6 @@ const FersPensionProjection = () => {
     handleChange,
     errors,
     hasErrors,
-    //setValues,
   } = usePersistedForm<FersPensionInput>(
     'fersPensionForm',
     {
@@ -45,7 +45,7 @@ const FersPensionProjection = () => {
     fersPensionFieldConfigs
   );
 
-  const {rows, generateTable } = useFersPensionProjection(formValues);
+  const {rows, error, generateTable } = useFersPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
   return (
@@ -90,7 +90,15 @@ const FersPensionProjection = () => {
         Export CSV
       </Button>
 
-      {showChart && rows.length > 0 && (
+      {(error) && (() => {
+        return (
+          <FormSummary
+            type='error'
+            message={error!.message}
+          />
+        );
+      })()}
+      {showChart && rows.length > 0 && !error && (
         <MUIBarChart
           data={rows}
           dataKey="pension"
@@ -100,7 +108,7 @@ const FersPensionProjection = () => {
         />
       )}
 
-      {rows.length > 0 && (
+      {rows.length > 0 && !error && (
         <ProjectionTable
           rows={rows}
           highlightYear={new Date().getFullYear()}

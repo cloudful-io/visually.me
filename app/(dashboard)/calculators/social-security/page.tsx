@@ -6,6 +6,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 import { FormTitle } from "@/components/FormTitle";
 import { FormFields } from '@/components/FormFields';
+import { FormSummary } from "@/components/FormSummary";
 import { MUIBarChart } from '@/components/MUIBarChart';
 import { ProjectionTable } from '@/components/ProjectionTable';
 import Assumptions from '@/components/Assumptions';
@@ -35,7 +36,7 @@ const SocialSecurityProjection = () => {
     socialSecurityFieldConfigs
   );
   
-  const {rows, generateTable } = useSocialSecurityBenefitProjection(formValues);
+  const {rows, error, generateTable } = useSocialSecurityBenefitProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
   return (
@@ -79,7 +80,16 @@ const SocialSecurityProjection = () => {
         Export CSV
       </Button>
 
-      {showChart && rows.length > 0 && (
+      {(error) && (() => {
+        return (
+          <FormSummary
+            type='error'
+            message={error!.message}
+          />
+        );
+      })()}
+
+      {showChart && rows.length > 0 && !error && (
         <MUIBarChart
           data={rows}
           dataKey="annualBenefit"
@@ -89,7 +99,7 @@ const SocialSecurityProjection = () => {
         />
       )}
 
-      {rows.length > 0 && (
+      {rows.length > 0 && !error && (
         <ProjectionTable
           rows={rows}
           highlightYear={new Date().getFullYear()}

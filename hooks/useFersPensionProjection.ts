@@ -7,11 +7,23 @@ import {
 
 export function useFersPensionProjection(formValues: FersPensionInput) {
   const [rows, setRows] = useState<FersPensionProjectionRow[]>([]);
+  const [error, setError] = useState<Error | null>(null);
 
   const generateTable = () => {
-    const data = calculateFersPensionProjection(formValues);
-    setRows(data);
+    try {
+      const data = calculateFersPensionProjection(formValues);
+      setRows(data);
+      setError(null); // clear any previous error
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        setError(err);
+      } else {
+        setError(new Error("Unknown error occurred"));
+      }
+      setRows([]);
+    }
   };
 
-  return { rows, generateTable };
+  return { rows, error, generateTable };
 }
