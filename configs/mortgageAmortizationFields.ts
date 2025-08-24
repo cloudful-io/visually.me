@@ -5,7 +5,7 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
   {
     name: 'loanAmount',
     label: 'Loan Amount ($)',
-    min: 0,
+    min: 1,
     step: 1000,
     helperText: 'Total mortgage loan amount.',
   },
@@ -20,8 +20,8 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
   {
     name: 'termYears',
     label: 'Loan Term (Years)',
-    min: 1,
-    max: 40,
+    min: 0,
+    max: 50,
     step: 1,
     helperText: 'Number of years over which the mortgage will be paid.',
   },
