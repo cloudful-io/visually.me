@@ -44,7 +44,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput>[] 
   {
     name: 'annualContribution',
     label: 'Annual Contribution ($)',
-    min: 1,
+    min: 0,
     step: 100,
     helperText: 'Annual contribution each year',
   },
