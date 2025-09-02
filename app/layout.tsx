@@ -18,9 +18,16 @@ import { auth } from '../auth';
 
 import theme from '../theme';
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 export const metadata = {
   title: process.env.REACT_APP_SITE_TITLE,
-  description: 'This is a sample app built with Toolpad Core and Next.js',
+  description: 'Take control of your financial future with our all-in-one planning platform. Whether you are preparing for retirement, estimating Social Security income, mapping out college savings, or managing housing and living expenses — our interactive calculators and intuitive charts make it easy to visualize your goals and stay on track.',
+  openGraph: {
+    siteName: process.env.REACT_APP_SITE_TITLE,
+    type: "website",
+    locale: "en_US",
+    images: [`${baseUrl}/images/logo512.png`],
+  },
 };
 
 const NAVIGATION: Navigation = [

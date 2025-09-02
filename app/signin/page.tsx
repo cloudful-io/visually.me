@@ -67,7 +67,6 @@ export default function SignInPage() {
   }
 
   const callbackUrl = typeof window !== 'undefined' ? (window.location.pathname + window.location.search): '/';
-  //const callbackUrl = "http://localhost:3000/calculators/fers-pension";
 
   return (
     <Container maxWidth="xs">
@@ -80,7 +79,7 @@ export default function SignInPage() {
         textAlign="center"
       >
         <Box mb={3}>
-          <Image src="/images/logo.png" alt="Visually.Me" width="40" height="48"/>
+          <Image src="/images/logo.png" alt="Visually.Me" width="48" height="48"/>
         </Box>
 
         <Typography variant="h5" gutterBottom>

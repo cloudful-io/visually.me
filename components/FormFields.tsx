@@ -23,7 +23,9 @@ export function FormFields<T>({
 }: Props<T>) {
   return (
     <>
-      {fields.map(({ name, label, type = 'number', min, max, step, helperText, options }) => (
+      {fields
+      .filter((field) => field.shouldDisplay?.(values) ?? true) // check visibility
+      .map(({ name, label, type = 'number', min, max, step, helperText, options }) => (
         <Grid key={String(name)} size={{ xs: 12, sm: 6, md: 3 }}>
           {type === 'date' ? (
             <DatePicker

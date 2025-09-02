@@ -1,9 +1,24 @@
 import * as React from 'react';
 import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Link } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { auth } from "@/auth"
+import { redirect } from "next/navigation";
+import { getUser } from '@/lib/user';
 
 
-export default function HomePage() {
+export default async function HomePage() {
+  /*const session = await auth()
+  if (session) 
+  {
+    const user = await getUser(session.user?.email!);
+    
+    console.log("in function")
+    if (user && !user.onboarding_complete) {
+      console.log("in here")
+      redirect("/dashboard"); // this will immediately redirect
+    }
+  }*/
+
   const features = [
   {
     segments: [

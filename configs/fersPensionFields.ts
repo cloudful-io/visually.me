@@ -17,12 +17,33 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
     step: 1,
   },
   {
+    name: 'retirementType',
+    label: 'Retirement Type',
+    type: 'select',
+    options: [
+      { value: 'regular', label: 'Immediate (Regular)' },
+      { value: 'mra10', label: 'MRA + 10 (Reduced Pension)' },
+      { value: 'early', label: 'Early (Involuntary)' },
+      { value: 'deferred', label: 'Deferred (No Immediate Pension)' },
+    ],
+    helperText: 'Choose the applicable retirement type based on your eligibility',
+  },
+  {
     name: 'serviceStartYear',
     label: 'Service Start Year',
     min: 1900,
     //max: new Date().getFullYear(),
     step: 1,
     helperText: 'Year you began federal service under FERS',
+  },
+  {
+    name: 'serviceEndYear',
+    label: 'Service End Year',
+    min: 1900,
+    //max: new Date().getFullYear(),
+    step: 1,
+    helperText: 'Year you ended federal service under FERS',
+    shouldDisplay: (values) => values.retirementType === "deferred", // hide if retirement type is not deferred
   },
   {
     name: 'retirementAge',
@@ -38,6 +59,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
     min: 0,
     step: 1000,
     helperText: 'Your current annual basic salary',
+    shouldDisplay: (values) => values.retirementType !== "deferred", // hide if retirement type is deferred
   },
   {
     name: 'salaryGrowthRate',
@@ -46,6 +68,15 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
     max: 100,
     step: 0.1,
     helperText: 'Estimated annual increase in salary before retirement',
+    shouldDisplay: (values) => values.retirementType !== "deferred", // hide if retirement type is deferred
+  },
+  {
+    name: 'high3Salary',
+    label: 'High-3 Salary ($)',
+    min: 0,
+    step: 1000,
+    helperText: 'Average of the highest basic pay earned during any three consecutive years of service',
+    shouldDisplay: (values) => values.retirementType === "deferred", // hide if retirement type is deferred
   },
   {
     name: 'colaPercent',
@@ -54,18 +85,6 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
     max: 10,
     step: 0.1,
     helperText: 'Annual cost-of-living adjustment after retirement',
-  },
-  {
-    name: 'retirementType',
-    label: 'Retirement Type',
-    type: 'select',
-    options: [
-      { value: 'regular', label: 'Immediate (Regular)' },
-      { value: 'mra10', label: 'MRA + 10 (Reduced Pension)' },
-      { value: 'early', label: 'Early (Involuntary)' },
-      { value: 'deferred', label: 'Deferred (No Immediate Pension)' },
-    ],
-    helperText: 'Choose the applicable retirement type based on your eligibility',
   },
   {
     name: 'pensionMultiplier',

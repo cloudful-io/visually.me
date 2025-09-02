@@ -12,4 +12,5 @@ export type FormFieldConfig<T> = {
   step?: number;
   helperText?: string;
   options?: FormFieldOption[]; // Only used if type === 'select'
+  shouldDisplay?: (values: T) => boolean;
 };
