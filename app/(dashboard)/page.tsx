@@ -3,21 +3,19 @@ import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Link } fro
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { auth } from "@/auth"
 import { redirect } from "next/navigation";
-import { getUser } from '@/lib/user';
+import { getOrCreateOrUpdateUser } from '@/lib/user';
 
 
 export default async function HomePage() {
-  /*const session = await auth()
+  const session = await auth()
   if (session) 
   {
-    const user = await getUser(session.user?.email!);
+    const user = await getOrCreateOrUpdateUser({email: session.user?.email!, fullName: session.user?.name!});
     
-    console.log("in function")
     if (user && !user.onboarding_complete) {
-      console.log("in here")
-      redirect("/dashboard"); // this will immediately redirect
+      redirect("/new"); // this will immediately redirect
     }
-  }*/
+  }
 
   const features = [
   {

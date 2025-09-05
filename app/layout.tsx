@@ -128,7 +128,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
               <NextAppProvider
                 navigation={NAVIGATION}
                 branding={BRANDING}
-                //authentication={AUTHENTICATION}
+                authentication={AUTHENTICATION}
                 session={session}
                 theme={theme}
               >
