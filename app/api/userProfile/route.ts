@@ -4,7 +4,7 @@ import { getOrCreateOrUpdateUserProfile } from "@/lib/user";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId, birthYear, retirementAge } = await req.json();
+    const { userId, birthYear, retirementAge, deathAge } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ error: "userId is required" }, { status: 400 });
@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
     const profile = await getOrCreateOrUpdateUserProfile({
       userId: userId,
       birthYear: birthYear,
-      retirementAge: retirementAge
+      retirementAge: retirementAge,
+      deathAge: deathAge,
     });
 
     return NextResponse.json(profile);

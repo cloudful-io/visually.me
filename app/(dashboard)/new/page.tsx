@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { getOrCreateOrUpdateUser, getOrCreateOrUpdateUserProfile } from "@/lib/user";
 import { useRouter } from "next/navigation";
 
 import {
@@ -22,16 +21,20 @@ import {
   Stepper,
   TextField,
   Typography,
+  CircularProgress,
+  LinearProgress,
+  Snackbar,
+  Alert
 } from "@mui/material";
 
 const steps = ["Agreements", "Profile"];
 
 export default function OnboardingPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
-
+  const currentYear = new Date().getFullYear();
+  
   const [isSaving, setIsSaving] = useState(false);
-
 
   // Step 1: Agreements
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -41,21 +44,27 @@ export default function OnboardingPage() {
 
   // Step 2: Profile
   const [fullName, setFullName] = useState("");
-  const [birthYear, setBirthYear] = useState(1970);
+  
+  const [birthYear, setBirthYear] = useState(currentYear-40);
   const [retirementAge, setRetirementAge] = useState(62);
+  const [deathAge, setDeathAge] = useState(90);
 
   // Step navigation
   const [activeStep, setActiveStep] = useState(0);
 
   const canContinueStep1 = agreeTerms && agreePrivacy;
-  const canContinueStep2 = fullName && birthYear && retirementAge;
+  const canContinueStep2 = fullName && birthYear && retirementAge && deathAge;
 
   const handleNext = () => setActiveStep((prev) => prev + 1);
   const handleBack = () => setActiveStep((prev) => prev - 1);
 
+  const [errorMsg, setErrorMsg] = useState("");
+
   const handleSave = async () => {
+    // Anonymous users
     if (!session?.user) {
-        alert("No user session found!");
+        // Redirect user to homepage
+        router.push("/");
         return;
     }
 
@@ -83,27 +92,36 @@ export default function OnboardingPage() {
             fullName,
             birthYear,
             retirementAge,
+            deathAge,
           }),
         });
 
         const profile = await profileRes.json();
 
-        // optionally go to next step or show success message
+        // Redirect user to dashboard
         router.push("/dashboard");
     } catch (error) {
         console.error("Error saving profile:", error);
-        alert(error);
+        setErrorMsg("Failed to save your profile. Please try again.");
     } finally {
         setIsSaving(false);
     }
   };
 
-  // Prefill full name when session loads
   useEffect(() => {
+    // Anonymous users - redirect to homepage
+    if (status === "unauthenticated") {
+        router.push("/");
+    }
+    // Prefill full name when session loads
     if (session?.user?.name) {
       setFullName(session.user.name);
     }
-  }, [session]);
+  }, [status, session, router]);
+
+  if (status === "loading") {
+    return <LinearProgress />; // show a loading bar
+}
   
   return (
     <Box
@@ -114,7 +132,7 @@ export default function OnboardingPage() {
       minHeight="100vh"
       px={2}
     >
-      <Paper elevation={3} sx={{ p: 4, maxWidth: 600, width: "100%" }}>
+      <Paper elevation={3} sx={{ p: 4, maxWidth: 600, width: "100%", position: "relative" }}>
         {/* Stepper */}
         <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
           {steps.map((label) => (
@@ -123,7 +141,9 @@ export default function OnboardingPage() {
             </Step>
           ))}
         </Stepper>
-
+        <Typography align="center" sx={{ mb: 2 }}>
+            Step {activeStep + 1} of {steps.length}
+        </Typography>
         {/* Step Content */}
         {activeStep === 0 && (
           <>
@@ -156,8 +176,8 @@ export default function OnboardingPage() {
                 <FormControlLabel
                 control={
                     <Checkbox
-                    checked={agreePrivacy}
-                    onChange={(e) => setAgreePrivacy(e.target.checked)}
+                        checked={agreePrivacy}
+                        onChange={(e) => setAgreePrivacy(e.target.checked)}
                     />
                 }
                 label={
@@ -197,6 +217,7 @@ export default function OnboardingPage() {
               <TextField
                 label="Full Name"
                 value={fullName}
+                disabled={isSaving}
                 onChange={(e) => setFullName(e.target.value)}
                 fullWidth
               />
@@ -204,20 +225,48 @@ export default function OnboardingPage() {
                 label="Year of Birth"
                 type="number"
                 value={birthYear}
+                disabled={isSaving}
                 onChange={(e) => setBirthYear(Number(e.target.value))}
                 fullWidth
+                error={birthYear < 1900 || birthYear > currentYear}
+                helperText={
+                    birthYear < 1900 || birthYear > currentYear
+                    ? `Must be between 1900 and ${currentYear}`
+                    : ""
+                }
               />
               <TextField
                 label="Target Retirement Age"
                 type="number"
                 value={retirementAge}
+                disabled={isSaving}
                 onChange={(e) => setRetirementAge(Number(e.target.value))}
                 fullWidth
+                error={retirementAge < 21 || retirementAge > 100}
+                helperText={
+                    retirementAge < 21 || retirementAge > 100
+                    ? `Must be between 21 and 100`
+                    : ""
+                }
+              />
+              <TextField
+                label="Life Expectancy Age"
+                type="number"
+                value={deathAge}
+                disabled={isSaving}
+                onChange={(e) => setDeathAge(Number(e.target.value))}
+                fullWidth
+                error={deathAge < 21 || retirementAge > 100}
+                helperText={
+                    deathAge < 21 || deathAge > 100
+                    ? `Must be between 21 and 100`
+                    : "Age you expect to live until"
+                }
               />
             </Box>
 
             <Box mt={3} display="flex" justifyContent="space-between" gap={2}>
-              <Button variant="outlined" onClick={handleBack}>
+              <Button variant="outlined" disabled={isSaving} onClick={handleBack}>
                 Back
               </Button>
               <Button
@@ -226,7 +275,7 @@ export default function OnboardingPage() {
                 disabled={!canContinueStep2 || isSaving}
                 onClick={handleSave}
                 >
-                {isSaving ? "Saving..." : "Save Profile"}
+                {isSaving ? <CircularProgress size={20} color="inherit" /> : "Save Profile"}
               </Button>
             </Box>
           </>
@@ -237,10 +286,12 @@ export default function OnboardingPage() {
       <Dialog
         open={showTerms}
         onClose={() => setShowTerms(false)}
+        scroll="paper"
         maxWidth="sm"
+        aria-labelledby="terms-title"
         fullWidth
       >
-        <DialogTitle>Terms of Use</DialogTitle>
+        <DialogTitle id="terms-title">Terms of Use</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2" paragraph>
             This tool is provided for educational purposes only. It does not
@@ -250,7 +301,16 @@ export default function OnboardingPage() {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowTerms(false)}>Close</Button>
+          <Button onClick={() => setShowTerms(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+            setAgreeTerms(true); // auto-check the box
+            setShowTerms(false);
+            }}
+          >
+            Accept
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -259,9 +319,10 @@ export default function OnboardingPage() {
         open={showPrivacy}
         onClose={() => setShowPrivacy(false)}
         maxWidth="sm"
+        aria-labelledby="privacy-title"
         fullWidth
       >
-        <DialogTitle>Privacy Policy</DialogTitle>
+        <DialogTitle id="privacy-title">Privacy Policy</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2" paragraph>
             We collect basic info (age, income, retirement goals) for
@@ -271,9 +332,27 @@ export default function OnboardingPage() {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowPrivacy(false)}>Close</Button>
+          <Button onClick={() => setShowPrivacy(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+            setAgreePrivacy(true); // auto-check the box
+            setShowPrivacy(false);
+            }}
+          >
+            Accept
+          </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={!!errorMsg}
+        autoHideDuration={4000}
+        onClose={() => setErrorMsg("")}
+        >
+        <Alert severity="error" onClose={() => setErrorMsg("")}>
+            {errorMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

@@ -6,7 +6,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PaidIcon from '@mui/icons-material/Paid';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import StorageIcon from '@mui/icons-material/Storage';
 import SchoolIcon from '@mui/icons-material/School';
 import RealEstateAgentIcon from '@mui/icons-material/RealEstateAgent';
 import LinearProgress from '@mui/material/LinearProgress'
@@ -26,7 +25,7 @@ export const metadata = {
     siteName: process.env.REACT_APP_SITE_TITLE,
     type: "website",
     locale: "en_US",
-    images: [`${baseUrl}/images/logo512.png`],
+    images: [`${baseUrl}/images/logos/logo512.png`],
   },
 };
 
@@ -88,17 +87,12 @@ const NAVIGATION: Navigation = [
         },
       ],
     },
-    /*{
-      segment: 'database',
-      title: 'Database',
-      icon: <StorageIcon />,
-    },*/
 
 ];
 
 const BRANDING = {
   title: process.env.REACT_APP_SITE_TITLE,
-  logo: <Image src="/images/logo.png" alt="Visually.Me" width="40" height="48"/>,
+  logo: <Image src="/images/logos/logo.png" alt="Visually.Me" width="40" height="48"/>,
 
 };
 
@@ -113,11 +107,11 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" data-toolpad-color-scheme="light" suppressHydrationWarning>
       <head>
-        <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
-        <link rel="shortcut icon" href="/images/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-        <link rel="manifest" href="/images/site.webmanifest" />
+        <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/images/favicons/favicon.svg" />
+        <link rel="shortcut icon" href="/images/favicons/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png" />
+        <link rel="manifest" href="/images/favicons/site.webmanifest" />
       </head>
       <body>
         <GoogleAnalytics />
@@ -128,7 +122,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
               <NextAppProvider
                 navigation={NAVIGATION}
                 branding={BRANDING}
-                authentication={AUTHENTICATION}
+                //authentication={AUTHENTICATION}
                 session={session}
                 theme={theme}
               >

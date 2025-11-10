@@ -3,7 +3,7 @@ export type FormFieldOption = {
   label: string;
 };
 
-export type FormFieldConfig<T> = {
+export type FormFieldConfig<T, C = void> = {
   name: keyof T;
   label: string;
   type?: 'number' | 'text' | 'date' | 'select';
@@ -12,5 +12,5 @@ export type FormFieldConfig<T> = {
   step?: number;
   helperText?: string;
   options?: FormFieldOption[]; // Only used if type === 'select'
-  shouldDisplay?: (values: T) => boolean;
+  shouldDisplay?: (values: T, context: C extends void ? undefined : C) => boolean;
 };

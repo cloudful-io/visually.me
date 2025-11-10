@@ -79,7 +79,7 @@ export default function SignInPage() {
         textAlign="center"
       >
         <Box mb={3}>
-          <Image src="/images/logo.png" alt="Visually.Me" width="48" height="48"/>
+          <Image src="/images/logos/logo.png" alt="Visually.Me" width="48" height="48"/>
         </Box>
 
         <Typography variant="h5" gutterBottom>

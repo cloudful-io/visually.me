@@ -10,6 +10,7 @@ type UserProfileInput = {
   userId: string; // UUID
   birthYear: number;
   retirementAge: number;
+  deathAge: number;
 };
 
 export async function getUser(email: string) {
@@ -64,7 +65,8 @@ export async function getOrCreateOrUpdateUserProfile(profile: UserProfileInput) 
       {
         user_id: profile.userId,
         birth_year: profile.birthYear,
-        retirement_age: profile.retirementAge
+        retirement_age: profile.retirementAge,
+        death_age: profile.deathAge,
       },
       { onConflict: 'user_id' } // tells Supabase to use `user_id` as the unique key
     )

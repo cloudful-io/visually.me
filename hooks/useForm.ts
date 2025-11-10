@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { FormFieldConfig } from '@/types/forms';
 
-export function useForm<T extends Record<string, any>>(
+export function useForm<T extends Record<string, any>, C = void>(
   initialValues: T,
-  fieldConfigs: FormFieldConfig<T>[]
+  fieldConfigs: FormFieldConfig<T, C>[]
 ) {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});

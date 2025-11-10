@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useForm } from './useForm';
 import { FormFieldConfig } from '@/types/forms';
 
-export function usePersistedForm<T extends Record<string, any>>(
+export function usePersistedForm<T extends Record<string, any>, C = void>(
   key: string,
   initialValues: T,
-  fieldConfigs: FormFieldConfig<T>[]
+  fieldConfigs: FormFieldConfig<T, C>[]
 ) {
   const [rehydratedValues] = useState<T>(() => {
     if (typeof window === 'undefined') return initialValues;
@@ -29,7 +29,7 @@ export function usePersistedForm<T extends Record<string, any>>(
     }
   });
 
-  const { values, setValues, errors, handleChange, hasErrors } = useForm<T>(
+  const { values, setValues, errors, handleChange, hasErrors } = useForm<T, C>(
     rehydratedValues,
     fieldConfigs
   );

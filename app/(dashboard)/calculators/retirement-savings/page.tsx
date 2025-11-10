@@ -28,7 +28,7 @@ const RetirementSavingsProjection = () => {
     handleChange,
     errors,
     hasErrors,
-  } = usePersistedForm<RetirementSavingsInput>(
+  } = usePersistedForm<RetirementSavingsInput, { isAuthenticated: boolean }>(
     'retirementSavingsForm',
     {
       startYear: new Date().getFullYear(),
@@ -44,7 +44,8 @@ const RetirementSavingsProjection = () => {
     retirementSavingsFieldConfigs
   );
 
-  
+  const isAuthenticated = false;
+
   const {rows, error, generateTable } = useRetirementSavingsProjection(formValues);
 
   const [showChart, setShowChart] = useState(true);
@@ -59,6 +60,7 @@ const RetirementSavingsProjection = () => {
         fields={retirementSavingsFieldConfigs}
         values={formValues}
         onChange={handleChange}
+        context={{ isAuthenticated }}
         errors={errors}
       />
         <FormControlLabel

@@ -65,7 +65,7 @@ export default async function HomePage() {
         textAlign: 'center',
       }}
     >
-      <Box component="img" src="/images/logo512.png" alt="Visually.Me" sx={{ height: 180 }} />
+      <Box component="img" src="/images/logos/logo512.png" alt="Visually.Me" sx={{ height: 180 }} />
 
       <Typography variant="h4" fontWeight="bold" gutterBottom>
         Plan Smarter. Live Better. Visually Me.

@@ -1,7 +1,7 @@
 import { FormFieldConfig } from '@/types/forms';
 import { RetirementSavingsInput } from 'financial-calcs';
 
-export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInput>[] = [
+export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInput, { isAuthenticated: boolean }>[] = [
   {
     name: 'startYear',
     label: 'Start Year',
@@ -10,11 +10,12 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
     helperText: 'Year to begin displaying retirement savings and withdraw',
   },
   {
-    name: 'birthYear',
+    name: 'birthYear',  
     label: 'Birth Year',
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },  
   {
     name: 'initialBalance',
@@ -67,5 +68,6 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
     max: 80,
     step: 1,
     helperText: 'Number of years to show benefit projections after claiming',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];
