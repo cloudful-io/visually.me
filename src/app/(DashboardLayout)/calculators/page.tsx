@@ -31,7 +31,7 @@ const calculators = [
     id: "mortgage-amortization",
     title: "Mortgage Amortization Calculator",
     description: "See how your loan payments are split between principal and interest over time.",
-    route: "/calculators/mortgage-amortization",
+    route: "/calculators/mortgage",
     icon: IconHome,
   },
   {
