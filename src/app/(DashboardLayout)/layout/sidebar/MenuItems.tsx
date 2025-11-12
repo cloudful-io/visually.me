@@ -13,12 +13,14 @@ const Menuitems = [
   {
     navlabel: true,
     subheader: "HOME",
+    authRequired: true,
   },
   {
     id: uniqueId(),
     title: "Dashboard",
     icon: IconLayoutDashboard,
     href: "/dashboard",
+    authRequired: true,
   },
 
   {
