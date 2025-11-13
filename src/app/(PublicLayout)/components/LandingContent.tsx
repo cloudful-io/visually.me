@@ -7,16 +7,20 @@ import { useRouter } from "next/navigation";
 import { supabase } from '@/utils/supabase/client';
 import { UserProfileService } from "supabase-auth-lib";
 import { useState, useEffect } from "react";
+import { useCheckOnboarding } from "@/hooks/useCheckOnboarding";
+import Loading from "@/app/loading";
 
 export default function LandingContent() {
   const theme = useTheme();
-  const { user, loading } = useSupabaseAuth();
+  const { user } = useSupabaseAuth();
   const router = useRouter();
   const [displayName, setDisplayName] = useState<string | null>(null);
 
   const slogan1 = "Plan Smarter.";
   const slogan2 = "Live Better.";
   const slogan3 = "Visually Me.";
+
+  const { loading } = useCheckOnboarding(user);
 
   useEffect(() => {
     if (user) {
@@ -33,6 +37,8 @@ export default function LandingContent() {
     }
   }, [user]);
 
+  if (loading) return <Loading />;
+  
   return (
     <Box
       sx={{
