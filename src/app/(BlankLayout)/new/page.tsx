@@ -3,36 +3,44 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
-//import { useMode } from "@/contexts/ModeContext";
-//import { useUserRoles } from "@/contexts/UserRolesContext";
 import { supabase } from '@/utils/supabase/client';
 import { UserService } from 'supabase-auth-lib';
 import { UserProfileService } from 'supabase-auth-lib';
-import { UserRoleService } from 'supabase-auth-lib';
 import Loading from "@/app/loading";
 import {OnboardingAgreementStep} from "supabase-auth-lib";
 import { Box, Button, Paper, Step, StepLabel, Stepper, Typography, CircularProgress, TextField, Snackbar, Alert } from "@mui/material";
-import Image from "next/image";
 import TermsOfUse from "@/app/components/TermsOfUse";
 import PrivacyPolicy from "@/app/components/PrivacyPolicy";
+import { useUserAttributes } from "@/lib/userAttributes/hook";
+
 
 const steps = ["Agreements", "Profile"];
 
 export default function OnboardingPage() {
   const router = useRouter();
   const { user } = useSupabaseAuth();
-  //const { setMode } = useMode();
-  //const { setRoles } = useUserRoles();
+  const currentYear = new Date().getFullYear();
   
+  const { save: saveUserAttrs } = useUserAttributes({ lazy: true });
+
   const [isSaving, setIsSaving] = useState(false);
 
   // Step 2: Profile
   const [displayName, setDisplayName] = useState("");
+  const [birthYear, setBirthYear] = useState(1970);
+  const [targetRetirementAge, setTargetRetirementAge] = useState(62);
+  const [startYear, setStartYear] = useState(currentYear);
 
   // Step navigation
   const [activeStep, setActiveStep] = useState(0);
 
-  const canContinueStep2 = displayName;
+  const canContinueStep2 = displayName && birthYear && targetRetirementAge && startYear;
+
+  const validate = {
+    birthYear: birthYear && (birthYear < 1900 || birthYear > currentYear),
+    targetRetirementAge: targetRetirementAge && (targetRetirementAge < 40 || targetRetirementAge > 80),
+    startYear: startYear && (startYear < 1900 || startYear > currentYear),
+  };
 
   const handleNext = () => setActiveStep((prev) => prev + 1);
   const handleBack = () => setActiveStep((prev) => prev - 1);
@@ -50,8 +58,19 @@ export default function OnboardingPage() {
       setErrorMsg("Please provide a display name.");
       return;
     }
+    else if (!birthYear) {
+      setErrorMsg("Please provide your year of birth.");
+      return;
+    }
+    else if (!targetRetirementAge) {
+      setErrorMsg("Please provide your target retirement age.");
+      return;
+    }
+    else if (!startYear) {
+      setErrorMsg("Please provide the year to project data");
+      return;
+    }
     
-
     setIsSaving(true);
     try {
       const userService = new UserService(supabase);
@@ -65,15 +84,18 @@ export default function OnboardingPage() {
 
       const userProfileService = new UserProfileService(supabase);
       await userProfileService.updateDisplayName(user.id, displayName);
-
-      //const userRoleService = new UserRoleService(supabase);
-      //await userRoleService.addByName({ userId: user.id, roleName: selectedRole });
-
-      //setRoles([selectedRole]);
-
+      
+      // Save attributes via hook
+      await saveUserAttrs({
+        birthYear,
+        startYear,
+        targetRetirementAge,
+      });
+      
       // Redirect user to dashboard
       setTimeout(() => router.push("/dashboard"), 0);
     } catch (error) {
+      console.log(error);
         setErrorMsg("Failed to save profile. Please try again.");
     } finally {
         setIsSaving(false);
@@ -148,6 +170,54 @@ export default function OnboardingPage() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 fullWidth
               />
+              <TextField
+                label="Year of Birth"
+                type="number"
+                value={birthYear}
+                disabled={isSaving}
+                onChange={(e) => setBirthYear(Number(e.target.value))}
+                error={!!validate.birthYear}
+                helperText={validate.birthYear ? `Enter a year between 1900 and ${currentYear}` : ""}
+                slotProps={{
+                  htmlInput: {
+                    min: 1900,
+                    max: currentYear,
+                  },
+                }}
+                fullWidth
+              />
+              <TextField
+                label="Target Retirement Age"
+                type="number"
+                value={targetRetirementAge}
+                disabled={isSaving}
+                onChange={(e) => setTargetRetirementAge(Number(e.target.value))}
+                error={!!validate.targetRetirementAge}
+                helperText={validate.targetRetirementAge ? "Target Retirement Age must be between 40 and 80" : ""}
+                slotProps={{
+                  htmlInput: {
+                    min: 40,
+                    max: 80,
+                  },
+                }}
+                fullWidth
+              />
+              <TextField
+                label="Year to Start Projecting Data"
+                type="number"
+                value={startYear}
+                disabled={isSaving}
+                onChange={(e) => setStartYear(Number(e.target.value))}
+                error={!!validate.startYear}
+                helperText={validate.startYear ? `Enter a year between 1900 and ${currentYear}` : ""}
+                slotProps={{
+                  htmlInput: {
+                    min: 1900,
+                    max: currentYear,
+                  },
+                }}
+                fullWidth
+              />
             </Box>
             <Box mt={3} display="flex" justifyContent="space-between" gap={2}>
               <Button variant="outlined" disabled={isSaving} onClick={handleBack}>
@@ -156,7 +226,7 @@ export default function OnboardingPage() {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={!canContinueStep2 || isSaving}
+                disabled={!canContinueStep2 || validate.birthYear || validate.targetRetirementAge || validate.startYear || isSaving}
                 onClick={handleSave}
                 >
                 {isSaving ? <CircularProgress size={20} color="inherit" /> : "Save Profile"}

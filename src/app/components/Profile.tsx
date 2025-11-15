@@ -17,9 +17,10 @@ import {AuthLogout} from "supabase-auth-lib";
 import {UserProfileService} from "supabase-auth-lib"
 type ProfileProps = {
   user: User;
+  showDashboardLink?: boolean;
 };
 
-const Profile: React.FC<ProfileProps> = ({ user }) => {
+const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [displayName, setDisplayName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
@@ -86,12 +87,14 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
           "& .MuiMenu-paper": { width: "200px" },
         }}
       >
+        {showDashboardLink && (
         <MenuItem component={Link} href="/dashboard" onClick={handleClose}>
           <ListItemIcon>
             <IconLayoutDashboard width={20} />
           </ListItemIcon>
           <ListItemText>My Dashboard</ListItemText>
         </MenuItem>
+        )}
         <MenuItem component={Link} href="/profile" onClick={handleClose}>
           <ListItemIcon>
             <IconUser width={20} />

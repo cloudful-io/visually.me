@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
 
 type Props = {
-  title?: string;
+  title?: string | React.ReactNode;
   subtitle?: string;
   action?: React.ReactNode | any;
   footer?: React.ReactNode;

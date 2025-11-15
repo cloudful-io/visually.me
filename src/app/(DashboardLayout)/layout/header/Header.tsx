@@ -61,7 +61,7 @@ const Header = ({toggleMobileSidebar}: ItemType) => {
               Login
             </Button>
           )}
-          {user && <Profile user={user} />}
+          {user && <Profile user={user} showDashboardLink={false}/>}
           <ThemeModeToggle />
         </Stack>
       </ToolbarStyled>
