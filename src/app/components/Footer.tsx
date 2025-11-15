@@ -1,4 +1,5 @@
 import { Box, Stack, Alert } from '@mui/material';
+import Link from 'next/link';
 
 interface Props {
   sidebarWidth?: number;
@@ -28,6 +29,19 @@ export default function Footer({ sidebarWidth = 0 }: Props) {
       >
         <Alert severity='warning'>
             <strong>Disclaimer:</strong> The financial calculators and content on this website are for informational and educational purposes only. They are not intended as financial, tax, or investment advice. All results are estimates based on the data you provide and assumptions made by the model. Actual outcomes may vary significantly. Please consult a licensed financial advisor before making any financial decisions.
+            <Link 
+              href="/privacy" 
+              style={{ color: "inherit", marginLeft: '20px', marginRight: '8px', textDecoration: 'underline' }}
+            >
+                Privacy Policy
+            </Link>
+            | 
+            <Link 
+              href="/terms" 
+              style={{ color: "inherit", marginLeft: '8px', textDecoration: 'underline' }}
+            >
+                Terms of Use
+            </Link>
         </Alert>
       </Stack>
     </Box>

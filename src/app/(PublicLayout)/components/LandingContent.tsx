@@ -165,6 +165,7 @@ export default function LandingContent() {
                   "What will my retirement income be at 75?",
                   "How much should I put into my 401k each paycheck?",
                   "What will my Social Security be at 67?",
+                  "How much should I save for my daughter's college if she goes to a in-state public university?",
                 ]}
               />
             </Typography>
