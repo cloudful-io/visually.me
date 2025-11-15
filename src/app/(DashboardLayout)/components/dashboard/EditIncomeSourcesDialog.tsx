@@ -10,17 +10,20 @@ import {
   Grid,
   TextField,
   CircularProgress,
+  MenuItem,
 } from "@mui/material";
 import { useIncomeSources } from "@/lib/incomeSources/hook";
 
 export default function EditIncomeSourceDialog({
   open,
   sourceId,
+  defaultType, // NEW
   onClose,
   onSave,
 }: {
   open: boolean;
   sourceId: string | null;
+  defaultType?: string | null; // NEW
   onClose: () => void;
   onSave: (input: { type: string; data: string; id?: string }) => Promise<void>;
 }) {
@@ -28,31 +31,32 @@ export default function EditIncomeSourceDialog({
   const isEditing = !!sourceId;
   const showLoading = isEditing && loading;
 
-
   // ----------------------------
   // Local Form State
   // ----------------------------
   const [type, setType] = useState("");
   const [data, setData] = useState("");
-
   const [errors, setErrors] = useState<{ type?: string; data?: string }>({});
 
-  // Load existing source if editing
+  // Load existing source if editing or defaultType if adding
   useEffect(() => {
-    if (!sourceId || !sources) {
-      setType("");
-      setData("");
-      setErrors({});
-      return;
+    if (!open) return; // do nothing if dialog not open
+
+    if (isEditing && sources) {
+      const src = sources.find((s) => s.id === sourceId);
+      if (src) {
+        setType(src.type);
+        setData(src.data);
+        setErrors({});
+        return;
+      }
     }
 
-    const src = sources.find((s) => s.id === sourceId);
-    if (src) {
-      setType(src.type);
-      setData(src.data);
-      setErrors({});
-    }
-  }, [sourceId, sources]);
+    // New source → prefill with defaultType if provided
+    setType(defaultType ?? "");
+    setData("");
+    setErrors({});
+  }, [open, sourceId, sources, isEditing, defaultType]);
 
   // ----------------------------
   // Simple Validation
@@ -85,25 +89,30 @@ export default function EditIncomeSourceDialog({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{sourceId ? "Edit Income Source" : "Add Income Source"}</DialogTitle>
+      <DialogTitle>{isEditing ? "Edit Income Source" : "Add Income Source"}</DialogTitle>
 
       <DialogContent dividers>
         {showLoading ? (
           <CircularProgress sx={{ display: "block", mx: "auto", my: 4 }} />
         ) : (
           <Grid container spacing={2} mt={1}>
-            <Grid size={{xs:12}}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Income Type"
                 fullWidth
+                select 
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 error={!!errors.type}
                 helperText={errors.type}
-              />
+              >
+                <MenuItem value="Retirement Savings">Retirement Savings</MenuItem>
+                <MenuItem value="Social Security">Social Security</MenuItem>
+                <MenuItem value="FERS Pension">FERS Pension</MenuItem>
+              </TextField>
             </Grid>
 
-            <Grid size={{xs:12}}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Income Data"
                 fullWidth
