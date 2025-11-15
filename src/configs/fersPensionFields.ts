@@ -1,13 +1,14 @@
 import { FormFieldConfig } from '@/types/forms';
 import { FersPensionInput } from 'financial-calcs';
 
-export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
+export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuthenticated: boolean }>[] = [
   {
     name: 'startYear',
     label: 'Start Year',
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying pension and final salary',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'birthYear',
@@ -15,6 +16,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'retirementType',
@@ -52,6 +54,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
     max: 80,
     step: 1,
     helperText: 'Age you plan to retire and start collecting pension',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'currentSalary',
@@ -101,5 +104,6 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput>[] = [
     max: 80,
     step: 1,
     helperText: 'Number of years to show pension income',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];

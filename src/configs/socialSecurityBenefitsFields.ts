@@ -1,13 +1,14 @@
 import { FormFieldConfig } from '@/types/forms';
 import { SocialSecurityBenefitInput } from 'financial-calcs';
 
-export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitInput>[] = [
+export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitInput, { isAuthenticated: boolean }>[] = [
   {
     name: 'startYear',
     label: 'Start Year',
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying data',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'birthYear',
@@ -15,6 +16,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'claimingAge',
@@ -46,5 +48,6 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     max: 80,
     step: 1,
     helperText: 'Number of years to show benefit projections',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];

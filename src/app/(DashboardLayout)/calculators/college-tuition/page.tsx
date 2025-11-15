@@ -27,7 +27,7 @@ const CollegeTuitionProjection = () => {
     handleChange,
     errors,
     hasErrors,
-  } = usePersistedForm<CollegeTuitionInput>(
+  } = usePersistedForm<CollegeTuitionInput, { isAuthenticated: boolean }>(
     'collegeTuitionForm',
     {
       startYear: new Date().getFullYear(),
@@ -45,6 +45,8 @@ const CollegeTuitionProjection = () => {
     collegeTuitionFieldConfigs
   );
 
+  const isAuthenticated = false;
+
   const {rows, error, generateTable } = useCollegeTuitionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
@@ -59,6 +61,7 @@ const CollegeTuitionProjection = () => {
         fields={collegeTuitionFieldConfigs}
         values={formValues}
         onChange={handleChange}
+        context={{ isAuthenticated }}
         errors={errors}
       />
         <FormControlLabel

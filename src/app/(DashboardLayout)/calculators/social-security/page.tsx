@@ -23,7 +23,7 @@ const SocialSecurityProjection = () => {
     handleChange,
     errors,
     hasErrors,
-  } = usePersistedForm<SocialSecurityBenefitInput>(
+  } = usePersistedForm<SocialSecurityBenefitInput, { isAuthenticated: boolean }>(
     'socialSecurityForm',
     {
       startYear: new Date().getFullYear(),
@@ -36,6 +36,8 @@ const SocialSecurityProjection = () => {
     socialSecurityFieldConfigs
   );
   
+  const isAuthenticated = false;
+
   const {rows, error, generateTable } = useSocialSecurityBenefitProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
@@ -50,6 +52,7 @@ const SocialSecurityProjection = () => {
           fields={socialSecurityFieldConfigs}
           values={formValues}
           onChange={handleChange}
+          context={{ isAuthenticated }}
           errors={errors}
         />
         <FormControlLabel

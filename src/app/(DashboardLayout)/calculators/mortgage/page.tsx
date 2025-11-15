@@ -32,7 +32,7 @@ const MortgageProjection = () => {
     errors,
     hasErrors,
     setValues,
-  } = usePersistedForm<MortgageAmortizationInput>(
+  } = usePersistedForm<MortgageAmortizationInput, { isAuthenticated: boolean }>(
     'mortgageForm',
     {
       loanAmount: 300000,
@@ -44,6 +44,7 @@ const MortgageProjection = () => {
     mortgageAmortizationFieldConfigs
   );
   
+  const isAuthenticated = false;
 
   const {rows, yearlyRows, error, generateTable } = useMortgageAmortization(formValues);
   const [displayBy, setDisplayBy] = useState<'month' | 'year'>('month');
@@ -77,6 +78,7 @@ const MortgageProjection = () => {
             fields={mortgageAmortizationFieldConfigs}
             values={formValues}
             onChange={handleChange}
+            context={{ isAuthenticated }}
             onDateChange={(name, value) =>
               setValues((prev) => ({ ...prev, [name]: value || undefined }))
             }

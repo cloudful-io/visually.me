@@ -8,6 +8,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying retirement savings and withdraw',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'birthYear',  

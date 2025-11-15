@@ -1,13 +1,14 @@
 import { FormFieldConfig } from '@/types/forms';
 import { CollegeTuitionInput } from 'financial-calcs';
 
-export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput>[] = [
+export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { isAuthenticated: boolean }>[] = [
   {
     name: 'startYear',
     label: 'Start Year',
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying college savings and tuition',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'birthYear',
@@ -15,6 +16,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput>[] 
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },  
   {
     name: 'childBirthYear',
@@ -78,5 +80,6 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput>[] 
     max: 40,
     step: 1,
     helperText: 'Number of years to show savings and withdraw projections',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];

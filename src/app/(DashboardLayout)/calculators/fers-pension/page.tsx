@@ -27,7 +27,7 @@ const FersPensionProjection = () => {
     handleChange,
     errors,
     hasErrors,
-  } = usePersistedForm<FersPensionInput>(
+  } = usePersistedForm<FersPensionInput, { isAuthenticated: boolean }>(
     'fersPensionForm',
     {
       startYear: new Date().getFullYear(),
@@ -46,6 +46,8 @@ const FersPensionProjection = () => {
     fersPensionFieldConfigs
   );
 
+  const isAuthenticated = false;
+
   const {rows, error, generateTable } = useFersPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
@@ -59,6 +61,7 @@ const FersPensionProjection = () => {
           fields={fersPensionFieldConfigs}
           values={formValues}
           onChange={handleChange}
+          context={{ isAuthenticated }}
           errors={errors}
         />
         <FormControlLabel

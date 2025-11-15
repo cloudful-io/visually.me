@@ -1,7 +1,7 @@
 import { FormFieldConfig } from '@/types/forms';
 import { MortgageAmortizationInput } from 'financial-calcs';
 
-export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizationInput>[] = [
+export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizationInput, { isAuthenticated: boolean }>[] = [
   {
     name: 'loanAmount',
     label: 'Loan Amount ($)',
