@@ -8,6 +8,7 @@ import { supabase } from '@/utils/supabase/client';
 import { UserProfileService } from "supabase-auth-lib";
 import { useState, useEffect } from "react";
 import { useCheckOnboarding } from "@/hooks/useCheckOnboarding";
+import Typewriter from "./Typewriter";
 import Loading from "@/app/loading";
 
 export default function LandingContent() {
@@ -149,8 +150,23 @@ export default function LandingContent() {
               overflow: "hidden",
             }}
           >
-            <Typography variant="h6" sx={{ color: theme.palette.text.secondary }}>
-              Media Preview Here
+            <Typography
+              variant="h3"
+              sx={{
+                color: theme.palette.text.secondary,
+                textAlign: "center",
+                px: 2,
+              }}
+            >
+              <Typewriter
+                messages={[
+                  "Do I have enough to retire?",
+                  "How long will my savings last?",
+                  "What will my retirement income be at 75?",
+                  "How much should I put into my 401k each paycheck?",
+                  "What will my Social Security be at 67?",
+                ]}
+              />
             </Typography>
           </Box>
         </Grid>
