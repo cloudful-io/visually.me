@@ -27,7 +27,7 @@
     "cloudful-blog": "^1.6.0",
     "crypto": "^1.0.1",
     "dayjs": "^1.11.18",
-    "eslint": "9.37.0",
+    "eslint": "^9.39.1",
     "eslint-config-next": "15.5.4",
     "financial-calcs": "^1.6.15",
     "framer-motion": "^12.23.24",
