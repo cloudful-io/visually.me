@@ -84,7 +84,7 @@ export default function LandingContent() {
         </Box>
       )}
 
-      <Grid container spacing={4} alignItems="center">
+      <Grid container spacing={3} alignItems="center">
         {/* Left Column - Text */}
         <Grid size={{xs: 12, md: 6}}>
           <Box>
