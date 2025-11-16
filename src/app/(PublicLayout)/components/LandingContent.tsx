@@ -9,6 +9,7 @@ import { UserProfileService } from "supabase-auth-lib";
 import { useState, useEffect } from "react";
 import { useCheckOnboarding } from "@/hooks/useCheckOnboarding";
 import Typewriter from "./Typewriter";
+import CalculatorStatsCounter from "./CalculatorStats";
 import Loading from "@/app/loading";
 
 export default function LandingContent() {
@@ -170,6 +171,9 @@ export default function LandingContent() {
               />
             </Typography>
           </Box>
+        </Grid>
+        <Grid size={{xs: 12}}>
+          <CalculatorStatsCounter />
         </Grid>
       </Grid>
     </Box>
