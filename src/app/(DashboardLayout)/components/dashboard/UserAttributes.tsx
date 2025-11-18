@@ -9,7 +9,7 @@ import { supabase } from "@/utils/supabase/client";
 import { UserProfileService } from "supabase-auth-lib";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 import EditUserAttributesDialog from "./EditUserAttributesDialog";
-import LinearProgressWithLabel from "./LinearProgressWithLabel";
+import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
 import { IconEdit, IconUser } from "@tabler/icons-react";
 
 const UserAttributes = () => {

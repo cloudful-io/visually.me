@@ -61,6 +61,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
     max: 73,
     step: 1,
     helperText: 'Age to start withdrawing retirement savings',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'yearsToProject',

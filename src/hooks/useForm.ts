@@ -9,6 +9,11 @@ export function useForm<T extends Record<string, any>, C = void>(
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
 
+  const reset = (newValues: T) => {
+    setValues({ ...newValues });
+    setErrors({});
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
     let parsedValue: any = value;
@@ -47,5 +52,5 @@ export function useForm<T extends Record<string, any>, C = void>(
 
   const hasErrors = Object.values(errors).some((e) => e);
 
-  return { values, setValues, errors, handleChange, hasErrors };
+  return { values, setValues, errors, handleChange, hasErrors, reset };
 }

@@ -51,9 +51,7 @@ export default function LandingContent() {
         py: { xs: 4, md: 0 },
       }}
     >
-      {/* ------------------- */}
-      {/* Optional Dashboard Prompt */}
-      {/* ------------------- */}
+
       {user && !loading && displayName && (
         <Box
           sx={{
@@ -152,7 +150,7 @@ export default function LandingContent() {
             }}
           >
             <Typography
-              variant="h3"
+              variant="h2"
               sx={{
                 color: theme.palette.text.secondary,
                 textAlign: "center",
@@ -164,8 +162,9 @@ export default function LandingContent() {
                   "Do I have enough to retire?",
                   "How long will my savings last?",
                   "What will my retirement income be at 75?",
-                  "How much should I put into my 401k each paycheck?",
+                  "How much should I put into my 401k in each paycheck?",
                   "What will my Social Security be at 67?",
+                  "How long will it take for my 401k to reach $1M?",
                   "How much should I save for my daughter's college if she goes to a in-state public university?",
                 ]}
               />

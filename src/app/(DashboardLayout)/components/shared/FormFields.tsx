@@ -13,6 +13,7 @@ type Props<T, C = void> = C extends void
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       onDateChange?: (name: keyof T, value: Date | null) => void;
       errors?: Partial<Record<keyof T, string>>;
+      dialog?: boolean;
     }
   : {
       fields: FormFieldConfig<T, C>[];
@@ -21,11 +22,12 @@ type Props<T, C = void> = C extends void
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       onDateChange?: (name: keyof T, value: Date | null) => void;
       errors?: Partial<Record<keyof T, string>>;
+      dialog?: boolean;
     };
 
 
 export function FormFields<T, C = void>(props: Props<T, C>) {
-  const { fields, values, onChange, onDateChange, errors } = props;
+  const { fields, values, onChange, onDateChange, errors, dialog = false } = props;
 
   // Safe fallback for errors
   const safeErrors: Partial<Record<keyof T, string>> = errors ?? {};
@@ -41,7 +43,7 @@ export function FormFields<T, C = void>(props: Props<T, C>) {
           const fieldError = safeErrors[name];
 
           return (
-            <Grid key={String(name)} size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid key={String(name)} paddingY={dialog ? 1 : 0} size={dialog ? { xs: 12 } : { xs: 12, md: 3, sm: 6 }}>
               {type === 'date' ? (
                 <DatePicker
                   label={label}

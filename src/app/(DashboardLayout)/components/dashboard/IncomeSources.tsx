@@ -5,7 +5,8 @@ import {
   Grid, Stack, Typography, Box, Avatar, IconButton,
   Menu, MenuItem 
 } from "@mui/material";
-import { IconFilePlus, IconCash, IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconFilePlus, IconCash, IconEdit, IconTrash, IconHelp} from "@tabler/icons-react";
+import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
 
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
@@ -15,7 +16,22 @@ import EditIncomeSourceDialog from "./EditIncomeSourcesDialog";
 
 const IncomeSources = () => {
   const { user } = useSupabaseAuth();
-  const { data: sources, loading, save, remove } = useIncomeSources();
+  const { data: sources, loading, save, remove, refresh } = useIncomeSources();
+
+  let sortedSources;
+  if (sources) {
+    sortedSources = sources!.slice().sort((a, b) => {
+        // Example: sort alphabetically by type first, then label
+        const typeA = a.type.toLowerCase();
+        const typeB = b.type.toLowerCase();
+        if (typeA !== typeB) return typeA.localeCompare(typeB);
+
+        let labelA = "", labelB = "";
+        try { labelA = JSON.parse(a.data).label; } catch {}
+        try { labelB = JSON.parse(b.data).label; } catch {}
+        return labelA.localeCompare(labelB);
+    });
+  }
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
@@ -45,6 +61,7 @@ const IncomeSources = () => {
 
   const handleSave = async (input: { type: string; data: string; id?: string }) => {
     await save(input);
+    await refresh();
     handleCloseDialog();
   };
 
@@ -78,13 +95,13 @@ const IncomeSources = () => {
             open={Boolean(menuAnchor)}
             onClose={() => setMenuAnchor(null)}
           >
-            <MenuItem onClick={() => handleSelectType("Retirement Savings")}>
+            <MenuItem onClick={() => handleSelectType("retirement-savings")}>
               Retirement Savings
             </MenuItem>
-            <MenuItem onClick={() => handleSelectType("Social Security")}>
+            <MenuItem onClick={() => handleSelectType("social-security")}>
               Social Security Benefits
             </MenuItem>
-            <MenuItem onClick={() => handleSelectType("FERS Pension")}>
+            <MenuItem onClick={() => handleSelectType("fers-pension")}>
               FERS Pension
             </MenuItem>
           </Menu>
@@ -93,8 +110,9 @@ const IncomeSources = () => {
     >
       <EditIncomeSourceDialog
         open={openEditDialog}
+        sources={sources}   
         sourceId={editingSourceId}
-        defaultType={newSourceType} // NEW
+        defaultType={newSourceType}
         onClose={handleCloseDialog}
         onSave={handleSave}
       />
@@ -106,29 +124,55 @@ const IncomeSources = () => {
           <Typography>No income sources yet. </Typography>
         )}
 
-        {!loading && sources && sources.length > 0 && (
+        {!loading && sortedSources && sortedSources.length > 0 && (
           <Stack spacing={2}>
-            {sources.map((src) => (
-              <Grid container key={src.id} spacing={1} alignItems="center">
-                <Grid size={{ xs: 8 }}>
-                  <Typography>
-                    <strong>{src.type}</strong>: {src.data}
-                  </Typography>
+           {sortedSources.map((src) => {
+              let label = "";
+              try {
+                label = JSON.parse(src.data).label;
+              } catch {
+                label = "(unknown)";
+              }
+              return (
+                <Grid
+                    container
+                    key={src.id}
+                    spacing={1}
+                    alignItems="center"
+                    >
+                    <Grid size={{ xs: 8 }} container alignItems="center" spacing={1}>
+                        <Box display="flex" alignItems="center" gap={1}>
+                          {IncomeSourcesIcon[src.type] || <IconHelp size={20} />}
+                          <Typography variant="body1"sx={{ lineHeight: 1 }}>
+                            {label}
+                          </Typography>
+                        </Box>
+                    </Grid>
+
+                    <Grid size={{ xs: 4 }} container justifyContent="flex-end" spacing={1}>
+                      <Grid>
+                        <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => handleEdit(src.id!)}
+                        >
+                            <IconEdit />
+                        </IconButton>
+                        </Grid>
+
+                        <Grid>
+                        <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => handleDelete(src.id!)}
+                        >
+                            <IconTrash />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
                 </Grid>
-                <Grid size={{ xs: 4 }} container justifyContent="flex-end" spacing={1}>
-                  <Grid>
-                    <IconButton size="small" color="primary" onClick={() => handleEdit(src.id!)}>
-                      <IconEdit />
-                    </IconButton>
-                  </Grid>
-                  <Grid>
-                    <IconButton size="small" color="error" onClick={() => handleDelete(src.id!)}>
-                      <IconTrash />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </Grid>
-            ))}
+              );
+            })}
           </Stack>
         )}
       </Box>
