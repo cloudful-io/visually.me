@@ -1,27 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
-import { 
-  Grid, Stack, Typography, Box, Avatar, IconButton,
-  Menu, MenuItem 
-} from "@mui/material";
+import { useState } from "react";
+import {  Grid, Stack, Typography, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { IconFilePlus, IconCash, IconEdit, IconTrash, IconHelp} from "@tabler/icons-react";
-import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
-
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
 import { useIncomeSources } from "@/lib/incomeSources/hook";
-
-import EditIncomeSourceDialog from "./EditIncomeSourcesDialog";
+import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 
 const IncomeSources = () => {
-  const { user } = useSupabaseAuth();
   const { data: sources, loading, save, remove, refresh } = useIncomeSources();
 
   let sortedSources;
   if (sources) {
     sortedSources = sources!.slice().sort((a, b) => {
-        // Example: sort alphabetically by type first, then label
+        // Sort alphabetically by type first, then label
         const typeA = a.type.toLowerCase();
         const typeB = b.type.toLowerCase();
         if (typeA !== typeB) return typeA.localeCompare(typeB);
@@ -36,7 +29,6 @@ const IncomeSources = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
 
-  // NEW ----- menu state
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [newSourceType, setNewSourceType] = useState<string | null>(null);
 
@@ -95,14 +87,14 @@ const IncomeSources = () => {
             open={Boolean(menuAnchor)}
             onClose={() => setMenuAnchor(null)}
           >
+            <MenuItem onClick={() => handleSelectType("fers-pension")}>
+              FERS Pension
+            </MenuItem>
             <MenuItem onClick={() => handleSelectType("retirement-savings")}>
               Retirement Savings
             </MenuItem>
             <MenuItem onClick={() => handleSelectType("social-security")}>
               Social Security Benefits
-            </MenuItem>
-            <MenuItem onClick={() => handleSelectType("fers-pension")}>
-              FERS Pension
             </MenuItem>
           </Menu>
         </>
@@ -120,7 +112,7 @@ const IncomeSources = () => {
       <Box mt={2}>
         {loading && <Typography>Loading income sources…</Typography>}
 
-        {!loading && (!sources || sources.length === 0) && (
+        {!loading && (!sortedSources || sortedSources.length === 0) && (
           <Typography>No income sources yet. </Typography>
         )}
 
@@ -135,11 +127,11 @@ const IncomeSources = () => {
               }
               return (
                 <Grid
-                    container
-                    key={src.id}
-                    spacing={1}
-                    alignItems="center"
-                    >
+                  container
+                  key={src.id}
+                  spacing={1}
+                  alignItems="center"
+                >
                     <Grid size={{ xs: 8 }} container alignItems="center" spacing={1}>
                         <Box display="flex" alignItems="center" gap={1}>
                           {IncomeSourcesIcon[src.type] || <IconHelp size={20} />}

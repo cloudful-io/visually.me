@@ -1,17 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Grid,
-  TextField,
-  CircularProgress,
-  MenuItem,
-} from "@mui/material";
+import { useEffect, useState } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress } from "@mui/material";
 import { useForm } from "@/hooks/useForm";
 import EditRetirementSavings from "./EditRetirementSavings";
 import EditSocialSecurityBenefit from "./EditSocialSecurityBenefit";
@@ -50,7 +40,7 @@ export default function EditIncomeSourceDialog({
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
 
   // ----------------------------
-  // Child form state (for retirement-savings for now)
+  // Child form state
   // ----------------------------
   const initialRetirementSavingsValues: RetirementSavingsInput = {
     startYear: new Date().getFullYear(),
@@ -93,9 +83,20 @@ export default function EditIncomeSourceDialog({
     Component: any;
     fieldConfigs: any;
   }> = {
-    "retirement-savings": { initial: initialRetirementSavingsValues, Component: EditRetirementSavings, fieldConfigs: retirementSavingsFieldConfigs },
-    "social-security": { initial: initialSocialSecurityValues, Component: EditSocialSecurityBenefit, fieldConfigs: socialSecurityFieldConfigs },
-    "fers-pension": { initial: initialFersPensionValues, Component: EditFERSPension, fieldConfigs: fersPensionFieldConfigs },
+    "retirement-savings": { 
+      initial: initialRetirementSavingsValues, 
+      Component: EditRetirementSavings, 
+      fieldConfigs: retirementSavingsFieldConfigs 
+    },
+    "social-security": { 
+      initial: initialSocialSecurityValues, 
+      Component: EditSocialSecurityBenefit, 
+      fieldConfigs: socialSecurityFieldConfigs 
+    },
+    "fers-pension": { 
+      initial: initialFersPensionValues, 
+      Component: EditFERSPension, 
+      fieldConfigs: fersPensionFieldConfigs },
   };
 
   const currentType = typeConfig[type] ?? typeConfig["retirement-savings"];
@@ -112,7 +113,7 @@ export default function EditIncomeSourceDialog({
     currentType.fieldConfigs
   );
 
-  const isSaveDisabled = showLoading || !type.trim() || !label.trim() || (type === "retirement-savings" && childHasErrors);
+  const isSaveDisabled = showLoading || !type.trim() || !label.trim() || childHasErrors;
 
   const typeDisplayName: Record<string, string> = {
     "retirement-savings": "Retirement Savings",
@@ -139,10 +140,9 @@ export default function EditIncomeSourceDialog({
           src.type === "social-security" ||
           src.type === "fers-pension") {
         setType(src.type);
-      } else {
-        // fallback if somehow an unknown type got saved
-        setType("retirement-savings");
-      }
+        } else {
+          setType("retirement-savings");
+        }
 
         if (src.data) {
           try {
@@ -177,6 +177,7 @@ export default function EditIncomeSourceDialog({
     setLabel("");
     if (defaultType === "retirement-savings") reset(initialRetirementSavingsValues);
     else if (defaultType === "social-security") reset(initialSocialSecurityValues);
+    else if (defaultType === "fers-pension") reset(initialFersPensionValues);
     setErrors({});
   }, [open, sourceId, sources, isEditing, defaultType]);
 
@@ -200,9 +201,8 @@ export default function EditIncomeSourceDialog({
   // ----------------------------
   const handleSave = async () => {
     const rootValid = validateRoot();
-    //const childValid = type === "retirement-savings" ? /*childValidate()*/ true : true;
 
-    if (!rootValid /*|| !childValid*/) return;
+    if (!rootValid) return;
 
     await onSave({
       id: sourceId ?? undefined,
@@ -244,7 +244,7 @@ export default function EditIncomeSourceDialog({
                 }}
                 required
                 error={!!errors.label}
-                helperText={errors.label || "Example: Bank of America Roth IRA"}
+                helperText={errors.label || "Example: Bank of America Roth IRA, or Navy Pension"}
               />
             </Grid>
 
@@ -257,7 +257,6 @@ export default function EditIncomeSourceDialog({
                   errors={childErrors}
                 />
               </Grid>
-            
           </Grid>
         )}
       </DialogContent>
