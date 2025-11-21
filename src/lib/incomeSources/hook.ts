@@ -2,6 +2,12 @@ import { useEffect, useState, useMemo } from "react";
 import { IncomeSourcesInput } from "@/lib/incomeSources/schema";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 
+import type {
+  FersPensionProjectionRow,
+  RetirementSavingsProjectionRow,
+  SocialSecurityBenefitProjectionRow,
+} from "financial-calcs";
+
 import {
   calculateFersPensionProjection,
   calculateRetirementSavingsProjection,
@@ -12,6 +18,20 @@ import {
 // Sort modes
 // ----------------------------
 type SortMode = "type" | "label";
+
+type AnyProjectionRow =
+  | FersPensionProjectionRow
+  | RetirementSavingsProjectionRow
+  | SocialSecurityBenefitProjectionRow;
+
+type CombinedRow = {
+  year: number;
+  age: number;
+  annualIncome: number;
+  annualInvestmentBalance: number | null;
+  sources: Record<string, number>;
+};
+
 
 export function useIncomeSources({ lazy = false } = {}) {
   const [data, setData] = useState<IncomeSourcesInput[] | null>(null);
@@ -190,6 +210,123 @@ export function useIncomeSources({ lazy = false } = {}) {
     return [];
   }
 
+  function isFersPensionRow(
+    row: AnyProjectionRow
+  ): row is FersPensionProjectionRow {
+    return "pension" in row;
+  }
+
+  function isRetirementSavingsRow(
+    row: AnyProjectionRow
+  ): row is RetirementSavingsProjectionRow {
+    return "endingBalance" in row;
+  }
+
+  function isSocialSecurityBenefitRow(
+    row: AnyProjectionRow
+  ): row is SocialSecurityBenefitProjectionRow {
+    return "annualBenefit" in row;
+  }
+
+
+  function getAllProjectionTables() {
+    if (!computedSources) return [];
+
+    return computedSources.map(src => ({
+      id: src.id!,
+      type: src.type,
+      label: src.label,
+      rows: getProjectionTable(src.id!)
+    }));
+  }
+
+  function getCombinedProjection(): CombinedRow[] {
+    const all = getAllProjectionTables();
+    if (!all.length) return [];
+
+    // Get union of all years in all sources
+    const allYears = Array.from(
+      new Set(all.flatMap(src => src.rows.map(r => r.year)))
+    ).sort((a, b) => a - b);
+
+    const result: CombinedRow[] = [];
+
+    for (const year of allYears) {
+      let age = null;
+      let annualIncome = 0;
+      let annualInvestmentBalance = 0;
+      const sources: Record<string, number> = {};
+
+      for (const src of all) {
+        const row = src.rows.find(r => r.year === year);
+        if (!row) continue;
+
+        if (age === null) age = row.age ?? null;
+
+        if (isFersPensionRow(row)) {
+          let income = 0;
+
+          if (row.salary && row.salary > 0) {
+            income = row.salary; 
+          } else if (row.pension && row.pension > 0) {
+            income = row.pension; 
+          }
+          annualIncome += income;
+          sources[src.id] = income;
+        }
+
+        if (isRetirementSavingsRow(row)) {
+          const income = row.annualWithdraw ?? 0;
+          const balance = row.endingBalance ?? 0;
+
+          annualIncome += income;
+          annualInvestmentBalance += balance;
+          sources[src.id] = income;
+        }
+
+        if (isSocialSecurityBenefitRow(row)) {
+          const income = row.annualBenefit ?? 0;
+
+          annualIncome += income;
+          sources[src.id] = income;
+        }
+      }
+
+      result.push({
+        year,
+        age: age ?? 0,
+        annualIncome,
+        annualInvestmentBalance,
+        sources
+      });
+    }
+    return result;
+  }
+
+  function getCombinedChartRows() {
+    const combined = getCombinedProjection();
+    const flat: any[] = [];
+
+    for (const row of combined) {
+      const obj: any = {
+        year: row.year,
+        age: row.age,
+        annualIncome: row.annualIncome,
+        annualInvestmentBalance: row.annualInvestmentBalance,
+      };
+
+      // Flatten each source into a top-level key
+      for (const [sourceId, income] of Object.entries(row.sources)) {
+        obj[sourceId] = income;
+      }
+
+      flat.push(obj);
+    }
+
+    return flat;
+  }
+
+
   return {
     data,
     loading,
@@ -200,6 +337,9 @@ export function useIncomeSources({ lazy = false } = {}) {
     getComputed,
     getById,
     getProjectionTable,
+    getAllProjectionTables,
+    getCombinedProjection,
+    getCombinedChartRows,
     computedSources,
   };
 }
