@@ -103,7 +103,14 @@ const CollegeTuitionProjection = () => {
         );
       })()}
       {showChart && rows.length > 0 && !error && (
-        <MUIBarChart data={rows} dataKey="endingBalance" xKey="year" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
+        <MUIBarChart 
+          data={rows} 
+          dataKeys={[
+            { key: "endingBalance", label: "End of Year Balance ($)" },
+            { key: "annualWithdraw", label: "Tuition Withdraw ($)" },
+          ]}
+          xKey="year" 
+          title="College Savings and Tuition Over Time" />
       )}
       {rows.length > 0 && !error && (
         <ProjectionTable

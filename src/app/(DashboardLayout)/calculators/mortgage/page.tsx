@@ -138,10 +138,11 @@ const MortgageProjection = () => {
       {showChart && rows.length > 0 && !error && (
         <MUIBarChart<YearlyBalanceRow>
           data={chartData}
-          dataKey="balance"
+          dataKeys={[
+            { key: "balance", label: "Remaining Balance ($)" },
+          ]}
           xKey="year"
-          title="Remaining Mortgage Balance Over Time"
-          yLabel="Balance ($)"
+          title="Mortgage Amortization"
         />
       )}
 

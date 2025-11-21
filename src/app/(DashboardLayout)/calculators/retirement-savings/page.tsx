@@ -16,6 +16,7 @@ import {
   Box,
   Grid,
   Button,
+  Divider,
 } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -102,7 +103,14 @@ const RetirementSavingsProjection = () => {
         );
       })()}
       {showChart && rows.length > 0 && !error && (
-        <MUIBarChart data={rows} dataKey="endingBalance" xKey="year" yLabel="End of Year Balance ($)" title="End of Year Balance Over Time" />
+        <MUIBarChart 
+          data={rows} 
+          dataKeys={[
+            { key: "endingBalance", label: "End of Year Balance ($)" },
+            { key: "annualWithdraw", label: "Annual Withdrawal ($)" },
+          ]}
+          xKey="year" 
+          title="Retirement Savings and Withdrawal Over Time" />
       )}
       {rows.length > 0 && !error && (
         <ProjectionTable

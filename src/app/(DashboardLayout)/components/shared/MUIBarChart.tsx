@@ -1,31 +1,60 @@
-import { Box, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
 
+type DataKeyOption<T> = {
+  key: T extends any ? keyof T : never;
+  label: string;
+};
+
 type Props<T extends Record<string, any>> = {
   data: T[];
-  dataKey: keyof T; // Y-axis
-  xKey: keyof T;    // X-axis
+  dataKeys: DataKeyOption<T>[];   // NEW: array instead of single key
+  xKey: keyof T;
   title: string;
-  yLabel?: string;
   height?: number;
 };
 
 export function MUIBarChart<T extends Record<string, any>>({
   data,
-  dataKey,
+  dataKeys,
   xKey,
   title,
-  yLabel,
   height = 300,
 }: Props<T>) {
   const theme = useTheme();
 
+  // If multiple dataKeys passed → default to first one
+  const [selectedKey, setSelectedKey] = useState<DataKeyOption<T>>(dataKeys[0]);
+
   return (
-    <Box mt={4} sx={{ width: '100%', height }}>
+    <Box mt={4} sx={{ width: '100%' }}>
       <Typography variant="h6" gutterBottom>
         {title}
       </Typography>
+
+      {dataKeys.length > 1 && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={selectedKey.key}
+            onChange={(e, value) => {
+              if (!value) return;
+              const found = dataKeys.find((k) => k.key === value);
+              if (found) setSelectedKey(found);
+            }}
+          >
+            {dataKeys.map((opt) => (
+              <ToggleButton key={String(opt.key)} value={opt.key}>
+                {opt.label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Box>
+      )}
+
       <BarChart
         borderRadius={8}
         xAxis={[
@@ -36,16 +65,17 @@ export function MUIBarChart<T extends Record<string, any>>({
         ]}
         yAxis={[
           {
-            label: yLabel,
-            width: 90, // allows large numbers to display
+            label: selectedKey.label, 
+            width: 100,
           },
         ]}
         series={[
           {
             data: data.map((item) =>
-              typeof item[dataKey] === 'number' ? item[dataKey] : 0
+              typeof item[selectedKey.key] === 'number'
+                ? item[selectedKey.key]
+                : 0
             ),
-            
           },
         ]}
         height={height}

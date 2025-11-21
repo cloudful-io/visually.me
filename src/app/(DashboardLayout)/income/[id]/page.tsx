@@ -7,6 +7,11 @@ import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarCha
 import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
 import { CircularProgress, Typography } from "@mui/material";
 
+type DataKeyOption<T> = {
+  key: T extends any ? keyof T : never;
+  label: string;
+};
+
 // Projection row union
 import type {
   FersPensionProjectionRow,
@@ -80,12 +85,30 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       ? ("endingBalance" as keyof ProjectionRow)
       : ("annualBenefit" as keyof ProjectionRow);
 
+
   const yLabel =
     source.type === "fers-pension"
       ? "FERS Pension ($)"
       : source.type === "retirement-savings"
       ? "End of Year Balance ($)"
       : "Annual Social Security Benefit ($)";
+
+  const DATA_KEYS: Record<string, DataKeyOption<ProjectionRow>[]> = {
+    "fers-pension": [
+        { key: "pension", label: "Annual Pension ($)" },
+        { key: "salary", label: "Annual Salary ($)" },
+    ],
+    "retirement-savings": [
+        { key: "endingBalance", label: "End of Year Balance ($)" },
+        { key: "annualWithdraw", label: "Annual Withdrawal ($)" },
+    ],
+    "social-security": [
+        { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
+    ],
+    };
+
+  const dataKeys = DATA_KEYS[source.type] || [];
+
 
   return (
     <PageContainer title={`${source.label} Projection`} showTitle>
@@ -96,9 +119,8 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       <MUIBarChart
         data={tableRows}
         xKey="year"
-        dataKey={dataKey}
+        dataKeys={dataKeys}
         title={`${source.label} Over Time`}
-        yLabel={yLabel}
       />
 
       <ProjectionTable

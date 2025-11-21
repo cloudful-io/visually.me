@@ -97,10 +97,11 @@ const SocialSecurityProjection = () => {
       {showChart && rows.length > 0 && !error && (
         <MUIBarChart
           data={rows}
-          dataKey="annualBenefit"
+          dataKeys={[
+            { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
+          ]}
           xKey="year"
           title="Annual Social Security Benefit Over Time"
-          yLabel="Annual Social Security Benefit ($)"
         />
       )}
 

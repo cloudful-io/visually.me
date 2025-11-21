@@ -126,20 +126,22 @@ const IncomeSources = () => {
                     <Grid size={{ xs: 8 }} container alignItems="center" spacing={1}>
                         <Box display="flex" alignItems="center" gap={1}>
                           {IncomeSourcesIcon[src.type] || <IconHelp size={20} />}
-                          <Link href={`/income/${src.id}`} passHref color="primary.main">
-                            <Typography 
-                              variant="body1" 
-                              color="primary" 
-                              sx={{ 
-                                lineHeight: 1, 
-                                cursor: "pointer", 
-                                textDecoration: "none", 
-                                "&:hover": { color: "primary.main" }, 
-                              }}>
-                              {label} {' '}
-                              ({src.firstYear})
-                            </Typography>
-                          </Link>
+                          <Typography
+                            component={Link}
+                            href={`/income/${src.id}`}
+                            color="primary"
+                            sx={{
+                              textDecoration: "none",
+                              cursor: "pointer",
+                              lineHeight: 1,
+
+                              "&:hover": { textDecoration: "none", color: "primary.dark" },
+                              "&:active": { textDecoration: "none" },
+                              "&:visited": { textDecoration: "none" },
+                            }}
+                          >
+                            {label} ({src.firstYear})
+                          </Typography>
                         </Box>
                     </Grid>
 

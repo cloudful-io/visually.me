@@ -106,10 +106,12 @@ const FersPensionProjection = () => {
       {showChart && rows.length > 0 && !error && (
         <MUIBarChart
           data={rows}
-          dataKey="pension"
+          dataKeys={[
+            { key: "pension", label: "Annual Pension ($)" },
+            { key: "salary", label: "Annual Salary ($)" },
+          ]}
           xKey="year" 
-          title="FERS Pension Over Time"
-          yLabel="FERS Pension ($)"
+          title="Income and Pension Over Time"
         />
       )}
 
@@ -125,7 +127,6 @@ const FersPensionProjection = () => {
             { key: 'colaApplied', label: 'COLA Applied (%)' },
             { key: 'pension', label: 'Annual Pension ($)', currency: true },
             { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true },
-            
           ]}
         />
       )}
