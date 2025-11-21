@@ -303,6 +303,33 @@ export function useIncomeSources({ lazy = false } = {}) {
     return result;
   }
 
+  function getCombinedBalanceChartRows() {
+    const combined = getCombinedProjection();
+    const flat: any[] = [];
+
+    for (const row of combined) {
+      const obj: any = {
+        year: row.year,
+        age: row.age,
+        annualIncome: row.annualIncome,
+        annualInvestmentBalance: row.annualInvestmentBalance,
+      };
+
+      // Flatten investment balances per retirement-savings source
+      for (const src of getAllProjectionTables()) {
+        const r = src.rows.find(r => r.year === row.year);
+
+        if (r && "endingBalance" in r) {
+          obj[src.id] = r.endingBalance ?? 0;
+        }
+      }
+
+      flat.push(obj);
+    }
+
+    return flat;
+  }
+
   function getCombinedChartRows() {
     const combined = getCombinedProjection();
     const flat: any[] = [];
@@ -340,6 +367,7 @@ export function useIncomeSources({ lazy = false } = {}) {
     getAllProjectionTables,
     getCombinedProjection,
     getCombinedChartRows,
+    getCombinedBalanceChartRows,
     computedSources,
   };
 }

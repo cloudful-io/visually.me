@@ -8,81 +8,116 @@ type DataKeyOption<T> = {
   label: string;
 };
 
-type Props<T extends Record<string, any>> = {
+type BaseProps<T extends Record<string, any>> = {
   data: T[];
-  dataKeys: DataKeyOption<T>[]; 
   xKey: keyof T;
   title: string;
   height?: number;
   stacked?: boolean;
+  overrideSeries?: {
+    id: string;
+    label: string;
+    data: number[];
+    stack?: string;
+  }[];
 };
 
-export function MUIBarChart<T extends Record<string, any>>({
-  data,
-  dataKeys,
-  xKey,
-  title,
-  height = 300,
-  stacked = false,
-}: Props<T>) {
+/** 
+ * Two valid prop shapes:
+ * 
+ * 1) DEFAULT MODE (income charts):
+ *    - dataKeys REQUIRED
+ *    - overrideSeries NOT required
+ *
+ * 2) OVERRIDE MODE (balance view):
+ *    - overrideSeries REQUIRED
+ *    - dataKeys should NOT be required
+ */
+type Props<T extends Record<string, any>> =
+  | (BaseProps<T> & {
+      overrideSeries?: undefined;
+      dataKeys: DataKeyOption<T>[];
+    })
+  | (BaseProps<T> & {
+      overrideSeries: {
+        id: string;
+        label: string;
+        data: number[];
+        stack?: string;
+      }[];
+      dataKeys?: DataKeyOption<T>[]; // ignored in override mode
+    });
+
+export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
+  const {
+    data,
+    xKey,
+    title,
+    height = 300,
+    stacked = false,
+    overrideSeries,
+  } = props;
+
+  const dataKeys = props.dataKeys ?? []; // may not exist in override mode
   const theme = useTheme();
 
-  // Only used if NOT stacked:
-  const [selectedKey, setSelectedKey] = useState<DataKeyOption<T>>(dataKeys[0]);
+  const [selectedKey, setSelectedKey] = useState(
+    dataKeys.length > 0 ? dataKeys[0] : null
+  );
 
   const xAxisData = data.map((item) => String(item[xKey] ?? ''));
 
-  // -------------------------------
-  // MULTI-SERIES STACKED VERSION
-  // -------------------------------
-  const series = stacked
+  // ----------- SERIES LOGIC -------------
+  const series = overrideSeries
+    ? overrideSeries
+    : stacked
     ? dataKeys.map((opt) => ({
         id: String(opt.key),
         label: opt.label,
-        stack: 'income',                
-        data: data.map((row) => {
-          const v = row[opt.key];
-          return typeof v === "number" ? v : 0;
-        }),
+        stack: 'income',
+        data: data.map((row) =>
+          typeof row[opt.key] === 'number' ? row[opt.key] : 0
+        ),
       }))
-    : [
+    : selectedKey
+    ? [
         {
           id: String(selectedKey.key),
           label: selectedKey.label,
           data: data.map((row) =>
-            typeof row[selectedKey.key] === 'number'
-              ? row[selectedKey.key]
-              : 0
+            typeof row[selectedKey.key] === 'number' ? row[selectedKey.key] : 0
           ),
         },
-      ];
+      ]
+    : [];
 
   return (
     <Box mt={4} sx={{ width: '100%' }}>
-      <Typography variant="h6" gutterBottom>
-        {title}
-      </Typography>
+      <Typography variant="h6" gutterBottom>{title}</Typography>
 
-      {!stacked && dataKeys.length > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <ToggleButtonGroup
-            size="small"
-            exclusive
-            value={selectedKey.key}
-            onChange={(e, value) => {
-              if (!value) return;
-              const found = dataKeys.find((k) => k.key === value);
-              if (found) setSelectedKey(found);
-            }}
-          >
-            {dataKeys.map((opt) => (
-              <ToggleButton key={String(opt.key)} value={opt.key}>
-                {opt.label}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </Box>
-      )}
+      {!overrideSeries &&
+        !stacked &&
+        dataKeys.length > 1 &&
+        selectedKey && (
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={selectedKey.key}
+              onChange={(e, value) => {
+                if (!value) return;
+                const found = dataKeys.find((k) => k.key === value);
+                if (found) setSelectedKey(found);
+              }}
+            >
+              {dataKeys.map((opt) => (
+                <ToggleButton key={String(opt.key)} value={opt.key}>
+                  {opt.label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Box>
+        )}
 
       <BarChart
         borderRadius={8}
@@ -91,9 +126,9 @@ export function MUIBarChart<T extends Record<string, any>>({
         series={series}
         height={height}
         colors={
-          stacked
-            ? undefined // let MUI auto-generate multiple colors
-            : [theme.palette.primary.main] // single color for non-stacked
+          overrideSeries || stacked
+            ? undefined
+            : [theme.palette.primary.main]
         }
       />
     </Box>

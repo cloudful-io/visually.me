@@ -1,15 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { useIncomeSources } from "@/lib/incomeSources/hook";
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress, Typography, ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
 
 export default function IncomeSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedSources } =
     useIncomeSources();
+
+  const [mode, setMode] = useState<"income" | "balance">("income");
 
   if (loading || !computedSources) {
     return (
@@ -20,17 +22,23 @@ export default function IncomeSummaryPage() {
     );
   }
 
-  // Chart rows (flattened)
   const chartRows = getCombinedChartRows();
-
-  // Table rows (not flattened)
   const tableRows = getCombinedProjection();
 
-  // Chart data keys (one per source)
+  // Income data keys (one per source)
   const dataKeys = computedSources.map((src) => ({
     key: src.id!,
     label: src.label,
   }));
+
+  // For balance view (single series)
+  const balanceSeries = [
+    {
+      id: "annualInvestmentBalance",
+      label: "Investment Balance",
+      data: chartRows.map((r) => r.annualInvestmentBalance ?? 0),
+    },
+  ];
 
   const tableColumns = [
     { key: "year", label: "Year" },
@@ -40,18 +48,35 @@ export default function IncomeSummaryPage() {
   ];
 
   return (
-    <PageContainer title="Income Summary" showTitle>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Combined Income Over Time
-      </Typography>
+    <PageContainer title="Retirement Income and Investment Over Time" showTitle>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <ToggleButtonGroup
+          exclusive
+          value={mode}
+          onChange={(e, v) => v && setMode(v)}
+          size="small"
+        >
+          <ToggleButton value="income">Income</ToggleButton>
+          <ToggleButton value="balance">Investment Balance</ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
 
-      <MUIBarChart
-        data={chartRows}
-        xKey="year"
-        dataKeys={dataKeys}
-        stacked
-        title="Annual Income by Source"
-      />
+      {mode === "income" ? (
+        <MUIBarChart
+          data={chartRows}
+          xKey="year"
+          dataKeys={dataKeys}
+          stacked
+          title="Annual Income by Source"
+        />
+      ) : (
+        <MUIBarChart
+          data={chartRows}
+          xKey="year"
+          title="Total Investment Balance"
+          overrideSeries={balanceSeries}
+        />
+      )}
 
       <ProjectionTable
         rows={tableRows}
