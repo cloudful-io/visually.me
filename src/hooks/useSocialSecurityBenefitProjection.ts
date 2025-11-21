@@ -11,16 +11,12 @@ export function useSocialSecurityBenefitProjection(formValues: SocialSecurityBen
 
   const generateTable = () => {
     try {
-      const results = calculateSocialSecurityBenefitProjection(formValues);
-      setRows(results);
+      const data = calculateSocialSecurityBenefitProjection(formValues);
+      setRows(data);
       setError(null); // clear any previous error
     }
     catch (err) {
-      if (err instanceof Error) {
-        setError(err);
-      } else {
-        setError(new Error("Unknown error occurred"));
-      }
+      setError(err instanceof Error ? err : new Error("Unknown error occurred"));
       setRows([]);
     }
   };

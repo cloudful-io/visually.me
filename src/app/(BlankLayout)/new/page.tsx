@@ -30,16 +30,18 @@ export default function OnboardingPage() {
   const [birthYear, setBirthYear] = useState(1970);
   const [targetRetirementAge, setTargetRetirementAge] = useState(62);
   const [startYear, setStartYear] = useState(currentYear);
+  const [yearsToProject, setYearsToProject] = useState(40);
 
   // Step navigation
   const [activeStep, setActiveStep] = useState(0);
 
-  const canContinueStep2 = displayName && birthYear && targetRetirementAge && startYear;
+  const canContinueStep2 = displayName && birthYear && targetRetirementAge && startYear && yearsToProject;
 
   const validate = {
     birthYear: birthYear && (birthYear < 1900 || birthYear > currentYear),
     targetRetirementAge: targetRetirementAge && (targetRetirementAge < 40 || targetRetirementAge > 80),
     startYear: startYear && (startYear < 1900 || startYear > currentYear),
+    yearsToProject: yearsToProject && (yearsToProject <= 0 || yearsToProject > 80)
   };
 
   const handleNext = () => setActiveStep((prev) => prev + 1);
@@ -67,7 +69,11 @@ export default function OnboardingPage() {
       return;
     }
     else if (!startYear) {
-      setErrorMsg("Please provide the year to project data");
+      setErrorMsg("Please provide the year to start projecting data");
+      return;
+    }
+    else if (!yearsToProject) {
+      setErrorMsg("Please provide the number of years to project");
       return;
     }
     
@@ -90,6 +96,7 @@ export default function OnboardingPage() {
         birthYear,
         startYear,
         targetRetirementAge,
+        yearsToProject
       });
       
       // Redirect user to dashboard
@@ -218,6 +225,22 @@ export default function OnboardingPage() {
                 }}
                 fullWidth
               />
+              <TextField
+                label="Number of Years to Show Projection"
+                type="number"
+                value={yearsToProject}
+                disabled={isSaving}
+                onChange={(e) => setYearsToProject(Number(e.target.value))}
+                error={!!validate.yearsToProject}
+                helperText={validate.yearsToProject ? "Enter a number between 1 and 80" : ""}
+                slotProps={{
+                  htmlInput: {
+                    min: 1,
+                    max: 80,
+                  },
+                }}
+                fullWidth
+              />
             </Box>
             <Box mt={3} display="flex" justifyContent="space-between" gap={2}>
               <Button variant="outlined" disabled={isSaving} onClick={handleBack}>
@@ -226,7 +249,7 @@ export default function OnboardingPage() {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={!canContinueStep2 || validate.birthYear || validate.targetRetirementAge || validate.startYear || isSaving}
+                disabled={!canContinueStep2 || validate.birthYear || validate.targetRetirementAge || validate.startYear || validate.yearsToProject || isSaving}
                 onClick={handleSave}
                 >
                 {isSaving ? <CircularProgress size={20} color="inherit" /> : "Save Profile"}

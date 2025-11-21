@@ -123,7 +123,7 @@ const UserAttributes = () => {
                   />
                 </Box>
                 <Typography variant="subtitle1">
-                  <strong>Year to Start Projecting Data:</strong> {attrs.startYear ?? "—"}
+                  <strong>Years to Project Data:</strong> {(attrs.startYear && attrs.yearsToProject) ? `${attrs.startYear} to ${attrs.startYear+attrs.yearsToProject-1}`  : "—"}
                 </Typography>
               </Stack>
             )}

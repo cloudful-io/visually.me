@@ -3,6 +3,25 @@ import { encryptForUser, decryptForUser } from "@/services/encryption-service";
 import { IncomeSourcesInput, EncryptedIncomeSourcesRow } from "./schema";
 
 // ----------------------------
+// Fetch a specific income source by ID
+// ----------------------------
+export async function getIncomeSourceById(userId: string, id: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("income_sources")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", userId)
+    .single();
+
+  if (error) throw error;
+  if (!data) return null;
+
+  return decryptRow(data, userId);
+}
+
+// ----------------------------
 // Fetch all income sources for a user
 // ----------------------------
 export async function getIncomeSources(userId: string) {
@@ -16,11 +35,7 @@ export async function getIncomeSources(userId: string) {
   if (error) throw error;
   if (!data) return [];
 
-  return data.map((row: EncryptedIncomeSourcesRow & { data_enc: any }) => ({
-    id: row.id,
-    type: row.type,
-    data: row.data_enc ? JSON.parse(decryptForUser(userId, row.data_enc)) : null,
-  }));
+  return data.map(row => decryptRow(row, userId));
 }
 
 // ----------------------------
@@ -59,4 +74,14 @@ export async function deleteIncomeSource(userId: string, id: string) {
     .eq("user_id", userId);
 
   if (error) throw error;
+}
+
+function decryptRow(row: EncryptedIncomeSourcesRow, userId: string) {
+  return {
+    id: row.id,
+    type: row.type,
+    data: row.data_enc
+      ? JSON.parse(decryptForUser(userId, row.data_enc))
+      : null,
+  };
 }

@@ -182,8 +182,10 @@ export default function EditIncomeSourceDialog({
   }, [open, sourceId, sources, isEditing, defaultType]);
 
   useEffect(() => {
-    reset(currentType.initial);
-  }, [type]);
+    if (!isEditing) {
+      reset(currentType.initial);
+    }
+  }, [type, isEditing]);
 
   // ----------------------------
   // Validation

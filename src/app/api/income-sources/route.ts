@@ -1,20 +1,36 @@
 // /app/api/income-sources/route.ts
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getIncomeSources, upsertIncomeSource, deleteIncomeSource } from "@/lib/incomeSources/service";
+import { getIncomeSourceById, getIncomeSources, upsertIncomeSource, deleteIncomeSource } from "@/lib/incomeSources/service";
 import { IncomeSourcesInput } from "@/lib/incomeSources/schema";
 
 // ----------------------------
 // GET /api/income-sources
+// Supports: ?id=123  OR  GET all
 // ----------------------------
-export async function GET() {
+export async function GET(req: Request) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+
+  if (id) {
+    // Fetch a single income source
+    const source = await getIncomeSourceById(user.id, id);
+    if (!source) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+    return NextResponse.json(source);
+  }
+
+  // Otherwise fetch all
   const sources = await getIncomeSources(user.id);
   return NextResponse.json(sources);
 }

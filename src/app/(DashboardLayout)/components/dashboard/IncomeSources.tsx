@@ -1,30 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {  Grid, Stack, Typography, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { IconFilePlus, IconCash, IconEdit, IconTrash, IconHelp} from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
 import { useIncomeSources } from "@/lib/incomeSources/hook";
+import { useUserAttributes } from "@/lib/userAttributes/hook";
+
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 
 const IncomeSources = () => {
-  const { data: sources, loading, save, remove, refresh } = useIncomeSources();
+  const { getComputed, loading, save, remove, refresh } = useIncomeSources();
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
 
-  let sortedSources;
-  if (sources) {
-    sortedSources = sources!.slice().sort((a, b) => {
-        // Sort alphabetically by type first, then label
-        const typeA = a.type.toLowerCase();
-        const typeB = b.type.toLowerCase();
-        if (typeA !== typeB) return typeA.localeCompare(typeB);
-
-        let labelA = "", labelB = "";
-        try { labelA = JSON.parse(a.data).label; } catch {}
-        try { labelB = JSON.parse(b.data).label; } catch {}
-        return labelA.localeCompare(labelB);
-    });
-  }
+  const sources = getComputed("type");
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
@@ -112,13 +103,13 @@ const IncomeSources = () => {
       <Box mt={2}>
         {loading && <Typography>Loading income sources…</Typography>}
 
-        {!loading && (!sortedSources || sortedSources.length === 0) && (
+        {!loading && (!sources || sources.length === 0) && (
           <Typography>No income sources yet. </Typography>
         )}
 
-        {!loading && sortedSources && sortedSources.length > 0 && (
+        {!loading && sources && sources.length > 0 && (
           <Stack spacing={2}>
-           {sortedSources.map((src) => {
+           {sources.map((src) => {
               let label = "";
               try {
                 label = JSON.parse(src.data).label;
@@ -135,9 +126,20 @@ const IncomeSources = () => {
                     <Grid size={{ xs: 8 }} container alignItems="center" spacing={1}>
                         <Box display="flex" alignItems="center" gap={1}>
                           {IncomeSourcesIcon[src.type] || <IconHelp size={20} />}
-                          <Typography variant="body1"sx={{ lineHeight: 1 }}>
-                            {label}
-                          </Typography>
+                          <Link href={`/income/${src.id}`} passHref color="primary.main">
+                            <Typography 
+                              variant="body1" 
+                              color="primary" 
+                              sx={{ 
+                                lineHeight: 1, 
+                                cursor: "pointer", 
+                                textDecoration: "none", 
+                                "&:hover": { color: "primary.main" }, 
+                              }}>
+                              {label} {' '}
+                              ({src.firstYear})
+                            </Typography>
+                          </Link>
                         </Box>
                     </Grid>
 

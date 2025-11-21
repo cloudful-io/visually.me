@@ -11,16 +11,12 @@ export function useRetirementSavingsProjection(formValues: RetirementSavingsInpu
 
   const generateTable = () => {
     try {
-      const results = calculateRetirementSavingsProjection(formValues);
-      setRows(results);
+      const data = calculateRetirementSavingsProjection(formValues);
+      setRows(data);
       setError(null); // clear any previous error
     }
     catch (err) {
-      if (err instanceof Error) {
-        setError(err);
-      } else {
-        setError(new Error("Unknown error occurred"));
-      }
+      setError(err instanceof Error ? err : new Error("Unknown error occurred"));
       setRows([]);
     }
   };
