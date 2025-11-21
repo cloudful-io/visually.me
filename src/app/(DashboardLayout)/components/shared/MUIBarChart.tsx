@@ -10,7 +10,7 @@ type DataKeyOption<T> = {
 
 type Props<T extends Record<string, any>> = {
   data: T[];
-  dataKeys: DataKeyOption<T>[];   // NEW: array instead of single key
+  dataKeys: DataKeyOption<T>[];   
   xKey: keyof T;
   title: string;
   height?: number;
