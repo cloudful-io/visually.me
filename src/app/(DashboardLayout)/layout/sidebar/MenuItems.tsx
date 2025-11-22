@@ -2,6 +2,7 @@ import {
   IconHome,
   IconLayoutDashboard,
   IconUser,
+  IconCash,
   IconBuildingBank,
   IconSchool,
   IconCoin,
@@ -20,6 +21,13 @@ const Menuitems = [
     title: "Dashboard",
     icon: IconLayoutDashboard,
     href: "/dashboard",
+    authRequired: true,
+  },
+  {
+    id: uniqueId(),
+    title: "Income Sources",
+    icon: IconCash,
+    href: "/income",
     authRequired: true,
   },
 
