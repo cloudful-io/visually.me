@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
-import { useIncomeSources } from "@/lib/incomeSources/hook";
-import { CircularProgress, Typography, ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
+import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
+import { ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
 import Loading from "@/app/loading";
@@ -22,28 +22,26 @@ export default function IncomeSummaryPage() {
     );
   }
 
-  const chartRows = getCombinedChartRows();
+  const chartRows = getCombinedChartRows;
   const tableRows = getCombinedProjection();
 
   const dataKeys =
     mode === "income"
       ? computedSources.map((src) => ({
-          key: src.id!,          // row[src.id]
+          key: src.id!,          
           label: src.label,
         }))
       : computedSources
           .filter((src) => src.type === "retirement-savings")
           .map((src) => ({
-            key: `bal_${src.id}` as keyof (typeof chartRows)[number], // row["bal_x"]
+            key: `bal_${src.id}` as keyof (typeof chartRows)[number],
             label: `${src.label} Balance`,
           }));
-
-  // In balance mode, the chart should be stacked too
-  const isStacked = true;
 
   const tableColumns = [
     { key: "year", label: "Year" },
     { key: "age", label: "Age" },
+    { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true },
     { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
     { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
   ];
@@ -67,7 +65,7 @@ export default function IncomeSummaryPage() {
         data={chartRows}
         xKey="year"
         dataKeys={dataKeys}
-        stacked={isStacked}
+        stacked
         title={
           mode === "income"
             ? "Annual Income by Source"

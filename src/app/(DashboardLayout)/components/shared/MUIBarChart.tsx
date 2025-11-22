@@ -3,8 +3,8 @@ import { Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
 
-type DataKeyOption<T> = {
-  key: keyof T;
+export type DataKeyOption<T> = {
+  key: T extends any ? keyof T : never;
   label: string;
 };
 

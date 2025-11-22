@@ -1,7 +1,7 @@
 "use client";
 import React, { use, useState } from "react";
 import { IncomeSourcesIcon } from "../../components/dashboard/IncomeSourcesIcon";
-import { useIncomeSources } from "@/lib/incomeSources/hook";
+import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
@@ -30,11 +30,11 @@ interface IncomePageProps {
 
 export default function IncomePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { loading, getById, getProjectionTable } = useIncomeSources();
+  const { loading, computedSources, projectionTables } = useIncomeSources();
 
   // Get the computed source
-  const source = getById(id);
-  const tableRows: ProjectionRow[] = getProjectionTable(id) || [];
+  const source = computedSources?.find(s => s.id === id);
+  const tableRows: ProjectionRow[] = projectionTables?.[id] ?? [];
 
   if (loading || !source) {
     return (

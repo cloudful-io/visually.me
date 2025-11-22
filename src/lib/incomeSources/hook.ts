@@ -361,7 +361,6 @@ export function useIncomeSources({ lazy = false } = {}) {
     return flat;
   }
 
-
   return {
     data,
     loading,
