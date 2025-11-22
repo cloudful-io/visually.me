@@ -3,7 +3,7 @@ import { NormalizedSource } from "./types";
 
 export function useComputedSources(
   rawData: NormalizedSource[] | null,
-  attrs: any | undefined
+  userAttributes: any | undefined
 ) {
   return useMemo(() => {
     if (!rawData) return null;
@@ -13,17 +13,18 @@ export function useComputedSources(
       let label = src.label ?? "(unknown)";
       let mergedFields: any | null = null;
       try {
+        /* Merge in user attributes where applicable */
         const base = {
-          birthYear: attrs?.birthYear,
-          startYear: attrs?.startYear,
-          yearsToProject: attrs?.yearsToProject,
+          birthYear: userAttributes?.birthYear,
+          startYear: userAttributes?.startYear,
+          yearsToProject: userAttributes?.yearsToProject,
         };
-        if (src.type === "fers-pension") mergedFields = { ...parsed.fields, ...base, retirementAge: attrs?.targetRetirementAge };
-        else if (src.type === "retirement-savings") mergedFields = { ...parsed.fields, ...base, withdrawStartAge: attrs?.targetRetirementAge };
+        if (src.type === "fers-pension") mergedFields = { ...parsed.fields, ...base, retirementAge: userAttributes?.targetRetirementAge };
+        else if (src.type === "retirement-savings") mergedFields = { ...parsed.fields, ...base, withdrawStartAge: userAttributes?.targetRetirementAge };
         else if (src.type === "social-security") mergedFields = { ...parsed.fields, ...base };
       } catch { mergedFields = null; }
 
       return { ...src, label, mergedFields, firstYear: src.firstYear ?? null };
     });
-  }, [rawData, attrs]);
+  }, [rawData, userAttributes]);
 }

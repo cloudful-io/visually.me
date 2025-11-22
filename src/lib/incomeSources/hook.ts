@@ -352,7 +352,7 @@ export function useIncomeSources({ lazy = false } = {}) {
       }
 
       for (const [sourceId, balance] of Object.entries(row.balances ?? {})) {
-        obj[`bal_${sourceId}`] = balance;   
+        obj[`balance_${sourceId}`] = balance;   
       }
 
       flat.push(obj);

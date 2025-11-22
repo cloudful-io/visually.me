@@ -37,6 +37,7 @@ export function useCombinedProjections(
         if (!row) continue;
         if (age === null) age = (row as any).age ?? null;
 
+        /*  FERS Pension or Salary Income  */
         if ("pension" in row || "salary" in row) {
           let income = 0;
 
@@ -49,6 +50,7 @@ export function useCombinedProjections(
           sources[src.id] = income;
         }
 
+        /* Retirement Accounts */
         if ("endingBalance" in row) {
           const income = (row as any).annualWithdraw ?? 0;
           const balance = (row as any).endingBalance ?? 0;
@@ -58,6 +60,7 @@ export function useCombinedProjections(
           balances[src.id] = balance;
         }
 
+        /*  Social Security  */
         if ("annualBenefit" in row) {
           const income = (row as any).annualBenefit ?? 0;
           annualIncome += income;
@@ -98,7 +101,7 @@ export function useCombinedProjections(
 
       // Flatten balances per source
       for (const [srcId, balance] of Object.entries(row.balances ?? {})) {
-        obj[`bal_${srcId}`] = balance;
+        obj[`balance_${srcId}`] = balance;
       }
 
       return obj;

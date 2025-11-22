@@ -34,7 +34,7 @@ export default function IncomeSummaryPage() {
       : computedSources
           .filter((src) => src.type === "retirement-savings")
           .map((src) => ({
-            key: `bal_${src.id}` as keyof (typeof chartRows)[number],
+            key: `balance_${src.id}` as keyof (typeof chartRows)[number],
             label: `${src.label} Balance`,
           }));
 

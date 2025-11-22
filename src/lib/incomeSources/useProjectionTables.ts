@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import type { NormalizedSource } from "./types";
-import type { FersPensionProjectionRow, RetirementSavingsProjectionRow, SocialSecurityBenefitProjectionRow } from "financial-calcs";
 import type { AnyProjectionRow } from "./types";
 import { calculateFersPensionProjection, calculateRetirementSavingsProjection, calculateSocialSecurityBenefitProjection } from "financial-calcs";
 
