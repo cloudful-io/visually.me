@@ -36,13 +36,13 @@ const Menuitems = [
     subheader: "CALCULATORS",
     authRequired: false,
   },
-  {
+  /*{
     id: uniqueId(),
     title: "All Calculators",
     icon: IconCalculator,
     href: "/calculators",
     authRequired: false,
-  },
+  },*/
   {
     id: uniqueId(),
     title: "College Tuition",

@@ -1,16 +1,11 @@
 "use client";
 import React, { use, useState } from "react";
-import { IncomeSourcesIcon } from "../../components/dashboard/IncomeSourcesIcon";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
 import { CircularProgress, Typography } from "@mui/material";
-
-type DataKeyOption<T> = {
-  key: T extends any ? keyof T : never;
-  label: string;
-};
+import type { DataKeyOption } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 
 // Projection row union
 import type {
@@ -23,10 +18,6 @@ type ProjectionRow =
   | FersPensionProjectionRow
   | RetirementSavingsProjectionRow
   | SocialSecurityBenefitProjectionRow;
-
-interface IncomePageProps {
-  params: { id: string };
-}
 
 export default function IncomePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -85,7 +76,6 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       ? ("endingBalance" as keyof ProjectionRow)
       : ("annualBenefit" as keyof ProjectionRow);
 
-
   const yLabel =
     source.type === "fers-pension"
       ? "FERS Pension ($)"
@@ -108,7 +98,6 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     };
 
   const dataKeys = DATA_KEYS[source.type] || [];
-
 
   return (
     <PageContainer title={`${source.label} Projection`} showTitle>

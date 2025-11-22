@@ -56,7 +56,7 @@ export default function IncomeSummaryPage() {
           value={mode}
           onChange={(e, v) => v && setMode(v)}
         >
-          <ToggleButton value="income">Retirement Income</ToggleButton>
+          <ToggleButton value="income">Annual Retirement Income</ToggleButton>
           <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
         </ToggleButtonGroup>
       </Box>
