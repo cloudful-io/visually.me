@@ -25,7 +25,7 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Income Sources",
+    title: "Income and Investment",
     icon: IconCash,
     href: "/income",
     authRequired: true,

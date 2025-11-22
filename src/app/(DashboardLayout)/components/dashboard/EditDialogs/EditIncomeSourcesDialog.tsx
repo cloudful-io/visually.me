@@ -121,7 +121,7 @@ export default function EditIncomeSourceDialog({
     "social-security": "Social Security Benefits",
   };
 
-  const friendlyType = typeDisplayName[type] ?? "Income Source";
+  const friendlyType = typeDisplayName[type] ?? "Income / Investment";
 
   const dialogTitle = isEditing
     ? `Edit: ${friendlyType}`

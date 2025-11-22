@@ -49,7 +49,7 @@ const IncomeSources = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this income source?")) {
+    if (confirm("Are you sure you want to delete this income / investment?")) {
       await remove(id);
     }
   };
@@ -59,7 +59,7 @@ const IncomeSources = () => {
       title={
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
           <IconCash />
-          Income Sources
+          Income and Investment
         </Box>
       }
       action={
@@ -101,10 +101,10 @@ const IncomeSources = () => {
       />
 
       <Box mt={2}>
-        {loading && <Typography>Loading income sources…</Typography>}
+        {loading && <Typography>Loading income and investment…</Typography>}
 
         {!loading && (!sources || sources.length === 0) && (
-          <Typography>No income sources yet. </Typography>
+          <Typography>No income / investment yet. </Typography>
         )}
 
         {!loading && sources && sources.length > 0 && (

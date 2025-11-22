@@ -16,7 +16,7 @@ export default function IncomeSummaryPage() {
 
   if (loading || !computedSources) {
     return (
-      <PageContainer title="All Income Sources">
+      <PageContainer title="All Income / Investment Over Time" showTitle>
         <Loading/>
       </PageContainer>
     );
