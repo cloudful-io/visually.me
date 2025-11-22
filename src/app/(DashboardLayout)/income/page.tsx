@@ -6,6 +6,7 @@ import { useIncomeSources } from "@/lib/incomeSources/hook";
 import { CircularProgress, Typography, ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
+import Loading from "@/app/loading";
 
 export default function IncomeSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedSources } =
@@ -16,8 +17,7 @@ export default function IncomeSummaryPage() {
   if (loading || !computedSources) {
     return (
       <PageContainer title="All Income Sources">
-        <CircularProgress />
-        <Typography>Loading…</Typography>
+        <Loading/>
       </PageContainer>
     );
   }
@@ -25,20 +25,21 @@ export default function IncomeSummaryPage() {
   const chartRows = getCombinedChartRows();
   const tableRows = getCombinedProjection();
 
-  // Income data keys (one per source)
-  const dataKeys = computedSources.map((src) => ({
-    key: src.id!,
-    label: src.label,
-  }));
+  const dataKeys =
+    mode === "income"
+      ? computedSources.map((src) => ({
+          key: src.id!,          // row[src.id]
+          label: src.label,
+        }))
+      : computedSources
+          .filter((src) => src.type === "retirement-savings")
+          .map((src) => ({
+            key: `bal_${src.id}` as keyof (typeof chartRows)[number], // row["bal_x"]
+            label: `${src.label} Balance`,
+          }));
 
-  // For balance view (single series)
-  const balanceSeries = [
-    {
-      id: "annualInvestmentBalance",
-      label: "Investment Balance",
-      data: chartRows.map((r) => r.annualInvestmentBalance ?? 0),
-    },
-  ];
+  // In balance mode, the chart should be stacked too
+  const isStacked = true;
 
   const tableColumns = [
     { key: "year", label: "Year" },
@@ -49,35 +50,34 @@ export default function IncomeSummaryPage() {
 
   return (
     <PageContainer title="Retirement Income and Investment Over Time" showTitle>
+
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <ToggleButtonGroup
           exclusive
+          size="small"
           value={mode}
           onChange={(e, v) => v && setMode(v)}
-          size="small"
         >
-          <ToggleButton value="income">Income</ToggleButton>
-          <ToggleButton value="balance">Investment Balance</ToggleButton>
+          <ToggleButton value="income">Retirement Income</ToggleButton>
+          <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
         </ToggleButtonGroup>
       </Box>
 
-      {mode === "income" ? (
-        <MUIBarChart
-          data={chartRows}
-          xKey="year"
-          dataKeys={dataKeys}
-          stacked
-          title="Annual Income by Source"
-        />
-      ) : (
-        <MUIBarChart
-          data={chartRows}
-          xKey="year"
-          title="Total Investment Balance"
-          overrideSeries={balanceSeries}
-        />
-      )}
+      <MUIBarChart
+        data={chartRows}
+        xKey="year"
+        dataKeys={dataKeys}
+        stacked={isStacked}
+        title={
+          mode === "income"
+            ? "Annual Income by Source"
+            : "Investment Balance by Account"
+        }
+      />
 
+      {/* -----------------------
+          TABLE
+         ----------------------- */}
       <ProjectionTable
         rows={tableRows}
         columns={tableColumns}

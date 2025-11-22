@@ -30,6 +30,7 @@ type CombinedRow = {
   annualIncome: number;
   annualInvestmentBalance: number | null;
   sources: Record<string, number>;
+  balances: Record<string, number>;
 };
 
 
@@ -256,6 +257,7 @@ export function useIncomeSources({ lazy = false } = {}) {
       let annualIncome = 0;
       let annualInvestmentBalance = 0;
       const sources: Record<string, number> = {};
+      const balances: Record<string, number> = {};
 
       for (const src of all) {
         const row = src.rows.find(r => r.year === year);
@@ -282,6 +284,7 @@ export function useIncomeSources({ lazy = false } = {}) {
           annualIncome += income;
           annualInvestmentBalance += balance;
           sources[src.id] = income;
+          balances[src.id] = balance;
         }
 
         if (isSocialSecurityBenefitRow(row)) {
@@ -297,7 +300,8 @@ export function useIncomeSources({ lazy = false } = {}) {
         age: age ?? 0,
         annualIncome,
         annualInvestmentBalance,
-        sources
+        sources,
+        balances
       });
     }
     return result;
@@ -345,6 +349,10 @@ export function useIncomeSources({ lazy = false } = {}) {
       // Flatten each source into a top-level key
       for (const [sourceId, income] of Object.entries(row.sources)) {
         obj[sourceId] = income;
+      }
+
+      for (const [sourceId, balance] of Object.entries(row.balances ?? {})) {
+        obj[`bal_${sourceId}`] = balance;   
       }
 
       flat.push(obj);
