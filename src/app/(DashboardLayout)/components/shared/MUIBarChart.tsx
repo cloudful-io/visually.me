@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
+import { currencyFormatter } from "@/lib/formatters/currency";
 
 export type DataKeyOption<T> = {
   key: T extends any ? keyof T : never;
@@ -12,28 +13,29 @@ type Props<T extends Record<string, any>> = {
   data: T[];
   xKey: keyof T;
   title: string;
-  dataKeys: DataKeyOption<T>[];  // always required
+  dataKeys: DataKeyOption<T>[];  
   height?: number;
   stacked?: boolean;
+  yLabel?: string;
 };
 
 export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
-  const { data, xKey, title, height = 300, stacked = false, dataKeys } = props;
+  const { data, xKey, title, height = 300, stacked = false, dataKeys, yLabel } = props;
 
   const theme = useTheme();
   const [selectedKey, setSelectedKey] = useState(dataKeys[0]);
 
   const xAxisData = data.map((item) => String(item[xKey] ?? ''));
 
-  // SERIES LOGIC (very simple now)
   const series = stacked
     ? dataKeys.map((opt) => ({
         id: String(opt.key),
         label: opt.label,
         stack: 'stack',
         data: data.map((row) =>
-          typeof row[opt.key] === 'number' ? row[opt.key] : 0
+          typeof row[opt.key] === 'number' ? Math.round(row[opt.key]) : 0
         ),
+        valueFormatter: currencyFormatter
       }))
     : [
         {
@@ -41,11 +43,14 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
           label: selectedKey.label,
           data: data.map((row) =>
             typeof row[selectedKey.key] === 'number'
-              ? row[selectedKey.key]
+              ? Math.round(row[selectedKey.key])
               : 0
           ),
+          valueFormatter: currencyFormatter
         },
       ];
+
+  
 
   return (
     <Box mt={4} sx={{ width: '100%' }}>
@@ -78,13 +83,17 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
       <BarChart
         borderRadius={8}
         xAxis={[{ id: String(xKey), data: xAxisData }]}
-        yAxis={[{ width: 100 }]}
+        yAxis={[{ 
+          width: 120, 
+          label: yLabel ?? selectedKey.label ?? undefined,
+          valueFormatter: currencyFormatter
+        }]}
         series={series}
         height={height}
         colors={
           stacked
-            ? undefined              // multiple default colors
-            : [theme.palette.primary.main] // single series → use primary
+            ? undefined              
+            : [theme.palette.primary.main] 
         }
       />
     </Box>

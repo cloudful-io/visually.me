@@ -2,6 +2,7 @@
 import { Typography } from "@mui/material";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { currencyFormatter } from "@/lib/formatters/currency";
 
 export function IncomeBreakdown({
   combined,
@@ -25,6 +26,13 @@ export function IncomeBreakdown({
     }))
     .filter((d) => d.value > 0);
 
+  const usd = (value: number) =>
+  value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+
   return (
     <DashboardCard title={`Income Breakdown at Age ${targetAge}`}>
       {data.length === 0 ? (
@@ -43,6 +51,7 @@ export function IncomeBreakdown({
                 ).toFixed(0)}%`,
               innerRadius: 30,
               outerRadius: 70,
+              valueFormatter: (item) => currencyFormatter(item.value),
             },
           ]}
           

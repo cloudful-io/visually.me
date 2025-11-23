@@ -71,9 +71,9 @@ export function useCombinedProjections(
       result.push({
         year,
         age: age ?? 0,
-        monthlyIncome: annualIncome/12,
-        annualIncome,
-        annualInvestmentBalance,
+        monthlyIncome: Math.round(annualIncome/12),
+        annualIncome: Math.round(annualIncome),
+        annualInvestmentBalance: Math.round(annualInvestmentBalance),
         sources,
         balances,
       });
@@ -89,9 +89,9 @@ export function useCombinedProjections(
       const obj: Record<string, number> = {
         year: row.year,
         age: row.age,
-        monthlyIncome: row.annualIncome/12,
-        annualIncome: row.annualIncome,
-        annualInvestmentBalance: row.annualInvestmentBalance!,
+        monthlyIncome: Math.round(row.annualIncome/12),
+        annualIncome: Math.round(row.annualIncome),
+        annualInvestmentBalance: Math.round(row.annualInvestmentBalance!),
       };
 
       // Flatten income per source

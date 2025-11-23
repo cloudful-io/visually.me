@@ -2,6 +2,7 @@
 import { Typography } from "@mui/material";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { currencyFormatter } from "@/lib/formatters/currency";
 
 export function InvestmentBreakdown({
   combined,
@@ -42,6 +43,7 @@ export function InvestmentBreakdown({
               outerRadius: 70,
               arcLabel: (item) =>
                 `${((item.value / total) * 100).toFixed(0)}%`,
+              valueFormatter: (item) => currencyFormatter(item.value),
             },
           ]}
         />
