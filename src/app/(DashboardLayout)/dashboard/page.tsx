@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Grid, Box } from '@mui/material';
+import { Grid, Box, Button, Typography } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
 import { IncomeAtAge } from '../components/dashboard/IncomeAtAge';
@@ -23,6 +23,7 @@ const Dashboard = () => {
   const chartRows = getCombinedChartRows() ?? [];
   const [selectedAge, setSelectedAge] = useState(60);
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
+  const noIncomeSources = (computedSources ?? []).length === 0;
 
   useEffect(() => {
     if (attrs?.targetRetirementAge != null) {
@@ -36,6 +37,29 @@ const Dashboard = () => {
       <Box>
         <Grid container spacing={3}>
           
+          {/* Getting Started Guide */}
+          {noIncomeSources && (
+            <Grid size={{ xs: 12 }}>
+              <DashboardCard title="Welcome to Visually Me!">
+                <Typography gutterBottom>
+                  To get started, add your income sources and set your target retirement age. 
+                  Once you do, you will see your income and investments projected over time.
+                </Typography>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={() => {
+                    // Scroll to Income Sources section
+                    const el = document.getElementById('income-sources');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  Add Income Sources
+                </Button>
+              </DashboardCard>
+            </Grid>
+          )}
+
           {/* Spanning Grid for Income and Investment (4 + 4 = 8) */}
           <Grid
            size={{xs: 12, lg: 8}}
