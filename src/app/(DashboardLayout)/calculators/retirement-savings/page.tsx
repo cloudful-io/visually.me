@@ -11,6 +11,7 @@ import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
 import { useRetirementSavingsProjection, getSummaryMessage } from '@/hooks/useRetirementSavingsProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
+import { CalculatorStatsService } from "@/services/calculator-stats-service";
 
 import {
   Box,
@@ -50,6 +51,16 @@ const RetirementSavingsProjection = () => {
 
   const [showChart, setShowChart] = useState(true);
 
+  const handleCalculate = async () => {
+    generateTable();
+
+    if (!hasErrors) {
+      // Fire and forget (non-blocking)
+      CalculatorStatsService.incrementCalculationCount()
+        .catch((err) => console.error("Failed to increment calc stats", err));
+    }
+  };
+  
   return (
     <PageContainer 
       title="Retirement Savings and Withdrawal Projection" 
@@ -78,7 +89,7 @@ const RetirementSavingsProjection = () => {
       <Button 
         variant="contained" 
         startIcon={<TableViewIcon/>} 
-        onClick={generateTable}
+        onClick={handleCalculate}
         disabled={hasErrors}
       >
         Calculate

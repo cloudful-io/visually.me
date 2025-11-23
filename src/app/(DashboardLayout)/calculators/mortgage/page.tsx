@@ -12,6 +12,7 @@ import { usePersistedForm } from '@/hooks/usePersistedForm';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { CalculatorStatsService } from "@/services/calculator-stats-service";
 
 import {
   Box,
@@ -67,6 +68,16 @@ const MortgageProjection = () => {
     }));
       
 
+  const handleCalculate = async () => {
+    generateTable();
+
+    if (!hasErrors) {
+      // Fire and forget (non-blocking)
+      CalculatorStatsService.incrementCalculationCount()
+        .catch((err) => console.error("Failed to increment calc stats", err));
+    }
+  };
+
   return (
     <PageContainer 
       title="Mortgage Amortization Calculator" 
@@ -110,7 +121,7 @@ const MortgageProjection = () => {
       <Button
         variant="contained"
         startIcon={<TableViewIcon />}
-        onClick={generateTable}
+        onClick={handleCalculate}
         disabled={hasErrors}
       >
         Calculate

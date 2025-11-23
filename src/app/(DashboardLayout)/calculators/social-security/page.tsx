@@ -16,6 +16,7 @@ import { socialSecurityFieldConfigs } from '@/configs/socialSecurityBenefitsFiel
 import { SocialSecurityBenefitInput } from 'financial-calcs';
 import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBenefitProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
+import { CalculatorStatsService } from '@/services/calculator-stats-service';
 
 const SocialSecurityProjection = () => {
   const {
@@ -41,6 +42,16 @@ const SocialSecurityProjection = () => {
   const {rows, error, generateTable } = useSocialSecurityBenefitProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
+  const handleCalculate = async () => {
+    generateTable();
+
+    if (!hasErrors) {
+      // Fire and forget (non-blocking)
+      CalculatorStatsService.incrementCalculationCount()
+        .catch((err) => console.error("Failed to increment calc stats", err));
+    }
+  };
+  
   return (
     <PageContainer 
       title="Social Security Benefit Projection" 
@@ -69,7 +80,7 @@ const SocialSecurityProjection = () => {
       <Button
         variant="contained"
         startIcon={<TableViewIcon />}
-        onClick={generateTable}
+        onClick={handleCalculate}
         disabled={hasErrors}
       >
         Calculate

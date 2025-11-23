@@ -11,6 +11,7 @@ import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
 import { useCollegeTuitionProjection, getSummaryMessage } from '@/hooks/useCollegeTuitionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
+import { CalculatorStatsService } from "@/services/calculator-stats-service";
 
 import {
   Box,
@@ -50,6 +51,16 @@ const CollegeTuitionProjection = () => {
   const {rows, error, generateTable } = useCollegeTuitionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
+  const handleCalculate = async () => {
+    generateTable();
+
+    if (!hasErrors) {
+      // Fire and forget (non-blocking)
+      CalculatorStatsService.incrementCalculationCount()
+        .catch((err) => console.error("Failed to increment calc stats", err));
+    }
+  };
+
   return (
     <PageContainer 
       title="College Savings and Tuition Projection" 
@@ -78,7 +89,7 @@ const CollegeTuitionProjection = () => {
       <Button 
         variant="contained" 
         startIcon={<TableViewIcon/>} 
-        onClick={generateTable}
+        onClick={handleCalculate}
         disabled={hasErrors}
       >
         Calculate
