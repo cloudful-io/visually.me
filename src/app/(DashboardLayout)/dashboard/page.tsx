@@ -16,14 +16,14 @@ import { useIncomeSources } from '@/lib/incomeSources/hook';
 
 const Dashboard = () => {
 
-  const { computedSources, getCombinedProjection, getCombinedChartRows } = useIncomeSources();
+  const { computedSources, loading, getCombinedProjection, getCombinedChartRows } = useIncomeSources();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
 
   const combined = getCombinedProjection() ?? [];
   const chartRows = getCombinedChartRows() ?? [];
   const [selectedAge, setSelectedAge] = useState(60);
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
-  const noIncomeSources = (computedSources ?? []).length === 0;
+  const noIncomeSources = !loading && (computedSources?.length ?? 0) === 0;
 
   useEffect(() => {
     if (attrs?.targetRetirementAge != null) {
