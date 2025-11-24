@@ -62,12 +62,12 @@ const Dashboard = () => {
 
           {/* Spanning Grid for Income and Investment (4 + 4 = 8) */}
           <Grid
-           size={{xs: 12, lg: 8}}
+           size={{sm: 12, lg: 8}}
           >
             <Grid container spacing={3}>
-              <Grid size={{xs: 6}}>
+              <Grid size={{sm: 6}}>
                 <Grid container spacing={3}>
-                  <Grid size={{xs: 12}}>
+                  <Grid size={12}>
                     <IncomeAtAge
                       combined={combined}
                       targetAge={selectedAge}
@@ -75,7 +75,7 @@ const Dashboard = () => {
                       onAgeChange={setSelectedAge}
                     />
                   </Grid>
-                  <Grid size={{xs: 12}}>
+                  <Grid size={12}>
                     <IncomeBreakdown
                       combined={combined}
                       computedSources={(computedSources ?? []).map(s => ({
@@ -88,9 +88,9 @@ const Dashboard = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid size={{xs: 6}}>
+              <Grid size={{sm: 6}}>
                 <Grid container spacing={3}>
-                  <Grid size={{xs: 12}}>
+                  <Grid size={12}>
                     <InvestmentBalanceAtAge
                       combined={combined}
                       targetAge={selectedAge}
@@ -98,7 +98,7 @@ const Dashboard = () => {
                       onAgeChange={setSelectedAge}
                     />
                 </Grid>
-                <Grid size={{xs: 12}}>
+                <Grid size={12}>
                     <InvestmentBreakdown
                       combined={combined}
                       computedSources={(computedSources ?? []).map(s => ({
@@ -130,13 +130,13 @@ const Dashboard = () => {
           
           {/* User Attributes/Income Sources Column (4) - to align the 8+4=12 layout */}
           <Grid
-            size={{xs: 12, lg: 4}}
+            size={{sm: 12, lg: 4}}
           >
             <Grid container spacing={3}>
-              <Grid size={{xs: 12}}>
+              <Grid size={12}>
                 <UserAttributes />
               </Grid>
-              <Grid size={{xs: 12}}>
+              <Grid size={12}>
                 <IncomeSources />
               </Grid>
             </Grid>

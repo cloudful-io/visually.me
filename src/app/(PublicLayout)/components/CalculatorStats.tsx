@@ -103,7 +103,6 @@ export default function CalculatorStatsCounter() {
     );
   }
 
-  /** ------------------ Render both counters side by side ------------------ */
   return (
     <Box
       sx={{
@@ -164,7 +163,7 @@ export default function CalculatorStatsCounter() {
             color: theme.palette.text.secondary,
           }}
         >
-          Total Lifetime Calculations
+          Total Lifetime Projections
         </Typography>
         {renderDigits(animatedValue)}
       </Box>
