@@ -101,10 +101,6 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
   return (
     <PageContainer title={`${source.label} Projection`} showTitle>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        ({source.type})
-      </Typography>
-
       <MUIBarChart
         data={tableRows}
         xKey="year"
