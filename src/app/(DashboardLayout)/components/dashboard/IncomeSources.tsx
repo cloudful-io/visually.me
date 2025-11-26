@@ -7,13 +7,11 @@ import { IconFilePlus, IconCash, IconEdit, IconTrash, IconHelp} from "@tabler/ic
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
-import { useUserAttributes } from "@/lib/userAttributes/hook";
 
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 
 const IncomeSources = () => {
   const { computedSources: sources, loading, save, remove, refresh } = useIncomeSources();
-  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
