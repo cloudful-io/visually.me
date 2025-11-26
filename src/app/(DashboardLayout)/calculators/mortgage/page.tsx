@@ -14,13 +14,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
 
-import {
-  Box,
-  Grid,
-  Button,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
+import { Box, Grid, Button, FormControlLabel, Switch, Typography } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MortgageAmortizationInput } from 'financial-calcs';
@@ -83,6 +77,9 @@ const MortgageProjection = () => {
       title="Mortgage Amortization Calculator" 
       description="A mortgage amortization calculator helps you estimate your monthly loan payments and see how each payment is divided between principal and interest over the life of the mortgage." 
       showTitle>
+      <Typography variant="body1" sx={{mb:3}}>
+        Determine how your loan payments are split between principal and interest over time, based on loan amount, interest rate, loan term, and whether extra monthly payments are made.
+      </Typography>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <FormFields

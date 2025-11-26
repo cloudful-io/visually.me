@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Box, Grid, Button, FormControlLabel, Switch } from '@mui/material';
+import { Box, Grid, Button, FormControlLabel, Switch, Typography } from '@mui/material';
 import TableViewIcon from '@mui/icons-material/TableView';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
@@ -57,6 +57,9 @@ const SocialSecurityProjection = () => {
       title="Social Security Benefit Projection" 
       description="A Social Security calculator estimates your future monthly benefits based on your earnings history, retirement age, and eligibility under the Social Security program." 
       showTitle>
+      <Typography variant="body1" sx={{mb:3}}>
+        Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).
+      </Typography>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <FormFields

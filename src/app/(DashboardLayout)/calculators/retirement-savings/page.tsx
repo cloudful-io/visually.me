@@ -13,12 +13,7 @@ import { useRetirementSavingsProjection, getSummaryMessage } from '@/hooks/useRe
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
 
-import {
-  Box,
-  Grid,
-  Button,
-  Divider,
-} from "@mui/material";
+import { Box, Grid, Button, Typography } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
@@ -66,6 +61,9 @@ const RetirementSavingsProjection = () => {
       title="Retirement Savings and Withdrawal Projection" 
       description="A retirement savings and withdrawal calculator estimates how long your savings will last based on your current balance, contributions, investment growth, and planned annual withdrawals in retirement." 
       showTitle>
+      <Typography variant="body1" sx={{mb:3}}>
+        Project how long your retirement savings will last given your initial investment balance, annual contribution, estimated yield and withdraw rates.
+      </Typography>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         
       <FormFields

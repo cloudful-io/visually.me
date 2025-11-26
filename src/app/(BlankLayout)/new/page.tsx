@@ -13,7 +13,6 @@ import TermsOfUse from "@/app/components/TermsOfUse";
 import PrivacyPolicy from "@/app/components/PrivacyPolicy";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 
-
 const steps = ["Agreements", "Profile"];
 
 export default function OnboardingPage() {
@@ -21,7 +20,7 @@ export default function OnboardingPage() {
   const { user } = useSupabaseAuth();
   const currentYear = new Date().getFullYear();
   
-  const { save: saveUserAttrs } = useUserAttributes({ lazy: true });
+  const { save: saveUserAttributes } = useUserAttributes({ lazy: true });
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -92,7 +91,7 @@ export default function OnboardingPage() {
       await userProfileService.updateDisplayName(user.id, displayName);
       
       // Save attributes via hook
-      await saveUserAttrs({
+      await saveUserAttributes({
         birthYear,
         startYear,
         targetRetirementAge,
@@ -102,7 +101,6 @@ export default function OnboardingPage() {
       // Redirect user to dashboard
       setTimeout(() => router.push("/dashboard"), 0);
     } catch (error) {
-      console.log(error);
         setErrorMsg("Failed to save profile. Please try again.");
     } finally {
         setIsSaving(false);

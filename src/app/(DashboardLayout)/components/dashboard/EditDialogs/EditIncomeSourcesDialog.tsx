@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress, Typography } from "@mui/material";
 import { useForm } from "@/hooks/useForm";
 import EditRetirementSavings from "./EditRetirementSavings";
 import EditSocialSecurityBenefit from "./EditSocialSecurityBenefit";
@@ -79,21 +79,29 @@ export default function EditIncomeSourceDialog({
   };
 
   const typeConfig: Record<IncomeSourceType, {
+    title: string;
+    description: string;
     initial: any;
     Component: any;
     fieldConfigs: any;
   }> = {
     "retirement-savings": { 
+      title: "Retirement Savings",
+      description: "Project how long your retirement savings will last given your initial investment balance, annual contribution, estimated yield and withdraw rates.",
       initial: initialRetirementSavingsValues, 
       Component: EditRetirementSavings, 
       fieldConfigs: retirementSavingsFieldConfigs 
     },
     "social-security": { 
+      title: "Social Security Benefits",
+      description: "Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).",
       initial: initialSocialSecurityValues, 
       Component: EditSocialSecurityBenefit, 
       fieldConfigs: socialSecurityFieldConfigs 
     },
     "fers-pension": { 
+      title: "FERS Pension",
+      description: "Calculate your FERS pension based on type of retirement, years of service, high-3 salary, and retirement age.",
       initial: initialFersPensionValues, 
       Component: EditFERSPension, 
       fieldConfigs: fersPensionFieldConfigs },
@@ -115,13 +123,7 @@ export default function EditIncomeSourceDialog({
 
   const isSaveDisabled = showLoading || !type.trim() || !label.trim() || childHasErrors;
 
-  const typeDisplayName: Record<string, string> = {
-    "retirement-savings": "Retirement Savings",
-    "fers-pension": "FERS Pension",
-    "social-security": "Social Security Benefits",
-  };
-
-  const friendlyType = typeDisplayName[type] ?? "Income / Investment";
+  const friendlyType = typeConfig[type].title ?? "Income / Investment";
 
   const dialogTitle = isEditing
     ? `Edit: ${friendlyType}`
@@ -228,8 +230,10 @@ export default function EditIncomeSourceDialog({
         {showLoading ? (
           <CircularProgress sx={{ display: "block", mx: "auto", my: 4 }} />
         ) : (
-          <Grid container spacing={2} mt={1}>
-
+          <Grid container spacing={2}>
+            <Typography variant="body1">
+              {typeConfig[type].description}
+            </Typography>
             {/* Account Label */}
             <Grid size={{ xs: 12 }}>
               <TextField

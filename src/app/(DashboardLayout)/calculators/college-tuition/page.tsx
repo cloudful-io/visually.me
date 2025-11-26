@@ -17,6 +17,7 @@ import {
   Box,
   Grid,
   Button,
+  Typography,
 } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -66,6 +67,10 @@ const CollegeTuitionProjection = () => {
       title="College Savings and Tuition Projection" 
       description="A college savings and tuition calculator helps you estimate how much you’ll need to save and how your contributions, growth rate, and time horizon affect your ability to cover future education costs." 
       showTitle>
+      <Typography variant="body1" sx={{mb:3}}>
+        Estimate how much you need to save to cover future tuition costs, based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.
+      </Typography>
+      
       <Grid container spacing={2} sx={{ mb: 2 }}>
         
       <FormFields
