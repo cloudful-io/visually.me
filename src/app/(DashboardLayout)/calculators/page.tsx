@@ -23,7 +23,7 @@ const calculators = [
   {
     id: "fers-pension",
     title: "FERS Pension Calculator",
-    description: "Calculate your FERS pension based on type of retirement, years of service, high-3 salary, and retirement age.",
+    description: "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
     route: "/calculators/fers-pension",
     icon: IconUser,
   },

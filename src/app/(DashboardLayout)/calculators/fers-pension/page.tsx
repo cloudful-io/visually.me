@@ -69,7 +69,7 @@ const FersPensionProjection = () => {
       description="A FERS pension calculator estimates your monthly annuity based on your years of service, high-3 average salary, and chosen retirement age under the Federal Employees Retirement System." 
       showTitle>
       <Typography variant="body1" sx={{mb:3}}>
-        Calculate your FERS pension based on type of retirement, years of service, high-3 salary, and retirement age.
+        Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.
       </Typography>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <FormFields

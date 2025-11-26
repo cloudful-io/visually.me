@@ -100,8 +100,8 @@ export default function EditIncomeSourceDialog({
       fieldConfigs: socialSecurityFieldConfigs 
     },
     "fers-pension": { 
-      title: "FERS Pension",
-      description: "Calculate your FERS pension based on type of retirement, years of service, high-3 salary, and retirement age.",
+      title: "Federal Employee Retirement System (FERS) Pension",
+      description: "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
       initial: initialFersPensionValues, 
       Component: EditFERSPension, 
       fieldConfigs: fersPensionFieldConfigs },

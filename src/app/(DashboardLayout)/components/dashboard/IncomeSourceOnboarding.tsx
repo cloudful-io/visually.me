@@ -68,11 +68,11 @@ export default function IncomeSourceOnboarding() {
         Let’s Set Up Your Income Sources
       </Typography>
 
-      <Typography variant="body1" sx={{ mb: 4, maxWidth: 500 }}>
+      <Typography variant="body1" sx={{ mb: 4, maxWidth: 600 }}>
         Before we can forecast your retirement, please add one of each income source below.
       </Typography>
 
-      <Card sx={{ width: "100%", maxWidth: 500, mb: 4 }}>
+      <Card sx={{ width: "100%", maxWidth: 600, mb: 4 }}>
         <CardContent>
           <Grid container spacing={2}>
             {typeStatus.map((t) => (
@@ -122,7 +122,7 @@ export default function IncomeSourceOnboarding() {
 
 function formatLabel(type: string) {
   switch (type) {
-    case "fers-pension": return "FERS Pension";
+    case "fers-pension": return "Federal Employee Retirement System (FERS) Pension";
     case "retirement-savings": return "Retirement Savings";
     case "social-security": return "Social Security Benefits";
     default: return type;
