@@ -78,7 +78,7 @@ export default function CalculatorsPage() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" variant="outlined" onClick={() => router.push(calc.route)}>
+                  <Button size="small" variant="contained" onClick={() => router.push(calc.route)}>
                     Open
                   </Button>
                 </CardActions>
