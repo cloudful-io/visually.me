@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Typography, Button, Card, CardContent, Grid } from "@mui/material";
 import { IconChecklist, IconCircleCheck, IconCircleX } from "@tabler/icons-react";
-import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
+import EditIncomeSourceDialog from "../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 
 export default function IncomeSourceOnboarding() {
@@ -46,8 +46,7 @@ export default function IncomeSourceOnboarding() {
   };
 
   const handleProceed = () => {
-    localStorage.setItem("skipIncomeOnboard", "1");
-    window.dispatchEvent(new Event("incomeOnboardChanged"));
+    router.push("/dashboard");
   };
 
   return (

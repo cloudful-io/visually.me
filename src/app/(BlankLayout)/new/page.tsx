@@ -99,7 +99,7 @@ export default function OnboardingPage() {
       });
       
       // Redirect user to dashboard
-      setTimeout(() => router.push("/dashboard"), 0);
+      setTimeout(() => router.push("/onboarding"), 0);
     } catch (error) {
         setErrorMsg("Failed to save profile. Please try again.");
     } finally {

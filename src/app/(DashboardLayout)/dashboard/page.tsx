@@ -12,8 +12,7 @@ import { MUILineChart } from '../components/shared/MUILineChart';
 import UserAttributes from '../components/dashboard/UserAttributes';
 import IncomeSources from '../components/dashboard/IncomeSources';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
-import { useIncomeSources } from '@/lib/incomeSources/hook';
-import IncomeSourceOnboarding from '../components/dashboard/IncomeSourceOnboarding';
+import { useIncomeSources } from '@/lib/incomeSources/useIncomeSources';
 
 const Dashboard = () => {
 
@@ -21,31 +20,9 @@ const Dashboard = () => {
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
 
   const combined = getCombinedProjection() ?? [];
-  const chartRows = getCombinedChartRows() ?? [];
+  const chartRows = getCombinedChartRows;
   const [selectedAge, setSelectedAge] = useState(60);
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
-  const [skipIncomeOnboard, setSkipIncomeOnboard] = useState(false);
-  
-  const noIncomeSources = !loading && !skipIncomeOnboard && (computedSources?.length ?? 0) === 0;
-
-  const requiredTypes = ["fers-pension", "retirement-savings", "social-security"];
-
-  const typeStatus = requiredTypes.map(t => ({
-    type: t,
-    exists: (computedSources ?? []).some(s => s.type === t)
-  }));
-
-  const onboardingNeeded = !skipIncomeOnboard && typeStatus.some(t => !t.exists);
-
-  useEffect(() => {
-    const readFlag = () =>
-      setSkipIncomeOnboard(localStorage.getItem("skipIncomeOnboard") === "1");
-
-    readFlag();
-
-    window.addEventListener("incomeOnboardChanged", readFlag);
-    return () => window.removeEventListener("incomeOnboardChanged", readFlag);
-  }, []);
 
   useEffect(() => {
     if (attrs?.targetRetirementAge != null) {
@@ -53,14 +30,6 @@ const Dashboard = () => {
       setTargetRetirementAge(attrs.targetRetirementAge);
     }
   }, [attrs?.targetRetirementAge]);
-
-  if (onboardingNeeded) {
-  return (
-    <PageContainer title="Setup Required">
-      <IncomeSourceOnboarding/>
-    </PageContainer>
-  );
-}
 
   return (
     <PageContainer title="Visually Me: Dashboard" description="Dashboard displaying financial projections and breakdowns.">
