@@ -13,6 +13,7 @@ import UserAttributes from '../components/dashboard/UserAttributes';
 import IncomeSources from '../components/dashboard/IncomeSources';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
 import { useIncomeSources } from '@/lib/incomeSources/hook';
+import IncomeSourceOnboarding from '../components/dashboard/IncomeSourceOnboarding';
 
 const Dashboard = () => {
 
@@ -25,6 +26,15 @@ const Dashboard = () => {
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
   const noIncomeSources = !loading && (computedSources?.length ?? 0) === 0;
 
+  const requiredTypes = ["fers-pension", "retirement-savings", "social-security"];
+
+  const typeStatus = requiredTypes.map(t => ({
+    type: t,
+    exists: (computedSources ?? []).some(s => s.type === t)
+  }));
+
+  const onboardingNeeded = typeStatus.some(t => !t.exists);
+
   useEffect(() => {
     if (attrs?.targetRetirementAge != null) {
       setSelectedAge(attrs.targetRetirementAge);
@@ -32,33 +42,18 @@ const Dashboard = () => {
     }
   }, [attrs?.targetRetirementAge]);
 
+  if (onboardingNeeded) {
+  return (
+    <PageContainer title="Setup Required">
+      <IncomeSourceOnboarding/>
+    </PageContainer>
+  );
+}
+
   return (
     <PageContainer title="Visually Me: Dashboard" description="Dashboard displaying financial projections and breakdowns.">
       <Box>
         <Grid container spacing={3}>
-          
-          {/* Getting Started Guide */}
-          {noIncomeSources && (
-            <Grid size={{ xs: 12 }}>
-              <DashboardCard title="Welcome to Visually Me!">
-                <Typography gutterBottom>
-                  To get started, add your income sources and set your target retirement age. 
-                  Once you do, you will see your income and investments projected over time.
-                </Typography>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  onClick={() => {
-                    // Scroll to Income Sources section
-                    const el = document.getElementById('income-sources');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  Add Income Sources
-                </Button>
-              </DashboardCard>
-            </Grid>
-          )}
 
           {/* Spanning Grid for Income and Investment (4 + 4 = 8) */}
           <Grid

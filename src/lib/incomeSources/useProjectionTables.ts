@@ -9,8 +9,12 @@ export function useProjectionTables(computedSources: NormalizedSource[] | null) 
     const map: Record<string, AnyProjectionRow[]> = {};
 
     for (const src of computedSources) {
-      if (!src.mergedFields) { map[src.id!] = []; continue; }
+      if (!src.mergedFields || Object.values(src.mergedFields).some(v => v == null)) {
+        map[src.id!] = [];
+        continue;
+      }
       try {
+        console.log(src.mergedFields);
         let rows: AnyProjectionRow[] = [];
         switch (src.type) {
           case "fers-pension": rows = calculateFersPensionProjection(src.mergedFields); break;

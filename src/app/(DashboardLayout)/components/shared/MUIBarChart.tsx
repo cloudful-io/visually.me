@@ -85,7 +85,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
         xAxis={[{ id: String(xKey), data: xAxisData }]}
         yAxis={[{ 
           width: 120, 
-          label: yLabel ?? selectedKey.label ?? undefined,
+          label: yLabel ?? selectedKey?.label ?? undefined,
           valueFormatter: currencyFormatter
         }]}
         series={series}

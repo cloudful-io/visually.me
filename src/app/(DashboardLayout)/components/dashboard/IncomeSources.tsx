@@ -6,16 +6,14 @@ import {  Grid, Stack, Typography, Box, IconButton, Menu, MenuItem } from "@mui/
 import { IconFilePlus, IconCash, IconEdit, IconTrash, IconHelp} from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
-import { useIncomeSources } from "@/lib/incomeSources/hook";
+import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 
 const IncomeSources = () => {
-  const { getComputed, loading, save, remove, refresh } = useIncomeSources();
+  const { computedSources: sources, loading, save, remove, refresh } = useIncomeSources();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
-
-  const sources = getComputed("type");
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
@@ -140,7 +138,7 @@ const IncomeSources = () => {
                               "&:visited": { textDecoration: "none" },
                             }}
                           >
-                            {label} ({src.firstYear})
+                            {label}
                           </Typography>
                         </Box>
                     </Grid>
