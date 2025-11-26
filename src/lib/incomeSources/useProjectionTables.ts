@@ -14,7 +14,6 @@ export function useProjectionTables(computedSources: NormalizedSource[] | null) 
         continue;
       }
       try {
-        console.log(src.mergedFields);
         let rows: AnyProjectionRow[] = [];
         switch (src.type) {
           case "fers-pension": rows = calculateFersPensionProjection(src.mergedFields); break;

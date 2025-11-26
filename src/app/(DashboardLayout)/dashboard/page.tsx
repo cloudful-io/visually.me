@@ -24,7 +24,9 @@ const Dashboard = () => {
   const chartRows = getCombinedChartRows() ?? [];
   const [selectedAge, setSelectedAge] = useState(60);
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
-  const noIncomeSources = !loading && (computedSources?.length ?? 0) === 0;
+  const [skipIncomeOnboard, setSkipIncomeOnboard] = useState(false);
+  
+  const noIncomeSources = !loading && !skipIncomeOnboard && (computedSources?.length ?? 0) === 0;
 
   const requiredTypes = ["fers-pension", "retirement-savings", "social-security"];
 
@@ -33,7 +35,17 @@ const Dashboard = () => {
     exists: (computedSources ?? []).some(s => s.type === t)
   }));
 
-  const onboardingNeeded = typeStatus.some(t => !t.exists);
+  const onboardingNeeded = !skipIncomeOnboard && typeStatus.some(t => !t.exists);
+
+  useEffect(() => {
+    const readFlag = () =>
+      setSkipIncomeOnboard(localStorage.getItem("skipIncomeOnboard") === "1");
+
+    readFlag();
+
+    window.addEventListener("incomeOnboardChanged", readFlag);
+    return () => window.removeEventListener("incomeOnboardChanged", readFlag);
+  }, []);
 
   useEffect(() => {
     if (attrs?.targetRetirementAge != null) {

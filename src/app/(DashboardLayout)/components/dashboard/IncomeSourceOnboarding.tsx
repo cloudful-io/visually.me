@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Box, Typography, Button, Card, CardContent, Grid } from "@mui/material";
 import { IconChecklist, IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
@@ -8,17 +9,14 @@ import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 
 export default function IncomeSourceOnboarding() {
 
-  const scrollToIncome = () => {
-    const el = document.getElementById("income-sources");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   const requiredTypes = ["fers-pension", "retirement-savings", "social-security"];
   const [typeStatus, setTypeStatus] = useState<{type: string; exists: boolean}[]>([]);
   const { computedSources: sources, loading, save, remove, refresh } = useIncomeSources();
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
   const [newSourceType, setNewSourceType] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     setTypeStatus(
@@ -47,6 +45,11 @@ export default function IncomeSourceOnboarding() {
     handleCloseDialog();
   };
 
+  const handleProceed = () => {
+    localStorage.setItem("skipIncomeOnboard", "1");
+    window.dispatchEvent(new Event("incomeOnboardChanged"));
+  };
+
   return (
     <Box
       sx={{
@@ -65,11 +68,11 @@ export default function IncomeSourceOnboarding() {
         Let’s Set Up Your Income Sources
       </Typography>
 
-      <Typography variant="body1" sx={{ mb: 4, maxWidth: 480 }}>
+      <Typography variant="body1" sx={{ mb: 4, maxWidth: 500 }}>
         Before we can forecast your retirement, please add one of each income source below.
       </Typography>
 
-      <Card sx={{ width: "100%", maxWidth: 420, mb: 4 }}>
+      <Card sx={{ width: "100%", maxWidth: 500, mb: 4 }}>
         <CardContent>
           <Grid container spacing={2}>
             {typeStatus.map((t) => (
@@ -101,16 +104,18 @@ export default function IncomeSourceOnboarding() {
       </Card>
 
       <EditIncomeSourceDialog
-              open={openEditDialog}
-              sources={sources}   
-              sourceId={editingSourceId}
-              defaultType={newSourceType}
-              onClose={handleCloseDialog}
-              onSave={handleSave}
-            />
-      <Button variant="outlined" onClick={scrollToIncome}>
-        Go to Income Sources
+        open={openEditDialog}
+        sources={sources}   
+        sourceId={editingSourceId}
+        defaultType={newSourceType}
+        onClose={handleCloseDialog}
+        onSave={handleSave}
+      />
+      {sources != undefined && sources?.length > 0 && (
+      <Button variant="outlined" onClick={handleProceed}>
+        Proceed to Dashboard
       </Button>
+      )}
     </Box>
   );
 }
