@@ -9,7 +9,7 @@ export default function Footer({ sidebarWidth = 0 }: Props) {
   return (
     <Box
       sx={{
-        position: "fixed",
+        position: { xs: "static", lg: "fixed" },
         bottom: 0,
         left: { lg: `${sidebarWidth}px`, xs: 0 },
         width: { lg: `calc(100% - ${sidebarWidth}px)`, xs: '100%' },
