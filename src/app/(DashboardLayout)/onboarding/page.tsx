@@ -6,9 +6,11 @@ import { Box, Typography, Button, Card, CardContent, Grid } from "@mui/material"
 import { IconChecklist, IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 import EditIncomeSourceDialog from "../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
+import { useUserAttributes } from '@/lib/userAttributes/hook';
 
 export default function IncomeSourceOnboarding() {
 
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
   const requiredTypes = ["fers-pension", "retirement-savings", "social-security"];
   const [typeStatus, setTypeStatus] = useState<{type: string; exists: boolean}[]>([]);
   const { computedSources: sources, loading, save, remove, refresh } = useIncomeSources();
@@ -103,6 +105,7 @@ export default function IncomeSourceOnboarding() {
       </Card>
 
       <EditIncomeSourceDialog
+        userAttributes={attrs || {}}
         open={openEditDialog}
         sources={sources}   
         sourceId={editingSourceId}
