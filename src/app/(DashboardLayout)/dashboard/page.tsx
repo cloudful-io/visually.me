@@ -10,13 +10,13 @@ import { InvestmentBreakdown } from '../components/dashboard/InvestmentBreakdown
 import DashboardCard from '../components/shared/DashboardCard';
 import { MUILineChart } from '../components/shared/MUILineChart';
 import UserAttributes from '../components/dashboard/UserAttributes';
-import IncomeSources from '../components/dashboard/IncomeSources';
+import IncomeSourceList from '../components/dashboard/IncomeSourceList';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
 import { useIncomeSources } from '@/lib/incomeSources/useIncomeSources';
 
 const Dashboard = () => {
 
-  const { computedSources, loading, getCombinedProjection, getCombinedChartRows } = useIncomeSources();
+  const { computedSources, loading, getCombinedProjection, getCombinedChartRows, save, remove, refresh } = useIncomeSources();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
 
   const combined = getCombinedProjection() ?? [];
@@ -113,7 +113,13 @@ const Dashboard = () => {
                 <UserAttributes />
               </Grid>
               <Grid size={12}>
-                <IncomeSources />
+                <IncomeSourceList
+                  sources={computedSources}
+                  loading={loading}
+                  save={save}
+                  remove={remove}
+                  refresh={refresh}
+                />
               </Grid>
             </Grid>
           </Grid>

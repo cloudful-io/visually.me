@@ -6,12 +6,24 @@ import {  Grid, Stack, Typography, Box, IconButton, Menu, MenuItem } from "@mui/
 import { IconFilePlus, IconCash, IconEdit, IconTrash, IconHelp} from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
-import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 
-const IncomeSources = () => {
-  const { computedSources: sources, loading, save, remove, refresh } = useIncomeSources();
+interface IncomeSourcesProps {
+  sources: any[] | null;
+  loading: boolean;
+  save: (input: { type: string; data: string; id?: string }) => Promise<void>;
+  remove: (id: string) => Promise<void>;
+  refresh: () => Promise<void>;
+}
+
+const IncomeSourceList = ({
+  sources,
+  loading,
+  save,
+  remove,
+  refresh
+}: IncomeSourcesProps) => {
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
@@ -172,4 +184,4 @@ const IncomeSources = () => {
   );
 };
 
-export default IncomeSources;
+export default IncomeSourceList;
