@@ -2,6 +2,8 @@ import { useState } from 'react';
 import {
   calculateMortgageAmortization,
   groupByYear,
+  validateMortgageInput,
+  MortgageValidationError,
   MortgageAmortizationInput,
   AmortizationRow,
   YearlyAmortizationRow
@@ -10,7 +12,7 @@ import {
 export function useMortgageAmortization(input: MortgageAmortizationInput) {
   const [rows, setRows] = useState<AmortizationRow[]>([]);
   const [yearlyRows, setYearlyRows] = useState<YearlyAmortizationRow[]>([]);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string[] | null>(null);
 
   const generateTable = () => {
     try {
@@ -20,16 +22,20 @@ export function useMortgageAmortization(input: MortgageAmortizationInput) {
       setYearlyRows(yearly);
       setError(null); // clear any previous error
     }
-     catch (err) {
-      if (err instanceof Error) {
-        setError(err);
-      } else {
-        setError(new Error("Unknown error occurred"));
+     catch (err: any) {
+        if (err && Array.isArray(err.validationErrors)) {
+          setError(err.validationErrors.map((e: MortgageValidationError) => e.message));
+        } else {
+          setError(["Unknown error occurred"]);
+        }
+        setRows([]);
       }
-      setRows([]);
-      setYearlyRows([]);
-    }
   };
 
-  return { rows, yearlyRows, error, generateTable };
+  const validateInput = (): MortgageValidationError[] => {
+    const errors = validateMortgageInput(input);
+    return errors;
+  }
+
+  return { rows, yearlyRows, error, generateTable, validateInput };
 }

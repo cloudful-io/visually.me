@@ -134,14 +134,11 @@ const MortgageProjection = () => {
         Export CSV
       </Button>
 
-      {(error) && (() => {
-        return (
-          <FormSummary
-            type='error'
-            message={error!.message}
-          />
-        );
-      })()}
+      {error && Array.isArray(error) && error.length > 0 && (
+        <Box sx={{ mt: 2 }}>
+          <FormSummary type="error" message={error} />
+        </Box>
+      )}
 
       {showChart && rows.length > 0 && !error && (
         <MUIBarChart<YearlyBalanceRow>

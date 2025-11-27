@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress, Typography } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress, Typography } from "@mui/material";
 import { useForm } from "@/hooks/useForm";
 import EditRetirementSavings from "./EditRetirementSavings";
 import EditSocialSecurityBenefit from "./EditSocialSecurityBenefit";
@@ -11,8 +11,21 @@ import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefitsFiel
 import { fersPensionFieldConfigs } from "@/configs/fersPensionFields";
 import { RetirementSavingsInput, SocialSecurityBenefitInput, FersPensionInput } from "financial-calcs";
 import { IncomeSourcesInput } from "@/lib/incomeSources/schema";
+import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
+import { useRetirementSavingsProjection } from "@/hooks/useRetirementSavingsProjection";
+import { useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
+import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
+
+interface ChildFormHook<T> {
+  values: T;
+  handleChange: (field: keyof T, value: any) => void;
+  errors: Record<string, string>;
+  hasErrors: boolean;
+  validateInput?: () => { field: string; message: string }[];
+}
 
 export default function EditIncomeSourceDialog({
+  userAttributes,
   open,
   sources,
   sourceId,
@@ -20,6 +33,7 @@ export default function EditIncomeSourceDialog({
   onClose,
   onSave,
 }: {
+  userAttributes: Record<string, any>;
   open: boolean;
   sources: IncomeSourcesInput[] | null;
   sourceId: string | null;
@@ -38,43 +52,44 @@ export default function EditIncomeSourceDialog({
   const [type, setType] = useState<IncomeSourceType>("retirement-savings");
   const [label, setLabel] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
+  const [childValidationMessages, setChildValidationMessages] = useState<string[]>([]);
 
   // ----------------------------
   // Child form state
   // ----------------------------
   const initialRetirementSavingsValues: RetirementSavingsInput = {
-    startYear: new Date().getFullYear(),
-    birthYear: 1970,
+    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
+    birthYear: userAttributes?.birthYear ?? 1970,
     initialBalance: 100000,
     initialContribution: 10000,
     estimatedYield: 6,
     estimatedWithdrawRate: 5,
     contributionIncreaseRate: 2,
-    withdrawStartAge: 60,
-    yearsToProject: 40,
+    withdrawStartAge: userAttributes?.targetRetirementAge ?? 60,
+    yearsToProject: userAttributes?.yearsToProject ?? 40,
   };
 
   const initialSocialSecurityValues: SocialSecurityBenefitInput = {
-    startYear: new Date().getFullYear(),
-    birthYear: 1970,
+    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
+    birthYear: userAttributes?.birthYear ?? 1970,
     claimingAge: 67,
     averageIncome: 100000,
     averageCOLA: 2.5,
-    yearsToProject: 45,
+    yearsToProject: userAttributes?.yearsToProject ?? 40,
   };
 
   const initialFersPensionValues: FersPensionInput = {
-    startYear: new Date().getFullYear(),
-    birthYear: 1970,
+    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
+    birthYear: userAttributes?.birthYear ?? 1970,
     serviceStartYear: 1990,
     serviceEndYear: 2010,
-    retirementAge: 62,
+    retirementAge: userAttributes?.targetRetirementAge ?? 62,
     currentSalary: 85000,
     salaryGrowthRate: 3,
     high3Salary: 100000,
     colaPercent: 2,
     pensionMultiplier: 1.1,
-    yearsToProject: 40,
+    yearsToProject: userAttributes?.yearsToProject ?? 40,
     retirementType: 'regular',
   };
 
@@ -90,14 +105,14 @@ export default function EditIncomeSourceDialog({
       description: "Project how long your retirement savings will last given your initial investment balance, annual contribution, estimated yield and withdraw rates.",
       initial: initialRetirementSavingsValues, 
       Component: EditRetirementSavings, 
-      fieldConfigs: retirementSavingsFieldConfigs 
+      fieldConfigs: retirementSavingsFieldConfigs,
     },
     "social-security": { 
       title: "Social Security Benefits",
       description: "Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).",
       initial: initialSocialSecurityValues, 
       Component: EditSocialSecurityBenefit, 
-      fieldConfigs: socialSecurityFieldConfigs 
+      fieldConfigs: socialSecurityFieldConfigs,
     },
     "fers-pension": { 
       title: "Federal Employee Retirement System (FERS) Pension",
@@ -121,7 +136,12 @@ export default function EditIncomeSourceDialog({
     currentType.fieldConfigs
   );
 
-  const isSaveDisabled = showLoading || !type.trim() || !label.trim() || childHasErrors;
+  const isSaveDisabled =
+    showLoading ||
+    !type.trim() ||
+    !label.trim() ||
+    childHasErrors ||
+    childValidationMessages.length > 0;
 
   const friendlyType = typeConfig[type].title ?? "Income / Investment";
 
@@ -129,6 +149,18 @@ export default function EditIncomeSourceDialog({
     ? `Edit: ${friendlyType}`
     : `Add: ${friendlyType}`;
 
+  const childHook = (() => {
+    switch (type) {
+      case "fers-pension":
+        return useFersPensionProjection(childValues as FersPensionInput);
+      case "retirement-savings":
+        return useRetirementSavingsProjection(childValues as RetirementSavingsInput);
+      case "social-security":
+        return useSocialSecurityBenefitProjection(childValues as SocialSecurityBenefitInput);
+      default:
+        return null;
+    }
+  })();
   // ----------------------------
   // Load existing source if editing or defaultType if adding
   // ----------------------------
@@ -208,6 +240,25 @@ export default function EditIncomeSourceDialog({
 
     if (!rootValid) return;
 
+    let childValid = true;
+    let childErrorMessages: string[] = [];
+
+    if (childHook?.validateInput) {
+      const validationErrors = childHook.validateInput();
+      
+      if (validationErrors.length > 0) {
+        childValid = false;
+        childErrorMessages = validationErrors.map(e => e.message);
+      }
+    }
+
+    if (!childValid) {
+      // Show all child validation messages in FormSummary
+      setChildValidationMessages(childErrorMessages);
+      return;
+    } else {
+      setChildValidationMessages([]);
+    }
     await onSave({
       id: sourceId ?? undefined,
       type,
@@ -256,13 +307,21 @@ export default function EditIncomeSourceDialog({
 
             {/* Child Form */}
             
-              <Grid size={{ xs: 12 }}>
-                <ChildComponent
-                  values={childValues}
-                  onChange={handleChildChange}
-                  errors={childErrors}
-                />
-              </Grid>
+            <Grid size={{ xs: 12 }}>
+              <ChildComponent
+                values={childValues}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  handleChildChange(event);
+                  setChildValidationMessages([]);
+                }}
+                errors={childErrors}
+              />
+            </Grid>
+            {childValidationMessages && Array.isArray(childValidationMessages) && childValidationMessages.length > 0 && (
+            <Box sx={{width: '100%'}}>
+              <FormSummary type="error" message={childValidationMessages} showTitle={false}/>
+            </Box>
+          )}
           </Grid>
         )}
       </DialogContent>

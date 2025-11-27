@@ -114,6 +114,7 @@ const Dashboard = () => {
               </Grid>
               <Grid size={12}>
                 <IncomeSourceList
+                  userAttributes={attrs || {}}
                   sources={computedSources}
                   loading={loading}
                   save={save}

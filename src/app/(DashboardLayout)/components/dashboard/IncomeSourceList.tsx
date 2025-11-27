@@ -10,6 +10,7 @@ import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 
 interface IncomeSourcesProps {
+  userAttributes: Record<string, any>;
   sources: any[] | null;
   loading: boolean;
   save: (input: { type: string; data: string; id?: string }) => Promise<void>;
@@ -18,6 +19,7 @@ interface IncomeSourcesProps {
 }
 
 const IncomeSourceList = ({
+  userAttributes,
   sources,
   loading,
   save,
@@ -100,6 +102,7 @@ const IncomeSourceList = ({
       }
     >
       <EditIncomeSourceDialog
+        userAttributes={userAttributes}
         open={openEditDialog}
         sources={sources}   
         sourceId={editingSourceId}

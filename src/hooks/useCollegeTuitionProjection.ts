@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import {
   CollegeTuitionInput,
+  validateCollegeTuitionInput,
+  CollegeTuitionValidationError,
   CollegeTuitionProjectionRow,
   calculateCollegeTuitionProjection,
 } from 'financial-calcs';
 
 export function useCollegeTuitionProjection(formValues: CollegeTuitionInput) {
   const [rows, setRows] = useState<CollegeTuitionProjectionRow[]>([]);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string[] | null>(null);
 
   const generateTable = () => {
     try {
@@ -15,40 +17,45 @@ export function useCollegeTuitionProjection(formValues: CollegeTuitionInput) {
       setRows(results);
       setError(null); // clear any previous error
     }
-    catch (err) {
-      if (err instanceof Error) {
-        setError(err);
+    catch (err: any) {
+      if (err && Array.isArray(err.validationErrors)) {
+        setError(err.validationErrors.map((e: CollegeTuitionValidationError) => e.message));
       } else {
-        setError(new Error("Unknown error occurred"));
+        setError(["Unknown error occurred"]);
       }
       setRows([]);
     }
   };
 
-  return { rows, error, generateTable };
+  const validateInput = (): CollegeTuitionValidationError[] => {
+    const errors = validateCollegeTuitionInput(formValues);
+    return errors;
+  }
+
+  return { rows, error, generateTable, validateInput };
 }
 
 export function getSummaryMessage(
-    rows: CollegeTuitionProjectionRow[], error?: Error | null
-  ): { type: 'success' | 'warning' | 'error'; message: string } {
+    rows: CollegeTuitionProjectionRow[], error?: string[] | null
+  ): { type: 'success' | 'warning' | 'error'; message: string[] } {
     // All deficit rows
     const deficitRows = rows.filter(r => r.annualWithdraw < r.tuitionAmount);
 
-    if (error ) {
+    if (error && error.length > 0) {
       return {
         type: 'error',
-        message: error.message
-      }
+        message: error
+      };
     }
     else if (deficitRows.length === 0) {
       const last = rows[rows.length - 1];
       return {
         type: 'success',
-        message: `You will not run out of money. In year ${last.year}, you will still have ${last.endingBalance.toLocaleString(undefined, { 
+        message: [`You will not run out of money. In year ${last.year}, you will still have ${last.endingBalance.toLocaleString(undefined, { 
           style: 'currency', 
           currency: 'USD', 
           maximumFractionDigits: 0 
-        })}.`
+        })}.`]
       };
     } else {
       const firstDeficit = deficitRows[0];
@@ -64,11 +71,11 @@ export function getSummaryMessage(
 
       return {
         type: 'warning',
-        message: `You will run out of money in year ${firstDeficit.year} (${collegeYear}${ordinalSuffix(collegeYear)} year of college). Across all deficit years, you will fall short by ${totalShortfall.toLocaleString(undefined, { 
+        message: [`You will run out of money in year ${firstDeficit.year} (${collegeYear}${ordinalSuffix(collegeYear)} year of college). Across all deficit years, you will fall short by ${totalShortfall.toLocaleString(undefined, { 
           style: 'currency', 
           currency: 'USD', 
           maximumFractionDigits: 0 
-        })}.`
+        })}.`]
       };
     }
   }

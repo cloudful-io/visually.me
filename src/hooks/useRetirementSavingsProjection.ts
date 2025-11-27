@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import {
   RetirementSavingsInput,
+  validateRetirementSavingsInput,
+  RetirementSavingsValidationError,
   RetirementSavingsProjectionRow,
   calculateRetirementSavingsProjection,
 } from 'financial-calcs';
 
 export function useRetirementSavingsProjection(formValues: RetirementSavingsInput) {
   const [rows, setRows] = useState<RetirementSavingsProjectionRow[]>([]);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string[] | null>(null);
 
   const generateTable = () => {
     try {
@@ -15,28 +17,37 @@ export function useRetirementSavingsProjection(formValues: RetirementSavingsInpu
       setRows(data);
       setError(null); // clear any previous error
     }
-    catch (err) {
-      setError(err instanceof Error ? err : new Error("Unknown error occurred"));
+    catch (err: any) {
+      if (err && Array.isArray(err.validationErrors)) {
+        setError(err.validationErrors.map((e: RetirementSavingsValidationError) => e.message));
+      } else {
+        setError(["Unknown error occurred"]);
+      }
       setRows([]);
     }
   };
 
-  return { rows, error, generateTable };
+  const validateInput = (): RetirementSavingsValidationError[] => {
+    const errors = validateRetirementSavingsInput(formValues);
+    return errors;
+  }
+
+  return { rows, error, generateTable, validateInput };
 }
 
 export function getSummaryMessage(
-    rows: RetirementSavingsProjectionRow[], error?: Error | null
-  ): { type: 'success' | 'info' | 'warning' | 'error'; message: string } {
+    rows: RetirementSavingsProjectionRow[], error?: string[] | null
+  ): { type: 'success' | 'info' | 'warning' | 'error'; message: string[] } {
     if (error ) {
       return {
         type: 'error',
-        message: error.message
+        message: error
       }
     }
     else if (rows.length < 2) {
       return {
         type: 'info',
-        message: "Not enough data to analyze withdrawal trends."
+        message: ["Not enough data to analyze withdrawal trends."]
       };
     }
 
@@ -53,7 +64,7 @@ export function getSummaryMessage(
       const last = rows[rows.length - 1];
       return {
         type: 'success',
-        message: `Your annual withdrawals never decrease. By age ${last.age} (year ${last.year}), you are still withdrawing ${last.annualWithdraw.toLocaleString(undefined, { 
+        message: [`Your annual withdrawals never decrease. By age ${last.age} (year ${last.year}), you are still withdrawing ${last.annualWithdraw.toLocaleString(undefined, { 
           style: 'currency', 
           currency: 'USD', 
           maximumFractionDigits: 0 
@@ -61,7 +72,7 @@ export function getSummaryMessage(
           style: 'currency', 
           currency: 'USD', 
           maximumFractionDigits: 0 
-        })}`
+        })}`]
       };
     } else {
       // Compare to previous year
@@ -70,7 +81,7 @@ export function getSummaryMessage(
 
       return {
         type: 'warning',
-        message: `Your annual withdrawal decreases in year ${dropRow.year} at age ${dropRow.age}. It drops from ${prevRow.annualWithdraw.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })} to ${dropRow.annualWithdraw.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}, a reduction of ${shortfall.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}.`
+        message: [`Your annual withdrawal decreases in year ${dropRow.year} at age ${dropRow.age}. It drops from ${prevRow.annualWithdraw.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })} to ${dropRow.annualWithdraw.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}, a reduction of ${shortfall.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}.`]
       };
     }
   }
