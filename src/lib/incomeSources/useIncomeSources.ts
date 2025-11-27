@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 import { useIncomeSourcesFetch } from "./useIncomeSourcesFetch";
 import { useComputedSources } from "./useComputedSources";
@@ -10,7 +11,15 @@ export function useIncomeSources({ lazy = false } = {}) {
 
   const { data: attrs } = useUserAttributes();
 
-  const computedSources = useComputedSources(fetchLayer.data, attrs);
+  /* Sort income sources by label */
+  const sortedData = useMemo(() => {
+    if (!fetchLayer.data) return fetchLayer.data;
+    return [...fetchLayer.data].sort((a, b) =>
+      (a.label ?? "").localeCompare(b.label ?? "")
+    );
+  }, [fetchLayer.data]);
+
+  const computedSources = useComputedSources(sortedData, attrs);
 
   const projectionTables = useProjectionTables(computedSources);
 
