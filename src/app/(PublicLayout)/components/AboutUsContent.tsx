@@ -98,9 +98,9 @@ export default function AboutPage() {
         <Grid container spacing={4} justifyContent="center">
           {[
             { name: "Will", role: "Founder & Developer", img: "/images/blog/authors/will.jpg" },
-            { name: "Lorenda", role: "Senior Consultant", img: "/images/blog/authors/lorenda.jpg" },
-            { name: "Adelynn", role: "Senior Advisor", img: "/images/blog/authors/adelynn.jpg" },
-            { name: "Arden", role: "Advisor", img: "/images/blog/authors/arden.jpg" },
+            { name: "Lorenda", role: "Senior Consultant", img: "/images/blog/authors/woman.png" },
+            { name: "Adelynn", role: "Senior Advisor", img: "/images/blog/authors/girl.png" },
+            { name: "Arden", role: "Advisor", img: "/images/blog/authors/boy.png" },
           ].map((member) => (
             <Grid size={{xs:12, sm: 6, md: 3}} key={member.name}>
               <Stack alignItems="center" spacing={2}>
