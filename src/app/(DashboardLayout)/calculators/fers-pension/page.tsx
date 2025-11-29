@@ -202,8 +202,8 @@ const FersPensionProjection = () => {
         FabProps={{ color: "secondary" }}
         sx={{ 
           position: 'fixed', 
-          bottom: 84, 
-          right: 32,
+          bottom: { xs: 16, sm: 84 },
+          right: { xs: 8, sm: 32 },
           "& .MuiFab-root": {
             width: 48,     
             height: 48,    
