@@ -65,7 +65,7 @@ export function FormFields<T, C = void>(props: Props<T, C>) {
                   select={type === 'select'}
                   name={String(name)}
                   label={label}
-                  type={type !== 'select' ? type : undefined}
+                  type={type === 'currency' ? 'number' : type !== 'select' ? type : undefined}
                   value={values[name] ?? ''}
                   onChange={onChange}
                   error={!!fieldError}

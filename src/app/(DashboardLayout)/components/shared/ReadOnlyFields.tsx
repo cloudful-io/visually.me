@@ -10,6 +10,17 @@ export function ReadOnlyFields<T, C = void>({
   values: T;
   context?: C;
 }) {
+  function formatCurrency(value: any) {
+    if (value == null || value === '') return '';
+
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(Number(value));
+  }
+
   return (
     <Grid container spacing={2}>
       {fields
@@ -20,7 +31,10 @@ export function ReadOnlyFields<T, C = void>({
             {field.label}
           </Typography>
           <Typography variant="body1">
-            {String(values[field.name] ?? "")}
+            {field.type === 'currency'
+              ? formatCurrency(values[field.name])
+              : String(values[field.name] ?? "")
+            }
           </Typography>
         </Grid>
       ))}

@@ -34,7 +34,6 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     name: 'serviceStartYear',
     label: 'Service Start Year',
     min: 1900,
-    //max: new Date().getFullYear(),
     step: 1,
     helperText: 'Year you began federal service under FERS',
   },
@@ -42,7 +41,6 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     name: 'serviceEndYear',
     label: 'Service End Year',
     min: 1900,
-    //max: new Date().getFullYear(),
     step: 1,
     helperText: 'Year you ended federal service under FERS',
     shouldDisplay: (values) => values.retirementType === "deferred", // hide if retirement type is not deferred
@@ -59,6 +57,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'currentSalary',
     label: 'Current Salary ($)',
+    type: 'currency',
     min: 0,
     step: 1000,
     helperText: 'Your current annual basic salary',
@@ -76,6 +75,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'high3Salary',
     label: 'High-3 Salary ($)',
+    type: 'currency',
     min: 0,
     step: 1000,
     helperText: 'Average of the highest basic pay earned during any three consecutive years of service',

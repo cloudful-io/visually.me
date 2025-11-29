@@ -39,6 +39,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'initialBalance',
     label: 'Initial Balance ($)',
+    type: 'currency',
     min: 0,
     step: 1000,
     helperText: 'Balance of college savings at Start Year',
@@ -46,6 +47,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'annualContribution',
     label: 'Annual Contribution ($)',
+    type: 'currency',
     min: 0,
     step: 100,
     helperText: 'Annual contribution each year',
@@ -60,6 +62,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'estimatedFirstYearTuition',
     label: 'Estimated First Year Tuition ($)',
+    type: 'currency',
     min: 0,
     max: 200000,
     step: 100,

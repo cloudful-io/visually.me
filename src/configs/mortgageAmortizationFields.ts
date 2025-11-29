@@ -5,6 +5,7 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
   {
     name: 'loanAmount',
     label: 'Loan Amount ($)',
+    type: 'currency',
     min: 1,
     step: 1000,
     helperText: 'Total mortgage loan amount.',
@@ -28,6 +29,7 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
   {
     name: 'extraPayment',
     label: 'Extra Monthly Payment ($)',
+    type: 'currency',
     min: 0,
     step: 100,
     helperText: 'Additional payment applied each month to reduce principal.',

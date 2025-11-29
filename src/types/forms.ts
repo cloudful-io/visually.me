@@ -6,7 +6,7 @@ export type FormFieldOption = {
 export type FormFieldConfig<T, C = void> = {
   name: keyof T;
   label: string;
-  type?: 'number' | 'text' | 'date' | 'select';
+  type?: 'number' | 'text' | 'date' | 'select' | 'currency';
   min?: number;
   max?: number;
   step?: number;

@@ -21,6 +21,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'initialBalance',
     label: 'Initial Balance ($)',
+    type: 'currency',
     min: 0,
     step: 1000,
     helperText: 'Balance of retirement savings at Start Year',
@@ -28,6 +29,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'initialContribution',
     label: 'Initial Contribution ($)',
+    type: 'currency',
     min: 1,
     step: 100,
     helperText: 'Initial annual contribution at Start Year',

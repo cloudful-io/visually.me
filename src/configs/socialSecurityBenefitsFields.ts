@@ -29,6 +29,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
   {
     name: 'averageIncome',
     label: 'Average Annual Income ($)',
+    type: 'currency',
     min: 0,
     step: 1000,
     helperText: 'Estimated average yearly earnings used to calculate benefit',
