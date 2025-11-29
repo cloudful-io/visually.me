@@ -57,7 +57,7 @@ const renderMenuItems = (items: any[], pathDirect: string, user: any) => {
       <Box px={3} key={item.id}>
         <MenuItem
           key={item.id}
-          isSelected={pathDirect.indexOf(item?.href) >= 0}
+          isSelected={pathDirect === item?.href}
           borderRadius="8px"
           icon={itemIcon}
           link={item.href}
