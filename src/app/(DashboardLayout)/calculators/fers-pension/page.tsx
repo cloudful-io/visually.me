@@ -212,17 +212,17 @@ const FersPensionProjection = () => {
       >
         <SpeedDialAction
           icon={<TableChartIcon />}
-          tooltipTitle="Table"
+          slotProps={{ tooltip: { title: "Table" }}}
           onClick={() => scrollTo("tableSection")}
         />
         <SpeedDialAction
           icon={<BarChartIcon />}
-          tooltipTitle="Chart"
+          slotProps={{ tooltip: { title: "Chart" }}}
           onClick={() => scrollTo("chartSection")}
         />
         <SpeedDialAction
           icon={<SettingsIcon />}
-          tooltipTitle="Form"
+          slotProps={{ tooltip: { title: "Form" }}}
           onClick={() => scrollTo("formSection")}
         />
       </SpeedDial>

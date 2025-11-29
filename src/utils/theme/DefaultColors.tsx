@@ -109,9 +109,9 @@ export const basedarkTheme = createTheme({
       dark: "#319795",
     },
     secondary: {
-      main: "#FFB343",  //87CEEB = Blue
-      light: "#6ED4FF",
-      dark: "#007AFF",
+      main: "#ECC94B",  
+      light: "#F6E397",
+      dark: "#B2892D",
     },
     success: {
       main: "#4caf50",
