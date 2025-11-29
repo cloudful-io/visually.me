@@ -12,6 +12,12 @@ import { exportToCSV } from '@/utils/exportToCSV';
 import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
+import { SpeedDial, SpeedDialAction, MenuItem } from "@mui/material";
+import NavigationIcon from "@mui/icons-material/Navigation";
+import SettingsIcon from "@mui/icons-material/Settings";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import TableChartIcon from "@mui/icons-material/TableChart";
+
 
 import {
   Box,
@@ -62,12 +68,34 @@ const FersPensionProjection = () => {
         .catch((err) => console.error("Failed to increment calc stats", err));
     }
   };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const yOffset = -50; 
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+    handleClose();
+  };
   
   return (
     <PageContainer 
       title="Federal Employee Retirement System (FERS) Pension Projection" 
       description="A FERS pension calculator estimates your monthly annuity based on your years of service, high-3 average salary, and chosen retirement age under the Federal Employees Retirement System." 
       showTitle>
+      <div id="formSection"></div>
       <Typography variant="body1" sx={{mb:3}}>
         Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.
       </Typography>
@@ -116,31 +144,37 @@ const FersPensionProjection = () => {
         </Box>
       )}
       {showChart && rows.length > 0 && !error && (
-        <MUIBarChart
-          data={rows}
-          dataKeys={[
-            { key: "pension", label: "Annual Pension ($)" },
-            { key: "salary", label: "Annual Salary ($)" },
-          ]}
-          xKey="year" 
-          title="Income and Pension Over Time"
-        />
+        <>
+          <div id="chartSection"></div>
+          <MUIBarChart
+            data={rows}
+            dataKeys={[
+              { key: "pension", label: "Annual Pension ($)" },
+              { key: "salary", label: "Annual Salary ($)" },
+            ]}
+            xKey="year" 
+            title="Income and Pension Over Time"
+          />
+        </>
       )}
 
       {rows.length > 0 && !error && (
-        <ProjectionTable
-          rows={rows}
-          highlightYear={new Date().getFullYear()}
-          columns={[
-            { key: 'year', label: 'Year' },
-            { key: 'age', label: 'Age' },
-            { key: 'salary', label: 'Annual Salary ($)', currency: true },
-            { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)' },
-            { key: 'colaApplied', label: 'COLA Applied (%)' },
-            { key: 'pension', label: 'Annual Pension ($)', currency: true },
-            { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true },
-          ]}
-        />
+        <>
+        <div id="tableSection"></div>
+          <ProjectionTable
+            rows={rows}
+            highlightYear={new Date().getFullYear()}
+            columns={[
+              { key: 'year', label: 'Year' },
+              { key: 'age', label: 'Age' },
+              { key: 'salary', label: 'Annual Salary ($)', currency: true },
+              { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)' },
+              { key: 'colaApplied', label: 'COLA Applied (%)' },
+              { key: 'pension', label: 'Annual Pension ($)', currency: true },
+              { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true },
+            ]}
+          />
+        </>
       )}
 
       <Box sx={{ mt: 4 }}>
@@ -162,6 +196,36 @@ const FersPensionProjection = () => {
           ]}
         />
       </Box>
+      <SpeedDial
+        ariaLabel="Navigation"
+        color="error"
+        FabProps={{ color: "secondary" }}
+        sx={{ 
+          position: 'fixed', 
+          bottom: 84, 
+          right: 32,
+          "& .MuiFab-root": {
+            width: 48,     
+            height: 48,    
+          } }}
+        icon={<NavigationIcon />}
+      >
+        <SpeedDialAction
+          icon={<TableChartIcon />}
+          tooltipTitle="Table"
+          onClick={() => scrollTo("tableSection")}
+        />
+        <SpeedDialAction
+          icon={<BarChartIcon />}
+          tooltipTitle="Chart"
+          onClick={() => scrollTo("chartSection")}
+        />
+        <SpeedDialAction
+          icon={<SettingsIcon />}
+          tooltipTitle="Form"
+          onClick={() => scrollTo("formSection")}
+        />
+      </SpeedDial>
     </PageContainer>
   );
 };
