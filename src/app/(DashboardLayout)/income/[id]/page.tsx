@@ -1,11 +1,20 @@
 "use client";
 import React, { use, useState } from "react";
+import { useUserAttributes } from "@/lib/userAttributes/hook";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress, Button, Typography } from "@mui/material";
 import type { DataKeyOption } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
+import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
+import { fersPensionFieldConfigs } from "@/configs/fersPensionFields";
+import { retirementSavingsFieldConfigs } from "@/configs/retirementSavingsFields";
+import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefitsFields";
+import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useRouter } from 'next/navigation';
 
 // Projection row union
 import type {
@@ -13,6 +22,7 @@ import type {
   RetirementSavingsProjectionRow,
   SocialSecurityBenefitProjectionRow,
 } from "financial-calcs";
+import { Edit } from "@mui/icons-material";
 
 type ProjectionRow =
   | FersPensionProjectionRow
@@ -21,7 +31,13 @@ type ProjectionRow =
 
 export default function IncomePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { loading, computedSources, projectionTables } = useIncomeSources();
+  const { loading, computedSources, projectionTables, save, remove, refresh } = useIncomeSources();
+  const { data: userAttributes } = useUserAttributes();
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
+
+  const [newSourceType, setNewSourceType] = useState<string | null>(null);
+  const router = useRouter();
 
   // Get the computed source
   const source = computedSources?.find(s => s.id === id);
@@ -35,6 +51,13 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       </PageContainer>
     );
   }
+  const FIELD_CONFIGS: Record<string, any[]> = {
+    "fers-pension": fersPensionFieldConfigs,
+    "retirement-savings": retirementSavingsFieldConfigs,
+    "social-security": socialSecurityFieldConfigs,
+  };
+
+  const readOnlyFields = FIELD_CONFIGS[source.type] ?? [];
 
   // Dynamically set columns based on type
   const columns =
@@ -68,21 +91,6 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
         ];
 
-  // Determine the correct dataKey for MUIBarChart
-  const dataKey =
-    source.type === "fers-pension"
-      ? ("pension" as keyof ProjectionRow)
-      : source.type === "retirement-savings"
-      ? ("endingBalance" as keyof ProjectionRow)
-      : ("annualBenefit" as keyof ProjectionRow);
-
-  const yLabel =
-    source.type === "fers-pension"
-      ? "FERS Pension ($)"
-      : source.type === "retirement-savings"
-      ? "End of Year Balance ($)"
-      : "Annual Social Security Benefit ($)";
-
   const DATA_KEYS: Record<string, DataKeyOption<ProjectionRow>[]> = {
     "fers-pension": [
         { key: "pension", label: "Annual Pension ($)" },
@@ -99,8 +107,52 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
   const dataKeys = DATA_KEYS[source.type] || [];
 
+  const handleEdit = (id: string) => {
+    setEditingSourceId(id);
+    setNewSourceType(null);
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setEditingSourceId(null);
+    setNewSourceType(null);
+    setOpenEditDialog(false);
+  };
+
+  const handleSave = async (input: { type: string; data: string; id?: string }) => {
+    await save(input);
+    await refresh();
+    handleCloseDialog();
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this income / investment?")) {
+      await remove(id);
+      router.push("/income")
+    }
+  };
+
   return (
     <PageContainer title={`${source.label} Projection`} showTitle>
+      <ReadOnlyFields fields={readOnlyFields} values={source.mergedFields} context={{ isAuthenticated: true }} />
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<EditIcon/>} 
+        sx={{ mt: 2, marginRight: 2 }} 
+        onClick={() => handleEdit(source.id!)}
+      >
+        Edit
+      </Button>
+      <Button
+        variant="contained"
+        color="error"
+        startIcon={<DeleteIcon/>} 
+        sx={{ mt: 2}} 
+        onClick={() => handleDelete(source.id!)}
+      >
+        Delete
+      </Button>
       <MUIBarChart
         data={tableRows}
         xKey="year"
@@ -112,6 +164,15 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
         rows={tableRows}
         highlightYear={new Date().getFullYear()}
         columns={columns}
+      />
+      <EditIncomeSourceDialog
+        userAttributes={userAttributes!}
+        open={openEditDialog}
+        sources={computedSources}   
+        sourceId={editingSourceId}
+        defaultType={newSourceType}
+        onClose={handleCloseDialog}
+        onSave={handleSave}
       />
     </PageContainer>
   );
