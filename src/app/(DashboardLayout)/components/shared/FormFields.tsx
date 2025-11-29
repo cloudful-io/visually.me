@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormFieldConfig } from '@/types/forms';
 import { Grid, TextField, MenuItem } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -72,10 +73,17 @@ export function FormFields<T, C = void>(props: Props<T, C>) {
                   helperText={fieldError || helperText}
                   slotProps={
                     type !== 'select'
-                      ? { input: { inputProps: { min, max, step } } }
+                      ? { input: { inputProps: {
+                         min, 
+                         max, 
+                         step, 
+                        },
+                      startAdornment: type === 'currency' ? (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ) : undefined, } }
                       : undefined
-                  }
-                >
+                    }
+                  >
                   {type === 'select' &&
                     options?.map((option) => (
                       <MenuItem key={option.value} value={option.value}>

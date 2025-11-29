@@ -17,7 +17,7 @@ export function ReadOnlyFields<T, C = void>({
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 0,
     }).format(Number(value));
   }
 
