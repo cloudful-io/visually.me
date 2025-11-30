@@ -12,6 +12,11 @@ import { exportToCSV } from '@/utils/exportToCSV';
 import { useCollegeTuitionProjection, getSummaryMessage } from '@/hooks/useCollegeTuitionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
+import NavigationIcon from "@mui/icons-material/Navigation";
+import SettingsIcon from "@mui/icons-material/Settings";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 
 import {
   Box,
@@ -67,19 +72,19 @@ const CollegeTuitionProjection = () => {
       title="College Savings and Tuition Projection" 
       description="A college savings and tuition calculator helps you estimate how much you’ll need to save and how your contributions, growth rate, and time horizon affect your ability to cover future education costs." 
       showTitle>
+      <div id="formSection"></div>  
       <Typography variant="body1" sx={{mb:3}}>
         Estimate how much you need to save to cover future tuition costs, based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.
       </Typography>
       
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        
-      <FormFields
-        fields={collegeTuitionFieldConfigs}
-        values={formValues}
-        onChange={handleChange}
-        context={{ isAuthenticated }}
-        errors={errors}
-      />
+        <FormFields
+          fields={collegeTuitionFieldConfigs}
+          values={formValues}
+          onChange={handleChange}
+          context={{ isAuthenticated }}
+          errors={errors}
+        />
         <FormControlLabel
           control={
             <Switch
@@ -119,6 +124,8 @@ const CollegeTuitionProjection = () => {
         );
       })()}
       {showChart && rows.length > 0 && !error && (
+        <>
+        <div id="chartSection"></div>
         <MUIBarChart 
           data={rows} 
           dataKeys={[
@@ -127,8 +134,11 @@ const CollegeTuitionProjection = () => {
           ]}
           xKey="year" 
           title="College Savings and Tuition Over Time" />
+        </>
       )}
       {rows.length > 0 && !error && (
+        <>
+        <div id="tableSection"></div>
         <ProjectionTable
           rows={rows}
           highlightYear={new Date().getFullYear()}
@@ -144,6 +154,7 @@ const CollegeTuitionProjection = () => {
             { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
           ]}
         />
+        </>
       )}
       <Box sx={{ mt: 4 }}>
         <Assumptions
@@ -161,6 +172,17 @@ const CollegeTuitionProjection = () => {
           ]}
         />
       </Box>
+      {rows.length > 0 && !error && (
+            <SectionSpeedDial
+              icon={<NavigationIcon />}  
+              tooltip="Navigate To"   
+              actions={[
+                { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+                { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+                { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+              ]}
+            />
+            )}
     </PageContainer>
   );
 };

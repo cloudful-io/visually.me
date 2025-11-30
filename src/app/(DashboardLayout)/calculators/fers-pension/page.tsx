@@ -12,12 +12,11 @@ import { exportToCSV } from '@/utils/exportToCSV';
 import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
-import { SpeedDial, SpeedDialAction, MenuItem } from "@mui/material";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import SettingsIcon from "@mui/icons-material/Settings";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
-
+import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 
 import {
   Box,
@@ -67,27 +66,6 @@ const FersPensionProjection = () => {
       CalculatorStatsService.incrementCalculationCount()
         .catch((err) => console.error("Failed to increment calc stats", err));
     }
-  };
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const yOffset = -50; 
-      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-    handleClose();
   };
   
   return (
@@ -161,19 +139,19 @@ const FersPensionProjection = () => {
       {rows.length > 0 && !error && (
         <>
         <div id="tableSection"></div>
-          <ProjectionTable
-            rows={rows}
-            highlightYear={new Date().getFullYear()}
-            columns={[
-              { key: 'year', label: 'Year' },
-              { key: 'age', label: 'Age' },
-              { key: 'salary', label: 'Annual Salary ($)', currency: true },
-              { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)' },
-              { key: 'colaApplied', label: 'COLA Applied (%)' },
-              { key: 'pension', label: 'Annual Pension ($)', currency: true },
-              { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true },
-            ]}
-          />
+        <ProjectionTable
+          rows={rows}
+          highlightYear={new Date().getFullYear()}
+          columns={[
+            { key: 'year', label: 'Year' },
+            { key: 'age', label: 'Age' },
+            { key: 'salary', label: 'Annual Salary ($)', currency: true },
+            { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)' },
+            { key: 'colaApplied', label: 'COLA Applied (%)' },
+            { key: 'pension', label: 'Annual Pension ($)', currency: true },
+            { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true },
+          ]}
+        />
         </>
       )}
 
@@ -196,36 +174,17 @@ const FersPensionProjection = () => {
           ]}
         />
       </Box>
-      <SpeedDial
-        ariaLabel="Navigation"
-        color="error"
-        FabProps={{ color: "secondary" }}
-        sx={{ 
-          position: 'fixed', 
-          bottom: { xs: 16, sm: 84 },
-          right: { xs: 8, sm: 32 },
-          "& .MuiFab-root": {
-            width: 48,     
-            height: 48,    
-          } }}
-        icon={<NavigationIcon />}
-      >
-        <SpeedDialAction
-          icon={<TableChartIcon />}
-          slotProps={{ tooltip: { title: "Table" }}}
-          onClick={() => scrollTo("tableSection")}
-        />
-        <SpeedDialAction
-          icon={<BarChartIcon />}
-          slotProps={{ tooltip: { title: "Chart" }}}
-          onClick={() => scrollTo("chartSection")}
-        />
-        <SpeedDialAction
-          icon={<SettingsIcon />}
-          slotProps={{ tooltip: { title: "Form" }}}
-          onClick={() => scrollTo("formSection")}
-        />
-      </SpeedDial>
+      {rows.length > 0 && !error && (
+      <SectionSpeedDial
+        icon={<NavigationIcon />}  
+        tooltip="Navigate To"   
+        actions={[
+          { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+          { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+          { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+        ]}
+      />
+      )}
     </PageContainer>
   );
 };

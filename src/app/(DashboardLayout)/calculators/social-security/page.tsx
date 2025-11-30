@@ -11,12 +11,16 @@ import { ProjectionTable } from '@/app/(DashboardLayout)/components/shared/Proje
 import PageContainer from '../../components/container/PageContainer';
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-
 import { socialSecurityFieldConfigs } from '@/configs/socialSecurityBenefitsFields';
 import { SocialSecurityBenefitInput } from 'financial-calcs';
 import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBenefitProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from '@/services/calculator-stats-service';
+import NavigationIcon from "@mui/icons-material/Navigation";
+import SettingsIcon from "@mui/icons-material/Settings";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 
 const SocialSecurityProjection = () => {
   const {
@@ -57,6 +61,7 @@ const SocialSecurityProjection = () => {
       title="Social Security Benefit Projection" 
       description="A Social Security calculator estimates your future monthly benefits based on your earnings history, retirement age, and eligibility under the Social Security program." 
       showTitle>
+      <div id="formSection"></div>
       <Typography variant="body1" sx={{mb:3}}>
         Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).
       </Typography>
@@ -106,28 +111,34 @@ const SocialSecurityProjection = () => {
         )}
 
       {showChart && rows.length > 0 && !error && (
-        <MUIBarChart
-          data={rows}
-          dataKeys={[
-            { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
-          ]}
-          xKey="year"
-          title="Annual Social Security Benefit Over Time"
-        />
+         <>
+          <div id="chartSection"></div>
+          <MUIBarChart
+            data={rows}
+            dataKeys={[
+              { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
+            ]}
+            xKey="year"
+            title="Annual Social Security Benefit Over Time"
+          />
+        </>
       )}
 
       {rows.length > 0 && !error && (
-        <ProjectionTable
-          rows={rows}
-          highlightYear={new Date().getFullYear()}
-          columns={[
-            { key: 'year', label: 'Year' },
-            { key: 'age', label: 'Age' },
-            { key: 'colaApplied', label: 'COLA Applied (%)' },
-            { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
-            { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
-          ]}
-        />
+         <>
+          <div id="tableSection"></div>
+          <ProjectionTable
+            rows={rows}
+            highlightYear={new Date().getFullYear()}
+            columns={[
+              { key: 'year', label: 'Year' },
+              { key: 'age', label: 'Age' },
+              { key: 'colaApplied', label: 'COLA Applied (%)' },
+              { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
+              { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
+            ]}
+          />
+        </>
       )}
 
       <Box sx={{ mt: 4 }}>
@@ -146,6 +157,17 @@ const SocialSecurityProjection = () => {
           ]}
         />
       </Box>
+      {rows.length > 0 && !error && (
+      <SectionSpeedDial
+        icon={<NavigationIcon />}  
+        tooltip="Navigate To"   
+        actions={[
+          { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+          { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+          { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+        ]}
+      />
+      )}
     </PageContainer>
   );
 };

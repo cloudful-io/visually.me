@@ -9,16 +9,19 @@ import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
 import { useMortgageAmortization } from '@/hooks/useMortgageAmortization';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
-
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
-
 import { Box, Grid, Button, FormControlLabel, Switch, Typography } from "@mui/material";
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MortgageAmortizationInput } from 'financial-calcs';
 import { mortgageAmortizationFieldConfigs } from '@/configs/mortgageAmortizationFields';
+import NavigationIcon from "@mui/icons-material/Navigation";
+import SettingsIcon from "@mui/icons-material/Settings";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 
 const MortgageProjection = () => {
   const {
@@ -77,6 +80,7 @@ const MortgageProjection = () => {
       title="Mortgage Amortization Calculator" 
       description="A mortgage amortization calculator helps you estimate your monthly loan payments and see how each payment is divided between principal and interest over the life of the mortgage." 
       showTitle>
+      <div id="formSection"></div>
       <Typography variant="body1" sx={{mb:3}}>
         Determine how your loan payments are split between principal and interest over time, based on loan amount, interest rate, loan term, and whether extra monthly payments are made.
       </Typography>
@@ -141,17 +145,22 @@ const MortgageProjection = () => {
       )}
 
       {showChart && rows.length > 0 && !error && (
-        <MUIBarChart<YearlyBalanceRow>
-          data={chartData}
-          dataKeys={[
-            { key: "balance", label: "Remaining Balance ($)" },
-          ]}
-          xKey="year"
-          title="Mortgage Amortization"
-        />
+         <>
+          <div id="chartSection"></div>
+          <MUIBarChart<YearlyBalanceRow>
+            data={chartData}
+            dataKeys={[
+              { key: "balance", label: "Remaining Balance ($)" },
+            ]}
+            xKey="year"
+            title="Mortgage Amortization"
+          />
+        </>
       )}
 
       {rows.length > 0 && !error && (
+         <>
+        <div id="tableSection"></div>
         <ProjectionTable
           rows={tableRows}
           highlightYear={new Date().getFullYear()}
@@ -174,7 +183,8 @@ const MortgageProjection = () => {
                   { key: 'balance', label: 'Remaining Balance ($)', currency: true },
                 ]
           }
-        />
+          />
+        </>
       )}
 
       <Box sx={{ mt: 4 }}>
@@ -199,6 +209,17 @@ const MortgageProjection = () => {
           ]}
         />
       </Box>
+      {rows.length > 0 && !error && (
+      <SectionSpeedDial
+        icon={<NavigationIcon />}  
+        tooltip="Navigate To"   
+        actions={[
+          { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+          { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+          { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+        ]}
+      />
+      )}
     </PageContainer>
   );
 };
