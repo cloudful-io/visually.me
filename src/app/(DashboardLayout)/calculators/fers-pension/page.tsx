@@ -13,7 +13,7 @@ import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
 import NavigationIcon from "@mui/icons-material/Navigation";
-import SettingsIcon from "@mui/icons-material/Settings";
+import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
@@ -69,11 +69,12 @@ const FersPensionProjection = () => {
   };
   
   return (
+    <>
+    <div id="formSection"></div>
     <PageContainer 
       title="Federal Employee Retirement System (FERS) Pension Projection" 
       description="A FERS pension calculator estimates your monthly annuity based on your years of service, high-3 average salary, and chosen retirement age under the Federal Employees Retirement System." 
       showTitle>
-      <div id="formSection"></div>
       <Typography variant="body1" sx={{mb:3}}>
         Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.
       </Typography>
@@ -181,11 +182,12 @@ const FersPensionProjection = () => {
         actions={[
           { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
           { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
-          { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+          { id: "formSection", label: "Form", icon: <ListIcon /> },
         ]}
       />
       )}
     </PageContainer>
+    </>
   );
 };
 

@@ -13,7 +13,7 @@ import { useCollegeTuitionProjection, getSummaryMessage } from '@/hooks/useColle
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
 import NavigationIcon from "@mui/icons-material/Navigation";
-import SettingsIcon from "@mui/icons-material/Settings";
+import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
@@ -68,11 +68,12 @@ const CollegeTuitionProjection = () => {
   };
 
   return (
+    <>
+     <div id="formSection"></div>  
     <PageContainer 
       title="College Savings and Tuition Projection" 
       description="A college savings and tuition calculator helps you estimate how much you’ll need to save and how your contributions, growth rate, and time horizon affect your ability to cover future education costs." 
       showTitle>
-      <div id="formSection"></div>  
       <Typography variant="body1" sx={{mb:3}}>
         Estimate how much you need to save to cover future tuition costs, based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.
       </Typography>
@@ -173,17 +174,18 @@ const CollegeTuitionProjection = () => {
         />
       </Box>
       {rows.length > 0 && !error && (
-            <SectionSpeedDial
-              icon={<NavigationIcon />}  
-              tooltip="Navigate To"   
-              actions={[
-                { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
-                { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
-                { id: "formSection", label: "Form", icon: <SettingsIcon /> },
-              ]}
-            />
-            )}
+        <SectionSpeedDial
+          icon={<NavigationIcon />}  
+          tooltip="Navigate To"   
+          actions={[
+            { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+            { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+            { id: "formSection", label: "Form", icon: <ListIcon /> },
+          ]}
+        />
+        )}
     </PageContainer>
+    </>
   );
 };
 

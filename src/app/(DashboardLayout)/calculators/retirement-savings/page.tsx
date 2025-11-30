@@ -17,7 +17,7 @@ import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
 import NavigationIcon from "@mui/icons-material/Navigation";
-import SettingsIcon from "@mui/icons-material/Settings";
+import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
@@ -61,6 +61,8 @@ const RetirementSavingsProjection = () => {
   };
   
   return (
+    <>
+    <div id="formSection"></div>
     <PageContainer 
       title="Retirement Savings and Withdrawal Projection" 
       description="A retirement savings and withdrawal calculator estimates how long your savings will last based on your current balance, contributions, investment growth, and planned annual withdrawals in retirement." 
@@ -172,11 +174,12 @@ const RetirementSavingsProjection = () => {
         actions={[
           { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
           { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
-          { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+          { id: "formSection", label: "Form", icon: <ListIcon /> },
         ]}
       />
       )}
     </PageContainer>
+    </>
   );
 };
 

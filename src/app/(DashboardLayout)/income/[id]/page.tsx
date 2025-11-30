@@ -15,6 +15,11 @@ import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditI
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
+import NavigationIcon from "@mui/icons-material/Navigation";
+import ListIcon from "@mui/icons-material/List";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 
 // Projection row union
 import type {
@@ -22,7 +27,7 @@ import type {
   RetirementSavingsProjectionRow,
   SocialSecurityBenefitProjectionRow,
 } from "financial-calcs";
-import { Edit } from "@mui/icons-material";
+
 
 type ProjectionRow =
   | FersPensionProjectionRow
@@ -133,6 +138,8 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   };
 
   return (
+    <>
+    <div id="formSection"></div>
     <PageContainer title={`${source.label} Projection`} showTitle>
       <ReadOnlyFields fields={readOnlyFields} values={source.mergedFields} context={{ isAuthenticated: true }} />
       <Button
@@ -153,13 +160,14 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       >
         Delete
       </Button>
+      <div id="chartSection"></div>
       <MUIBarChart
         data={tableRows}
         xKey="year"
         dataKeys={dataKeys}
         title={`${source.label} Over Time`}
       />
-
+      <div id="tableSection"></div>
       <ProjectionTable
         rows={tableRows}
         highlightYear={new Date().getFullYear()}
@@ -174,6 +182,16 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
         onClose={handleCloseDialog}
         onSave={handleSave}
       />
+      <SectionSpeedDial
+        icon={<NavigationIcon />}  
+        tooltip="Navigate To"   
+        actions={[
+          { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+          { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+          { id: "formSection", label: "Form", icon: <ListIcon /> },
+        ]}
+      />
     </PageContainer>
+    </>
   );
 }

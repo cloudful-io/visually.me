@@ -17,7 +17,7 @@ import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBen
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from '@/services/calculator-stats-service';
 import NavigationIcon from "@mui/icons-material/Navigation";
-import SettingsIcon from "@mui/icons-material/Settings";
+import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
@@ -57,6 +57,8 @@ const SocialSecurityProjection = () => {
   };
   
   return (
+    <>
+    <div id="formSection"></div>
     <PageContainer 
       title="Social Security Benefit Projection" 
       description="A Social Security calculator estimates your future monthly benefits based on your earnings history, retirement age, and eligibility under the Social Security program." 
@@ -164,11 +166,12 @@ const SocialSecurityProjection = () => {
         actions={[
           { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
           { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
-          { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+          { id: "formSection", label: "Form", icon: <ListIcon /> },
         ]}
       />
       )}
     </PageContainer>
+    </>
   );
 };
 

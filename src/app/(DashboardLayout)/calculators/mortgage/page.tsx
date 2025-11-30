@@ -18,7 +18,7 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MortgageAmortizationInput } from 'financial-calcs';
 import { mortgageAmortizationFieldConfigs } from '@/configs/mortgageAmortizationFields';
 import NavigationIcon from "@mui/icons-material/Navigation";
-import SettingsIcon from "@mui/icons-material/Settings";
+import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
@@ -76,6 +76,8 @@ const MortgageProjection = () => {
   };
 
   return (
+    <>
+    <div id="formSection"></div>
     <PageContainer 
       title="Mortgage Amortization Calculator" 
       description="A mortgage amortization calculator helps you estimate your monthly loan payments and see how each payment is divided between principal and interest over the life of the mortgage." 
@@ -216,11 +218,12 @@ const MortgageProjection = () => {
         actions={[
           { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
           { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
-          { id: "formSection", label: "Form", icon: <SettingsIcon /> },
+          { id: "formSection", label: "Form", icon: <ListIcon /> },
         ]}
       />
       )}
     </PageContainer>
+    </>
   );
 };
 
