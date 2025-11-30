@@ -190,7 +190,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
           { id: "formSection", label: "Form", icon: <ListIcon /> },
         ]}
-      />
+      /> 
     </PageContainer>
     </>
   );
