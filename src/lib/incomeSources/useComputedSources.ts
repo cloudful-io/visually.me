@@ -20,7 +20,7 @@ export function useComputedSources(
           yearsToProject: userAttributes?.yearsToProject,
         };
         if (src.type === "fers-pension") mergedFields = { ...parsed.fields, ...base, retirementAge: userAttributes?.targetRetirementAge };
-        else if (src.type === "retirement-savings") mergedFields = { ...parsed.fields, ...base, withdrawStartAge: userAttributes?.targetRetirementAge };
+        else if (src.type === "retirement-savings") mergedFields = { ...parsed.fields, ...base };
         else if (src.type === "social-security") mergedFields = { ...parsed.fields, ...base };
       } catch { mergedFields = null; }
 

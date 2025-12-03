@@ -22,6 +22,7 @@ import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 import InputAdornment from '@mui/material/InputAdornment';
 
+
 // Projection row union
 import type {
   FersPensionProjectionRow,
@@ -51,10 +52,15 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   // Track row-level edits
   const [editableRows, setEditableRows] = useState<ProjectionRow[]>(tableRows);
 
-  // Keep editableRows in sync when tableRows change
   useEffect(() => {
+  const needsUpdate =
+    editableRows.length !== tableRows.length ||
+    editableRows.some((row, i) => row !== tableRows[i]);
+
+  if (needsUpdate) {
     setEditableRows(tableRows);
-  }, [tableRows]);
+  }
+}, [tableRows]);
 
   const handleRowEdit = (year: number, patch: Partial<ProjectionRow>) => {
     setEditableRows(prev =>
@@ -103,9 +109,9 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   const readOnlyFields = FIELD_CONFIGS[source.type] ?? [];
 
   // Dynamically define columns
-  const columns: ColumnDef<ProjectionRow, keyof ProjectionRow>[] =
+  const columns =
     source.type === "fers-pension"
-      ? [
+      ? ([
           { key: "year", label: "Year" },
           { key: "age", label: "Age" },
           {
@@ -183,20 +189,139 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           },
           { key: "pension", label: "Annual Pension ($)", currency: true },
           { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
-        ]
+        ] satisfies ColumnDef<FersPensionProjectionRow, keyof FersPensionProjectionRow>[])
       : source.type === "retirement-savings"
-      ? [
+      ? ([
           { key: 'year', label: 'Year' },
           { key: 'age', label: 'Age' },
           { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
-          { key: 'contribution', label: 'Contribution ($)', currency: true },
-          { key: 'yieldPercent', label: 'Yield %' },
-          { key: 'withdrawRate', label: 'Withdraw %' },
+          { 
+            key: 'contribution', 
+            label: 'Contribution ($)', 
+            currency: true,
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: 1, step: 100},
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>, 
+                  }
+                }}
+              />
+            )
+          },
+          { 
+            key: 'yieldPercent', 
+            label: 'Yield %',
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: -100, max: 100, step: 0.1},
+                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
+                  }
+                }}
+              />
+            ) 
+          },
+          { 
+            key: 'withdrawRate', 
+            label: 'Withdraw %',
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: 0, max: 100, step: 0.1},
+                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
+                  }
+                }}
+              />
+            ) 
+          },
           { key: 'monthlyWithdraw', label: 'Monthly Withdraw ($)', currency: true },
-          { key: 'annualWithdraw', label: 'Annual Withdraw ($)', currency: true },
-          { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
-        ]
-      : [
+          { 
+            key: 'annualWithdraw', 
+            label: 'Annual Withdraw ($)', 
+            currency: true,
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: 0, step: 100},
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>, 
+                  }
+                }}
+              />
+            )
+          },
+          { 
+            key: 'endingBalance', 
+            label: 'Ending Balance ($)', 
+            currency: true,
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: 0, step: 100},
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>, 
+                  }
+                }}
+              />
+            )
+          },
+            
+        ] satisfies ColumnDef<RetirementSavingsProjectionRow, keyof RetirementSavingsProjectionRow>[])
+      : ([
           { key: 'year', label: 'Year' },
           { key: 'age', label: 'Age' },
           { 
@@ -225,7 +350,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           },
           { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
           { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
-        ];
+        ] satisfies ColumnDef<SocialSecurityBenefitProjectionRow, keyof SocialSecurityBenefitProjectionRow>[]);
 
   const DATA_KEYS: Record<string, DataKeyOption<ProjectionRow>[]> = {
     "fers-pension": [
@@ -262,7 +387,6 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
       yearOverrides[String(year)] = newOverride;
       existingInput.yearOverrides = yearOverrides;
-
     
       await save({
         id: source.id!,
@@ -270,11 +394,9 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
         data: JSON.stringify(existingInput),
       });
 
-      // Refresh server/state afterwards
       await refresh();
     } catch (err) {
       console.error("Failed saving row override:", err);
-      // Optionally: revert optimistic update by refreshing from server or by reloading saved state
       await refresh();
     }
   };
@@ -297,25 +419,20 @@ const handleRemoveOverride = async (year: number) => {
         const nextOverrides = { ...yearOverrides };
         delete nextOverrides[String(year)];
 
-        // Assign back (if no keys left you may set to undefined or empty object)
         existingInput.yearOverrides = Object.keys(nextOverrides).length ? nextOverrides : undefined;
       } else {
-        // Nothing to remove — still safe to return or refresh to ensure consistency
         return;
       }
 
-      // Persist the full input object
       await save({
         id: source.id!,
         type: source.type,
         data: JSON.stringify(existingInput),
       });
 
-      // Refresh the server/state so computedSources, mergedFields, and projection tables update
       await refresh();
     } catch (err) {
       console.error("Failed removing year override:", err);
-      // Refresh to ensure UI matches persisted state
       await refresh();
     }
   }

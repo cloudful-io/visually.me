@@ -9,7 +9,7 @@ export type ColumnDef<T, K extends keyof T = keyof T> = {
   currency?: boolean;
   editable?: boolean;
   editor?: (
-    value: T[K] | undefined,
+    value: any,
     row: T,
     onChange: (newValue: T[K] | undefined) => void
   ) => React.ReactNode;
@@ -28,7 +28,7 @@ export function ProjectionTable<T extends { year: number }>({
   highlightYear?: number;
   onRowEditSave?: (year: number, patch: Partial<T>) => void;
   onRowEditChange?: (year: number, patch: Partial<T>) => void;
-  onRemoveOverride: (year:number) => void;
+  onRemoveOverride?: (year:number) => void;
 }) {
   const [editingRows, setEditingRows] = useState<Record<number, boolean>>({});
   const [editCache, setEditCache] = useState<Record<number, Partial<T>>>({});
@@ -186,7 +186,9 @@ export function ProjectionTable<T extends { year: number }>({
                             Edit
                           </Button>
                           {"hasOverride" in row && row.hasOverride && (
-                            <Button size="small" variant="outlined" sx={{ml: 1}} onClick={() => onRemoveOverride(row.year)}>
+                            <Button size="small" variant="outlined" sx={{ml: 1}} onClick={() => {
+                              if (onRemoveOverride) onRemoveOverride(row.year);
+                            }}>
                             Revert
                           </Button>
                           )}

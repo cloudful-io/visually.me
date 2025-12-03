@@ -5,6 +5,7 @@ import {
   RetirementSavingsValidationError,
   RetirementSavingsProjectionRow,
   calculateRetirementSavingsProjection,
+  calculateRetirementSavingsProjectionWithOverrides,
 } from 'financial-calcs';
 
 export function useRetirementSavingsProjection(formValues: RetirementSavingsInput) {
@@ -27,12 +28,28 @@ export function useRetirementSavingsProjection(formValues: RetirementSavingsInpu
     }
   };
 
+  const generateTableWithOverrides = () => {
+    try {
+      const data = calculateRetirementSavingsProjectionWithOverrides(formValues);
+      setRows(data);
+      setError(null); // clear any previous error
+    }
+    catch (err: any) {
+      if (err && Array.isArray(err.validationErrors)) {
+        setError(err.validationErrors.map((e: RetirementSavingsValidationError) => e.message));
+      } else {
+        setError(["Unknown error occurred"]);
+      }
+      setRows([]);
+    }
+  };
+
   const validateInput = (): RetirementSavingsValidationError[] => {
     const errors = validateRetirementSavingsInput(formValues);
     return errors;
   }
 
-  return { rows, error, generateTable, validateInput };
+  return { rows, error, generateTable, generateTableWithOverrides, validateInput };
 }
 
 export function getSummaryMessage(

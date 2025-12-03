@@ -5,6 +5,7 @@ import {
   SocialSecurityValidationError,
   SocialSecurityBenefitProjectionRow,
   calculateSocialSecurityBenefitProjection,
+  calculateSocialSecurityBenefitProjectionWithOverrides,
 } from 'financial-calcs';
 
 export function useSocialSecurityBenefitProjection(formValues: SocialSecurityBenefitInput) {
@@ -27,10 +28,26 @@ export function useSocialSecurityBenefitProjection(formValues: SocialSecurityBen
     }
   };
 
+  const generateTableWithOverrides = () => {
+    try {
+      const data = calculateSocialSecurityBenefitProjectionWithOverrides(formValues);
+      setRows(data);
+      setError(null); // clear any previous error
+    }
+    catch (err: any) {
+      if (err && Array.isArray(err.validationErrors)) {
+        setError(err.validationErrors.map((e: SocialSecurityValidationError) => e.message));
+      } else {
+        setError(["Unknown error occurred"]);
+      }
+      setRows([]);
+    }
+  };
+
   const validateInput = (): SocialSecurityValidationError[] => {
     const errors = validateSocialSecurityBenefitInput(formValues);
     return errors;
   }
 
-  return { rows, error, generateTable, validateInput };
+  return { rows, error, generateTable, generateTableWithOverrides, validateInput };
 }
