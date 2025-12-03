@@ -1,5 +1,6 @@
 import { FormFieldConfig } from '@/types/forms';
 import { Grid, Typography } from '@mui/material';
+import { startCase } from "lodash";
 
 export function ReadOnlyFields<T, C = void>({
   fields,
@@ -33,7 +34,7 @@ export function ReadOnlyFields<T, C = void>({
           <Typography variant="body1">
             {field.type === 'currency'
               ? formatCurrency(values[field.name])
-              : String(values[field.name] ?? "")
+              : startCase(String(values[field.name] ?? ""))
             }
           </Typography>
         </Grid>

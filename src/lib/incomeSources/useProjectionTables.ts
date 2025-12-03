@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { NormalizedSource } from "./types";
 import type { AnyProjectionRow } from "./types";
-import { calculateFersPensionProjection, calculateRetirementSavingsProjection, calculateSocialSecurityBenefitProjection } from "financial-calcs";
+import { calculateFersPensionProjection, calculateFersPensionProjectionWithOverrides, calculateRetirementSavingsProjection, calculateSocialSecurityBenefitProjection } from "financial-calcs";
 
 export function useProjectionTables(computedSources: NormalizedSource[] | null) {
   return useMemo(() => {
@@ -16,7 +16,10 @@ export function useProjectionTables(computedSources: NormalizedSource[] | null) 
       try {
         let rows: AnyProjectionRow[] = [];
         switch (src.type) {
-          case "fers-pension": rows = calculateFersPensionProjection(src.mergedFields); break;
+          case "fers-pension": rows = calculateFersPensionProjectionWithOverrides({
+            ...src.mergedFields,
+            yearOverrides: src.parsedData.yearOverrides ?? {}
+          }); break;
           case "retirement-savings": rows = calculateRetirementSavingsProjection(src.mergedFields); break;
           case "social-security": rows = calculateSocialSecurityBenefitProjection(src.mergedFields); break;
           default: rows = [];

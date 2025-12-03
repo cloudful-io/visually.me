@@ -133,8 +133,54 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
               />
             )
           },
-          { key: "salaryGrowthRate", label: "Salary Growth Rate (%)" },
-          { key: "colaApplied", label: "COLA Applied (%)" },
+          { 
+            key: "salaryGrowthRate", 
+            label: "Salary Growth Rate (%)", 
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: 0, max: 100, step: 0.1},
+                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
+                  }
+                }}
+              />
+            )
+          },
+          { 
+            key: "colaApplied", 
+            label: "COLA Applied (%)",
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: 0, max: 100, step: 0.1},
+                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
+                  }
+                }}
+              />
+            )
+          },
           { key: "pension", label: "Annual Pension ($)", currency: true },
           { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
         ]
@@ -153,7 +199,30 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       : [
           { key: 'year', label: 'Year' },
           { key: 'age', label: 'Age' },
-          { key: 'colaApplied', label: 'COLA Applied (%)' },
+          { 
+            key: 'colaApplied', 
+            label: 'COLA Applied (%)',
+            editable: true,
+            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
+              <TextField
+                size="small"
+                variant="standard"
+                value={value ?? ''}
+                type="number"
+                onChange={e => {
+                  const raw = e.target.value;
+                  const parsed = raw === '' ? undefined : Number(raw);
+                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
+                }}
+                slotProps={{
+                  input: { 
+                    inputProps: {min: 0, max: 100, step: 0.1},
+                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
+                  }
+                }}
+              />
+            )
+          },
           { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
           { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
         ];
@@ -172,6 +241,85 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     ],
   };
   const dataKeys = DATA_KEYS[source.type] || [];
+
+  const handleRowEditSave = async (year: number, patch: Partial<ProjectionRow>) => {
+    if (!source) return;
+
+    try {
+      handleRowEdit(year, patch);
+
+      const existingInput =
+        typeof (source as any).data === "string" && (source as any).data.length
+          ? JSON.parse((source as any).data)
+          : { ...(source as any).mergedFields ?? {} };
+
+      const yearOverrides: Record<string, any> = existingInput.yearOverrides ?? {};
+
+      const existingOverride = (yearOverrides[String(year)] as Record<string, any>) ?? {};
+      const newOverride = { ...existingOverride };
+
+      Object.assign(newOverride, patch);
+
+      yearOverrides[String(year)] = newOverride;
+      existingInput.yearOverrides = yearOverrides;
+
+    
+      await save({
+        id: source.id!,
+        type: source.type,
+        data: JSON.stringify(existingInput),
+      });
+
+      // Refresh server/state afterwards
+      await refresh();
+    } catch (err) {
+      console.error("Failed saving row override:", err);
+      // Optionally: revert optimistic update by refreshing from server or by reloading saved state
+      await refresh();
+    }
+  };
+
+const handleRemoveOverride = async (year: number) => {
+  if (confirm("Are you sure you want to revert this back to default?")) {
+    if (!source) return;
+
+    try {
+      const existingInput =
+        typeof (source as any).data === "string" && (source as any).data.length
+          ? JSON.parse((source as any).data)
+          : { ...(source as any).mergedFields ?? {} };
+
+      // Ensure yearOverrides exists as an object
+      const yearOverrides: Record<string, any> = existingInput.yearOverrides ?? {};
+
+      // Remove the override for the given year (use String(year) for JSON keys)
+      if (Object.prototype.hasOwnProperty.call(yearOverrides, String(year))) {
+        const nextOverrides = { ...yearOverrides };
+        delete nextOverrides[String(year)];
+
+        // Assign back (if no keys left you may set to undefined or empty object)
+        existingInput.yearOverrides = Object.keys(nextOverrides).length ? nextOverrides : undefined;
+      } else {
+        // Nothing to remove — still safe to return or refresh to ensure consistency
+        return;
+      }
+
+      // Persist the full input object
+      await save({
+        id: source.id!,
+        type: source.type,
+        data: JSON.stringify(existingInput),
+      });
+
+      // Refresh the server/state so computedSources, mergedFields, and projection tables update
+      await refresh();
+    } catch (err) {
+      console.error("Failed removing year override:", err);
+      // Refresh to ensure UI matches persisted state
+      await refresh();
+    }
+  }
+};
 
   return (
     <>
@@ -214,13 +362,9 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           rows={editableRows}
           highlightYear={new Date().getFullYear()}
           columns={columns}
-          onRowEditSave={async (year, patch) => {
-            //await save({ id: source.id!, type: source.type, data: JSON.stringify({ year, ...patch }) });
-            console.log({ year, ...patch });
-            await refresh();
-            handleRowEdit(year, patch);
-          }}
+          onRowEditSave={handleRowEditSave}
           onRowEditChange={handleRowEdit}
+          onRemoveOverride={handleRemoveOverride}
         />
 
         <EditIncomeSourceDialog
