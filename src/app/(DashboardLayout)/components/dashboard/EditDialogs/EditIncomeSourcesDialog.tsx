@@ -259,6 +259,22 @@ export default function EditIncomeSourceDialog({
     } else {
       setChildValidationMessages([]);
     }
+
+    let yearOverrides: Record<string, any> | undefined;
+
+    if (isEditing) {
+      const src = sources?.find((s) => s.id === sourceId);
+      if (src) {
+        try {
+          const parsed = JSON.parse(src.data);
+          console.log(parsed)
+          yearOverrides = parsed.yearOverrides ?? undefined;
+        } catch {
+          yearOverrides = undefined;
+        }
+      }
+    }
+
     await onSave({
       id: sourceId ?? undefined,
       type,
@@ -267,7 +283,9 @@ export default function EditIncomeSourceDialog({
       data: 
         JSON.stringify({
           label: label.trim(),
-          fields: childValues})
+          fields: childValues,
+          ...(yearOverrides ? { yearOverrides } : {})
+        })
     });
 
     onClose();

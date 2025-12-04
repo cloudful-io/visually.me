@@ -80,7 +80,31 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     setOpenEditDialog(false);
   };
   const handleEditDialogSave = async (input: { type: string; data: string; id?: string }) => {
-    await save(input);
+    if (!source) return;
+
+    // Parse new base data from the dialog
+    const newBase = JSON.parse(input.data);
+
+    // Extract existing overrides from the current saved source
+    const currentInput =
+      typeof source.data === "string" && source.data.length
+        ? JSON.parse(source.data)
+        : { ...(source.mergedFields ?? {}) };
+
+    const preservedOverrides = currentInput.yearOverrides ?? {};
+
+    // Merge overrides back into the updated input
+    const merged = {
+      ...newBase,
+      yearOverrides: Object.keys(preservedOverrides).length ? preservedOverrides : undefined,
+    };
+
+    await save({
+      id: source.id!,
+      type: input.type,
+      data: JSON.stringify(merged),
+    });
+
     await refresh();
     handleEditDialogClose();
   };
