@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button,
+  TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button, Stack
 } from "@mui/material";
 
 export type ColumnDef<T, K extends keyof T = keyof T> = {
@@ -182,16 +182,16 @@ export function ProjectionTable<T extends { year: number }>({
                         </>
                       ) : (
                         <>
+                        <Stack direction="row" spacing={1}>
                           <Button size="small" variant="outlined" onClick={() => startEditingRow(row.year)}>
                             Edit
                           </Button>
-                          {"hasOverride" in row && row.hasOverride && (
-                            <Button size="small" variant="outlined" sx={{ml: 1}} onClick={() => {
-                              if (onRemoveOverride) onRemoveOverride(row.year);
-                            }}>
-                            Revert
-                          </Button>
-                          )}
+                          {"hasOverride" in row && row.hasOverride ? (
+                            <Button size="small" variant="outlined" onClick={() => onRemoveOverride?.(row.year)}>
+                              Revert
+                            </Button>
+                          ) : null}
+                          </Stack>
                         </>
                       )}
                     </TableCell>

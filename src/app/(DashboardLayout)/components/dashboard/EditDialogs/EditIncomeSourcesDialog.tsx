@@ -267,7 +267,6 @@ export default function EditIncomeSourceDialog({
       if (src) {
         try {
           const parsed = JSON.parse(src.data);
-          console.log(parsed)
           yearOverrides = parsed.yearOverrides ?? undefined;
         } catch {
           yearOverrides = undefined;
