@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import { Box, Button, Paper } from "@mui/material";
 import {
   DataGrid,
   GridColDef,
@@ -12,13 +11,15 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { currencyFormatter } from "@/lib/formatters/currency";
 
-type ColumnDef<T> = {
+export type ColumnDef<T> = {
   key: keyof T;
   label: string;
   description?: string;
   currency?: boolean;
   editable?: boolean;
   hiddenOnMobile?: boolean;
+  min?: number;
+  max?: number;
 };
 
 type ProjectionDataGridProps<T extends { year: number }> = {
@@ -37,6 +38,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const hasAnyOverride = rows.some((row) => "hasOverride" in row && row.hasOverride);
 
   const muiColumns = React.useMemo<GridColDef[]>(() => {
     const cols: GridColDef[] = columns.map((col) => ({
@@ -45,18 +47,26 @@ export function ProjectionDataGrid<T extends { year: number }>(
       minWidth: isMobile ? 100 : 120,
       description: col.description ?? col.label,
       editable: col.editable ?? false,
-      
       flex: 1,
       valueFormatter: (value: any) => {
         if (value == null) return "";
         return col.currency
           ? currencyFormatter(value)
           : value;
-      }
+      },
+      preProcessEditCellProps: (params) => {
+        const value = Number(params.props.value);
+
+        const hasError =
+          (col.min != null && value < col.min) ||
+          (col.max != null && value > col.max);
+
+        return { ...params.props, error: hasError };
+      },
+
     }));
 
     // Action column
-    const hasAnyOverride = rows.some((row) => "hasOverride" in row && row.hasOverride);
     if (hasAnyOverride) {
       cols.push({
         field: "__actions__unique",
@@ -130,30 +140,68 @@ export function ProjectionDataGrid<T extends { year: number }>(
 
   return (
     <Box sx={{ width: '100%' }}>
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <DataGrid
-        sx={{
-          borderColor: 'divider', 
-          boxShadow: 1,
-          "& .MuiDataGrid-row": {
-            "&.highlight-year": { bgcolor: theme.palette.action.selected },
-            "&.override-row": { borderLeft: `4px solid ${theme.palette.warning.main}` },
-          },
-        }}
-        rows={rows}
-        columns={muiColumns}
-        columnVisibilityModel={columnVisibilityModel}
-        onColumnVisibilityModelChange={() => {}}
-        getRowId={getRowId}
-        editMode="row"
-        processRowUpdate={processRowUpdate}
-        getRowClassName={getRowClassName}
-        disableColumnMenu
-        disableColumnFilter
-        disableColumnSorting
-        disableRowSelectionOnClick
-      />
-    </div>
+      {hasAnyOverride && (
+        <Paper
+          elevation={0}
+          sx={(theme) => ({
+            p: 1.5,
+            mb: 1.5,
+            display: "flex",
+            alignItems: "center",
+            fontSize: "0.9rem",
+            borderLeft: `4px solid ${theme.palette.warning.main}`,
+            backgroundColor: theme.palette.action.hover,
+          })}
+        >
+          Rows marked with a left border have user-entered values.
+        </Paper>
+      )}
+      {columns.some(c => c.editable) && (
+        <Paper
+          elevation={0}
+          sx={(theme) => ({
+            p: 1.5,
+            mb: 1.5,
+            display: "flex",
+            alignItems: "center",
+            fontSize: "0.9rem",
+            borderLeft: `4px solid ${theme.palette.info.main}`,
+            backgroundColor: theme.palette.action.hover,
+          })}
+        >
+          Editable columns:&nbsp;
+          <strong>
+            {columns
+              .filter(c => c.editable)
+              .map(c => c.label)
+              .join(", ")}
+          </strong>
+        </Paper>
+      )}
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <DataGrid
+          sx={{
+            borderColor: 'divider', 
+            boxShadow: 1,
+            "& .MuiDataGrid-row": {
+              "&.highlight-year": { bgcolor: theme.palette.action.selected },
+              "&.override-row": { borderLeft: `4px solid ${theme.palette.warning.main}` },
+            },
+          }}
+          rows={rows}
+          columns={muiColumns}
+          columnVisibilityModel={columnVisibilityModel}
+          onColumnVisibilityModelChange={() => {}}
+          getRowId={getRowId}
+          editMode="row"
+          processRowUpdate={processRowUpdate}
+          getRowClassName={getRowClassName}
+          disableColumnMenu
+          disableColumnFilter
+          disableColumnSorting
+          disableRowSelectionOnClick
+        />
+      </div>
     </Box>
   );
 }

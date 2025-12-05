@@ -1,11 +1,11 @@
 "use client";
-import React, { use, useState, useEffect } from "react";
+import { use, useState } from "react";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
-import { ColumnDef, ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
-import { CircularProgress, Button, TextField, Typography } from "@mui/material";
+import { ColumnDef, ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
+import { CircularProgress, Button, Typography } from "@mui/material";
 import type { DataKeyOption } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
 import { fersPensionFieldConfigs } from "@/configs/fersPensionFields";
@@ -20,8 +20,6 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
-import InputAdornment from '@mui/material/InputAdornment';
-
 
 // Projection row union
 import type {
@@ -29,6 +27,7 @@ import type {
   RetirementSavingsProjectionRow,
   SocialSecurityBenefitProjectionRow,
 } from "financial-calcs";
+import { table } from "console";
 
 type ProjectionRow =
   | FersPensionProjectionRow
@@ -45,30 +44,9 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
   const [newSourceType, setNewSourceType] = useState<string | null>(null);
 
-  // Get the computed source and table rows
   const source = computedSources?.find(s => s.id === id);
   const tableRows: ProjectionRow[] = projectionTables?.[id] ?? [];
 
-  // Track row-level edits
-  const [editableRows, setEditableRows] = useState<ProjectionRow[]>(tableRows);
-
-  useEffect(() => {
-  const needsUpdate =
-    editableRows.length !== tableRows.length ||
-    editableRows.some((row, i) => row !== tableRows[i]);
-
-  if (needsUpdate) {
-    setEditableRows(tableRows);
-  }
-}, [tableRows]);
-
-  const handleRowEdit = (year: number, patch: Partial<ProjectionRow>) => {
-    setEditableRows(prev =>
-      prev.map(row => (row.year === year ? { ...row, ...patch } : row))
-    );
-  };
-
-  // Handle dialog open/close
   const handleEditDialogOpen = (id: string) => {
     setEditingSourceId(id);
     setNewSourceType(null);
@@ -82,18 +60,13 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   const handleEditDialogSave = async (input: { type: string; data: string; id?: string }) => {
     if (!source) return;
 
-    // Parse new base data from the dialog
     const newBase = JSON.parse(input.data);
-
-    // Extract existing overrides from the current saved source
     const currentInput =
       typeof source.data === "string" && source.data.length
         ? JSON.parse(source.data)
         : { ...(source.mergedFields ?? {}) };
 
     const preservedOverrides = currentInput.yearOverrides ?? {};
-
-    // Merge overrides back into the updated input
     const merged = {
       ...newBase,
       yearOverrides: Object.keys(preservedOverrides).length ? preservedOverrides : undefined,
@@ -132,286 +105,73 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   };
   const readOnlyFields = FIELD_CONFIGS[source.type] ?? [];
 
-  // Dynamically define columns
-  const columns =
-    source.type === "fers-pension"
-      ? ([
-          { key: "year", label: "Year" },
-          { key: "age", label: "Age" },
-          {
-            key: "salary",
-            label: "Annual Salary ($)",
-            currency: true,
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 0, step: 1000},
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>, 
-                  }
-                }}
-              />
-            )
-          },
-          { 
-            key: "salaryGrowthRate", 
-            label: "Salary Growth Rate (%)", 
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 0, max: 100, step: 0.1},
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
-                  }
-                }}
-              />
-            )
-          },
-          { 
-            key: "colaApplied", 
-            label: "COLA Applied (%)",
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 0, max: 100, step: 0.1},
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
-                  }
-                }}
-              />
-            )
-          },
-          { key: "pension", label: "Annual Pension ($)", currency: true },
-          { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
-        ] satisfies ColumnDef<FersPensionProjectionRow, keyof FersPensionProjectionRow>[])
-      : source.type === "retirement-savings"
-      ? ([
-          { key: 'year', label: 'Year' },
-          { key: 'age', label: 'Age' },
-          { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
-          { 
-            key: 'contribution', 
-            label: 'Contribution ($)', 
-            currency: true,
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 1, step: 100},
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>, 
-                  }
-                }}
-              />
-            )
-          },
-          { 
-            key: 'yieldPercent', 
-            label: 'Yield %',
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: -100, max: 100, step: 0.1},
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
-                  }
-                }}
-              />
-            ) 
-          },
-          { 
-            key: 'withdrawRate', 
-            label: 'Withdraw %',
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 0, max: 100, step: 0.1},
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
-                  }
-                }}
-              />
-            ) 
-          },
-          { key: 'monthlyWithdraw', label: 'Monthly Withdraw ($)', currency: true },
-          { 
-            key: 'annualWithdraw', 
-            label: 'Annual Withdraw ($)', 
-            currency: true,
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 0, step: 100},
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>, 
-                  }
-                }}
-              />
-            )
-          },
-          { 
-            key: 'endingBalance', 
-            label: 'Ending Balance ($)', 
-            currency: true,
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 0, step: 100},
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>, 
-                  }
-                }}
-              />
-            )
-          },
-            
-        ] satisfies ColumnDef<RetirementSavingsProjectionRow, keyof RetirementSavingsProjectionRow>[])
-      : ([
-          { key: 'year', label: 'Year' },
-          { key: 'age', label: 'Age' },
-          { 
-            key: 'colaApplied', 
-            label: 'COLA Applied (%)',
-            editable: true,
-            editor: (value: number | undefined, row: ProjectionRow, onChange: (v?: number) => void) => (
-              <TextField
-                size="small"
-                variant="standard"
-                value={value ?? ''}
-                type="number"
-                onChange={e => {
-                  const raw = e.target.value;
-                  const parsed = raw === '' ? undefined : Number(raw);
-                  onChange(Number.isNaN(parsed as number) ? undefined : parsed);
-                }}
-                slotProps={{
-                  input: { 
-                    inputProps: {min: 0, max: 100, step: 0.1},
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>, 
-                  }
-                }}
-              />
-            )
-          },
-          { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
-          { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
-        ] satisfies ColumnDef<SocialSecurityBenefitProjectionRow, keyof SocialSecurityBenefitProjectionRow>[]);
+  // --- Dynamic columns and dataKeys ---
+  let columns: ColumnDef<any>[] = [];
+  let dataKeys: DataKeyOption<any>[] = [];
 
-  const DATA_KEYS: Record<string, DataKeyOption<ProjectionRow>[]> = {
-    "fers-pension": [
+  if (source.type === "fers-pension") {
+    columns = [
+      { key: "year", label: "Year" },
+      { key: "age", label: "Age" },
+      { key: "salary", label: "Annual Salary ($)", currency: true, editable: true, min: 0 },
+      { key: "salaryGrowthRate", label: "Salary Growth Rate (%)", editable: true, min: 0, max: 100 },
+      { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
+      { key: "pension", label: "Annual Pension ($)", currency: true },
+      { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
+    ] satisfies ColumnDef<FersPensionProjectionRow>[];
+
+    dataKeys = [
       { key: "pension", label: "Annual Pension ($)" },
       { key: "salary", label: "Annual Salary ($)" },
-    ],
-    "retirement-savings": [
+    ] satisfies DataKeyOption<FersPensionProjectionRow>[];
+  } else if (source.type === "retirement-savings") {
+    columns = [
+      { key: "year", label: "Year" },
+      { key: "age", label: "Age" },
+      { key: "beginningBalance", label: "Beginning Balance ($)", currency: true },
+      { key: "contribution", label: "Contribution ($)", currency: true, editable: true, min: 0 },
+      { key: "yieldPercent", label: "Yield %", editable: true, min: -100, max: 100 },
+      { key: "withdrawRate", label: "Withdrawal %", editable: true, min: 0, max: 100 },
+      { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true },
+      { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable: true, min: 0 },
+      { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable: true, min: 0 },
+    ] satisfies ColumnDef<RetirementSavingsProjectionRow>[];
+
+    dataKeys = [
       { key: "endingBalance", label: "End of Year Balance ($)" },
       { key: "annualWithdraw", label: "Annual Withdrawal ($)" },
-    ],
-    "social-security": [
-      { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
-    ],
-  };
-  const dataKeys = DATA_KEYS[source.type] || [];
+    ] satisfies DataKeyOption<RetirementSavingsProjectionRow>[];
+  } else {
+    columns = [
+      { key: "year", label: "Year" },
+      { key: "age", label: "Age" },
+      { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
+      { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true },
+      { key: "annualBenefit", label: "Annual Benefit ($)", currency: true },
+    ] satisfies ColumnDef<SocialSecurityBenefitProjectionRow>[];
 
+    dataKeys = [
+      { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
+    ] satisfies DataKeyOption<SocialSecurityBenefitProjectionRow>[];
+  }
+
+  // --- Row edit handlers ---
   const handleRowEditSave = async (year: number, patch: Partial<ProjectionRow>) => {
     if (!source) return;
 
     try {
-      handleRowEdit(year, patch);
-
       const existingInput =
-        typeof (source as any).data === "string" && (source as any).data.length
-          ? JSON.parse((source as any).data)
-          : { ...(source as any).mergedFields ?? {} };
+        typeof source.data === "string" && source.data.length
+          ? JSON.parse(source.data)
+          : { ...(source.mergedFields ?? {}) };
 
       const yearOverrides: Record<string, any> = existingInput.yearOverrides ?? {};
-
-      const existingOverride = (yearOverrides[String(year)] as Record<string, any>) ?? {};
-      const newOverride = { ...existingOverride };
-
-      Object.assign(newOverride, patch);
-
+      const existingOverride = yearOverrides[String(year)] ?? {};
+      const newOverride = { ...existingOverride, ...patch };
       yearOverrides[String(year)] = newOverride;
+
       existingInput.yearOverrides = yearOverrides;
-    
+
       await save({
         id: source.id!,
         type: source.type,
@@ -425,27 +185,20 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     }
   };
 
-const handleRemoveOverride = async (year: number) => {
-  if (confirm("Are you sure you want to revert this back to default?")) {
-    if (!source) return;
+  const handleRemoveOverride = async (year: number) => {
+    if (!source || !confirm("Are you sure you want to revert this back to default?")) return;
 
     try {
       const existingInput =
-        typeof (source as any).data === "string" && (source as any).data.length
-          ? JSON.parse((source as any).data)
-          : { ...(source as any).mergedFields ?? {} };
+        typeof source.data === "string" && source.data.length
+          ? JSON.parse(source.data)
+          : { ...(source.mergedFields ?? {}) };
 
-      // Ensure yearOverrides exists as an object
       const yearOverrides: Record<string, any> = existingInput.yearOverrides ?? {};
-
-      // Remove the override for the given year (use String(year) for JSON keys)
-      if (Object.prototype.hasOwnProperty.call(yearOverrides, String(year))) {
+      if (yearOverrides[String(year)]) {
         const nextOverrides = { ...yearOverrides };
         delete nextOverrides[String(year)];
-
         existingInput.yearOverrides = Object.keys(nextOverrides).length ? nextOverrides : undefined;
-      } else {
-        return;
       }
 
       await save({
@@ -459,8 +212,7 @@ const handleRemoveOverride = async (year: number) => {
       console.error("Failed removing year override:", err);
       await refresh();
     }
-  }
-};
+  };
 
   return (
     <>
@@ -471,6 +223,7 @@ const handleRemoveOverride = async (year: number) => {
           values={source.mergedFields}
           context={{ isAuthenticated: true }}
         />
+
         <Button
           variant="contained"
           color="primary"
@@ -499,12 +252,11 @@ const handleRemoveOverride = async (year: number) => {
         />
 
         <div id="tableSection" />
-        <ProjectionTable
-          rows={editableRows}
+        <ProjectionDataGrid
+          rows={tableRows}
           highlightYear={new Date().getFullYear()}
           columns={columns}
           onRowEditSave={handleRowEditSave}
-          onRowEditChange={handleRowEdit}
           onRemoveOverride={handleRemoveOverride}
         />
 
