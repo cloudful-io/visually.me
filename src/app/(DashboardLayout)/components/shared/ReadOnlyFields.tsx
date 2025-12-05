@@ -1,6 +1,7 @@
 import { FormFieldConfig } from '@/types/forms';
 import { Grid, Typography } from '@mui/material';
 import { startCase } from "lodash";
+import { currencyFormatter } from '@/lib/formatters/currency';
 
 export function ReadOnlyFields<T, C = void>({
   fields,
@@ -11,16 +12,6 @@ export function ReadOnlyFields<T, C = void>({
   values: T;
   context?: C;
 }) {
-  function formatCurrency(value: any) {
-    if (value == null || value === '') return '';
-
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(Number(value));
-  }
 
   return (
     <Grid container spacing={2}>
@@ -33,7 +24,7 @@ export function ReadOnlyFields<T, C = void>({
           </Typography>
           <Typography variant="body1">
             {field.type === 'currency'
-              ? formatCurrency(values[field.name])
+              ? currencyFormatter(values[field.name] as number)
               : startCase(String(values[field.name] ?? ""))
             }
           </Typography>

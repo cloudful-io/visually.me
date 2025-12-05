@@ -55,9 +55,13 @@ export function ProjectionDataGrid<T extends { year: number }>(
           : value;
       },
       preProcessEditCellProps: (params) => {
-        const value = Number(params.props.value);
+        const raw = params.props.value;
+        const value = Number(raw);
+
+        const isNotNumber = raw === "" || Number.isNaN(value);
 
         const hasError =
+          isNotNumber ||
           (col.min != null && value < col.min) ||
           (col.max != null && value > col.max);
 
