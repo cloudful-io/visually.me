@@ -42,6 +42,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
     const cols: GridColDef[] = columns.map((col) => ({
       field: col.key as string,
       headerName: col.label,
+      minWidth: isMobile ? 100 : 120,
       description: col.description ?? col.label,
       editable: col.editable ?? false,
       
@@ -128,7 +129,8 @@ export function ProjectionDataGrid<T extends { year: number }>(
   }
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
+    <Box sx={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <DataGrid
         sx={{
           borderColor: 'divider', 
@@ -151,6 +153,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
         disableColumnSorting
         disableRowSelectionOnClick
       />
+    </div>
     </Box>
   );
 }
