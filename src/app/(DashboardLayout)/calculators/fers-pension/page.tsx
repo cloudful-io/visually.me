@@ -147,7 +147,7 @@ const FersPensionProjection = () => {
             { key: 'year', label: 'Year' },
             { key: 'age', label: 'Age' },
             { key: 'salary', label: 'Annual Salary ($)', currency: true },
-            { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)' },
+            { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)', description: "Estimated Salary Growth Rate (%)" },
             { key: 'colaApplied', label: 'COLA Applied (%)', description: "Cost of Living Adjustment Applied (%)" },
             { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true, hiddenOnMobile: true },
             { key: 'pension', label: 'Annual Pension ($)', currency: true },
