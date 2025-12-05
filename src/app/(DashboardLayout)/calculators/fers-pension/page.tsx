@@ -5,7 +5,7 @@ import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSumma
 import { FersPensionInput } from 'financial-calcs';
 import { fersPensionFieldConfigs } from '@/configs/fersPensionFields';
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
-import { ProjectionTable } from '@/app/(DashboardLayout)/components/shared/ProjectionTable';
+import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import PageContainer from "../../components/container/PageContainer";
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
@@ -140,7 +140,7 @@ const FersPensionProjection = () => {
       {rows.length > 0 && !error && (
         <>
         <div id="tableSection"></div>
-        <ProjectionTable
+        <ProjectionDataGrid
           rows={rows}
           highlightYear={new Date().getFullYear()}
           columns={[
@@ -148,9 +148,9 @@ const FersPensionProjection = () => {
             { key: 'age', label: 'Age' },
             { key: 'salary', label: 'Annual Salary ($)', currency: true },
             { key: 'salaryGrowthRate', label: 'Salary Growth Rate (%)' },
-            { key: 'colaApplied', label: 'COLA Applied (%)' },
+            { key: 'colaApplied', label: 'COLA Applied (%)', description: "Cost of Living Adjustment Applied (%)" },
+            { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true, hiddenOnMobile: true },
             { key: 'pension', label: 'Annual Pension ($)', currency: true },
-            { key: 'monthlyPension', label: 'Monthly Pension ($)', currency: true },
           ]}
         />
         </>

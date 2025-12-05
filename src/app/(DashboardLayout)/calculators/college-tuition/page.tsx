@@ -4,7 +4,7 @@ import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { collegeTuitionFieldConfigs } from '@/configs/collegeTuitionFields';
 import { CollegeTuitionInput } from 'financial-calcs';
-import { ProjectionTable } from '@/app/(DashboardLayout)/components/shared/ProjectionTable';
+import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import PageContainer from "../../components/container/PageContainer";
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
@@ -140,7 +140,7 @@ const CollegeTuitionProjection = () => {
       {rows.length > 0 && !error && (
         <>
         <div id="tableSection"></div>
-        <ProjectionTable
+        <ProjectionDataGrid
           rows={rows}
           highlightYear={new Date().getFullYear()}
           columns={[
@@ -150,8 +150,8 @@ const CollegeTuitionProjection = () => {
             { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
             { key: 'contribution', label: 'Contribution ($)', currency: true },
             { key: 'yieldPercent', label: 'Yield %' },
-            { key: 'tuitionAmount', label: 'Tuition ($)', currency: true },
-            { key: 'annualWithdraw', label: 'Annual Withdraw ($)', currency: true },
+            { key: 'tuitionAmount', label: 'Tuition ($)', description: "Estimated Tuition Cost ($)", currency: true },
+            { key: 'annualWithdraw', label: 'Annual Withdrawal ($)', description: "Amount to Withdraw to Cover College Tuition ($)", currency: true },
             { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
           ]}
         />

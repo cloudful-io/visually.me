@@ -42,7 +42,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   },
   {
     name: 'estimatedWithdrawRate',
-    label: 'Estimated Withdraw Rate (%)',
+    label: 'Estimated Withdrawal Rate (%)',
     min: 0,
     max: 100,
     step: 0.1,
@@ -58,7 +58,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   },
   {
     name: 'withdrawStartAge',
-    label: 'Withdraw Start Age',
+    label: 'Withdrawal Start Age',
     min: 50,
     max: 73,
     step: 1,

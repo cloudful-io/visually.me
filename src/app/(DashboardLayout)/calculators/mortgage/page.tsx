@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { ProjectionTable } from '@/app/(DashboardLayout)/components/shared/ProjectionTable';
+import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import PageContainer from "../../components/container/PageContainer";
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
@@ -163,7 +163,7 @@ const MortgageProjection = () => {
       {rows.length > 0 && !error && (
          <>
         <div id="tableSection"></div>
-        <ProjectionTable
+        <ProjectionDataGrid
           rows={tableRows}
           highlightYear={new Date().getFullYear()}
           columns={

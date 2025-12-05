@@ -4,7 +4,7 @@ import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { retirementSavingsFieldConfigs } from '@/configs/retirementSavingsFields';
 import { RetirementSavingsInput } from 'financial-calcs';
-import { ProjectionTable } from '@/app/(DashboardLayout)/components/shared/ProjectionTable';
+import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import PageContainer from "../../components/container/PageContainer";
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
@@ -134,7 +134,7 @@ const RetirementSavingsProjection = () => {
       {rows.length > 0 && !error && (
          <>
           <div id="tableSection"></div>
-          <ProjectionTable
+          <ProjectionDataGrid
             rows={rows}
             highlightYear={new Date().getFullYear()}
             columns={[
@@ -143,9 +143,9 @@ const RetirementSavingsProjection = () => {
               { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
               { key: 'contribution', label: 'Contribution ($)', currency: true },
               { key: 'yieldPercent', label: 'Yield %' },
-              { key: 'withdrawRate', label: 'Withdraw %' },
-              { key: 'monthlyWithdraw', label: 'Monthly Withdraw ($)', currency: true },
-              { key: 'annualWithdraw', label: 'Annual Withdraw ($)', currency: true },
+              { key: 'withdrawRate', label: 'Withdrawal %', hiddenOnMobile: true },
+              { key: 'monthlyWithdraw', label: 'Monthly Withdrawal ($)', currency: true, hiddenOnMobile: true },
+              { key: 'annualWithdraw', label: 'Annual Withdrawal ($)', currency: true },
               { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
             ]}
           />

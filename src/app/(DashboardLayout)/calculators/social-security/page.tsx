@@ -8,6 +8,7 @@ import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionTable } from '@/app/(DashboardLayout)/components/shared/ProjectionTable';
+import { ProjectionDataGrid } from '../../components/shared/ProjectionDataGrid';
 import PageContainer from '../../components/container/PageContainer';
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
@@ -129,15 +130,15 @@ const SocialSecurityProjection = () => {
       {rows.length > 0 && !error && (
          <>
           <div id="tableSection"></div>
-          <ProjectionTable
+          <ProjectionDataGrid
             rows={rows}
             highlightYear={new Date().getFullYear()}
             columns={[
-              { key: 'year', label: 'Year' },
-              { key: 'age', label: 'Age' },
-              { key: 'colaApplied', label: 'COLA Applied (%)' },
-              { key: 'monthlyBenefit', label: 'Monthly Benefit ($)', currency: true },
-              { key: 'annualBenefit', label: 'Annual Benefit ($)', currency: true },
+              { key: "year", label: "Year", editable: false },
+              { key: "age", label: "Age", editable: false },
+              { key: "colaApplied", label: "COLA Applied (%)", description: "Cost of Living Adjustment (%)" },
+              { key: "monthlyBenefit", label: "Monthly Benefit ($)", description: "Monthly Social Security Benefit ($)", currency: true },
+              { key: "annualBenefit", label: "Annual Benefit ($)", description: "Annual Social Security Benefit ($)", currency: true },
             ]}
           />
         </>
