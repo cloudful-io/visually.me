@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useTheme, styled } from '@mui/material/styles';
 import { usePathname } from "next/navigation";
 import { Box, AppBar, Toolbar, Stack, IconButton, Button, Drawer } from '@mui/material';
@@ -18,6 +18,10 @@ const Header = () => {
   const theme = useTheme();
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const pages = ['About', 'Blog'];
 
