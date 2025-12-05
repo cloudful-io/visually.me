@@ -55,24 +55,27 @@ export function ProjectionDataGrid<T extends { year: number }>(
     }));
 
     // Action column
-    cols.push({
-      field: "__actions__unique",
-      headerName: "",
-      width: 100,
-      sortable: false,
-      renderCell: (params) => {
-        const row = params.row as T;
-        return "hasOverride" in row && row.hasOverride ? (
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => onRemoveOverride?.(row.year)}
-          >
-            Revert
-          </Button>
-        ) : null;
-      },
-    });
+    const hasAnyOverride = rows.some((row) => "hasOverride" in row && row.hasOverride);
+    if (hasAnyOverride) {
+      cols.push({
+        field: "__actions__unique",
+        headerName: "",
+        width: 100,
+        sortable: false,
+        renderCell: (params) => {
+          const row = params.row as T;
+          return "hasOverride" in row && row.hasOverride ? (
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => onRemoveOverride?.(row.year)}
+            >
+              Revert
+            </Button>
+          ) : null;
+        },
+      });
+    }
 
     return cols;
   }, [columns, onRemoveOverride, currencyFormatter]);
