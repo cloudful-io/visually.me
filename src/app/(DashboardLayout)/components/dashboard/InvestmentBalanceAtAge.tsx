@@ -15,6 +15,7 @@ export function InvestmentBalanceAtAge({
   targetRetirementAge: number;
 }) {
   const ages = combined.map((r) => r.age);
+  const safeTargetAge = ages.includes(targetAge) ? targetAge : "";
 
   const row = combined.find((r) => r.age === targetAge);
   const balance = Math.round(row?.annualInvestmentBalance ?? 0);
@@ -39,7 +40,7 @@ export function InvestmentBalanceAtAge({
         <FormControl size="small" sx={{ minWidth: 80 }}>
           <InputLabel>Age</InputLabel>
           <Select
-            value={targetAge}
+            value={safeTargetAge}
             label="Age"
             onChange={(e) => onAgeChange(Number(e.target.value))}
           >

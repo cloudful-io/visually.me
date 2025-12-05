@@ -173,7 +173,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
             backgroundColor: theme.palette.action.hover,
           })}
         >
-          Editable columns:&nbsp;
+          Editable column(s):&nbsp;
           <strong>
             {columns
               .filter(c => c.editable)
