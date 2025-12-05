@@ -5,7 +5,7 @@ import PageContainer from "@/app/(DashboardLayout)/components/container/PageCont
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 import { ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
-import { ProjectionTable } from "@/app/(DashboardLayout)/components/shared/ProjectionTable";
+import { ProjectionDataGrid } from "../components/shared/ProjectionDataGrid";
 import Loading from "@/app/loading";
 
 export default function IncomeSummaryPage() {
@@ -38,14 +38,6 @@ export default function IncomeSummaryPage() {
             label: `${src.label} Balance`,
           }));
 
-  const tableColumns = [
-    { key: "year", label: "Year" },
-    { key: "age", label: "Age" },
-    { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true },
-    { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
-    { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
-  ];
-
   return (
     <PageContainer title="Retirement Income and Investment Over Time" showTitle>
 
@@ -72,13 +64,16 @@ export default function IncomeSummaryPage() {
             : "Investment Balance by Account"
         }
       />
-
-      {/* -----------------------
-          TABLE
-         ----------------------- */}
-      <ProjectionTable
+      
+      <ProjectionDataGrid
         rows={tableRows}
-        columns={tableColumns}
+        columns={[
+          { key: "year", label: "Year" },
+          { key: "age", label: "Age" },
+          { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true },
+          { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
+          { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
+        ]}
         highlightYear={new Date().getFullYear()}
       />
     </PageContainer>
