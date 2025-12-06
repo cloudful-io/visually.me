@@ -45,6 +45,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
       field: col.key as string,
       headerName: col.label,
       minWidth: isMobile ? 100 : 120,
+      headerClassName: col.editable ? "editable-column-header" : "",
       description: col.description ?? col.label,
       editable: col.editable ?? false,
       flex: 1,
@@ -191,6 +192,10 @@ export function ProjectionDataGrid<T extends { year: number }>(
               "&.highlight-year": { bgcolor: theme.palette.action.selected },
               "&.override-row": { borderLeft: `4px solid ${theme.palette.warning.main}` },
             },
+            "& .MuiDataGrid-columnHeaders .editable-column-header": {
+              borderTop: `4px solid ${theme.palette.info.main}`,
+            },
+
           }}
           rows={rows}
           columns={muiColumns}
