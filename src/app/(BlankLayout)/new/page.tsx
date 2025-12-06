@@ -16,10 +16,13 @@ import { useUserAttributes } from "@/lib/userAttributes/hook";
 const steps = ["Agreements", "Profile"];
 
 export default function OnboardingPage() {
+  const MINIMUM_AGE = 18;
   const router = useRouter();
   const { user } = useSupabaseAuth();
   const currentYear = new Date().getFullYear();
-  
+  const minYear = 1900;
+  const maxYear = currentYear - MINIMUM_AGE;
+
   const { save: saveUserAttributes } = useUserAttributes({ lazy: true });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -37,9 +40,9 @@ export default function OnboardingPage() {
   const canContinueStep2 = displayName && birthYear && targetRetirementAge && startYear && yearsToProject;
 
   const validate = {
-    birthYear: birthYear && (birthYear < 1900 || birthYear > currentYear),
+    birthYear: birthYear && (birthYear < minYear || birthYear > maxYear),
     targetRetirementAge: targetRetirementAge && (targetRetirementAge < 40 || targetRetirementAge > 80),
-    startYear: startYear && (startYear < 1900 || startYear > currentYear),
+    startYear: startYear && (startYear < minYear || startYear > currentYear),
     yearsToProject: yearsToProject && (yearsToProject <= 0 || yearsToProject > 80)
   };
 
@@ -108,7 +111,7 @@ export default function OnboardingPage() {
   };
   useEffect(() => {
     if (user != null) {
-      setDisplayName(user.user_metadata?.full_name);
+      setDisplayName(user.user_metadata?.full_name ?? "");
     }
     const checkOnboardingStatus = async () => {
     if (!user) return; // Wait until user is available (can also be null if not logged in)
@@ -182,11 +185,11 @@ export default function OnboardingPage() {
                 disabled={isSaving}
                 onChange={(e) => setBirthYear(Number(e.target.value))}
                 error={!!validate.birthYear}
-                helperText={validate.birthYear ? `Enter a year between 1900 and ${currentYear}` : ""}
+                helperText={validate.birthYear ? `Enter a year between ${minYear} and ${maxYear}.  You must be at least ${MINIMUM_AGE} years old.` : ""}
                 slotProps={{
                   htmlInput: {
-                    min: 1900,
-                    max: currentYear,
+                    min: minYear,
+                    max: maxYear,
                   },
                 }}
                 fullWidth
