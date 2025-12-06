@@ -64,7 +64,7 @@ export default function IncomeSummaryPage() {
             : "Investment Balance by Account"
         }
       />
-      
+        
       <ProjectionDataGrid
         rows={tableRows}
         columns={[
