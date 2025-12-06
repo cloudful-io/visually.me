@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
@@ -9,13 +9,20 @@ import Profile from '@/app/components/Profile';
 import { IconMenu } from '@tabler/icons-react';
 import ThemeModeToggle from '@/app/components/ThemeModeToggle';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { usePathname } from "next/navigation";
 
 interface ItemType {
   toggleMobileSidebar:  (event: React.MouseEvent<HTMLElement>) => void;
+  closeMobileSidebar: () => void;
 }
 
-const Header = ({toggleMobileSidebar}: ItemType) => {
+const Header = ({toggleMobileSidebar, closeMobileSidebar}: ItemType) => {
   const { user, loading } = useSupabaseAuth();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    closeMobileSidebar();
+  }, [pathname]);
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
