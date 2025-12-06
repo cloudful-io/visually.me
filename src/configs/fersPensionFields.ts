@@ -92,9 +92,12 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'pensionMultiplier',
     label: 'Pension Multiplier (%)',
-    min: 0,
-    max: 2,
-    step: 0.1,
+    type: 'select',
+    options: [
+      { value: '1.0', label: '1.0%: Standard Annuity' },
+      { value: '1.1', label: '1.1%: Enhanced Annuity' },
+      { value: '1.7', label: '1.7%: Special Provision Employees' },
+    ],
     helperText: 'Typically 1% or 1.1%, depending on age and service',
   },
   {
