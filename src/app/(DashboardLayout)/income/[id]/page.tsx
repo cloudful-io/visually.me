@@ -4,13 +4,12 @@ import { useUserAttributes } from "@/lib/userAttributes/hook";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
-import { ColumnDef, ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
+import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { CircularProgress, Button, Typography } from "@mui/material";
-import type { DataKeyOption } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
-import { fersPensionFieldConfigs } from "@/configs/fersPensionFields";
-import { retirementSavingsFieldConfigs } from "@/configs/retirementSavingsFields";
-import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefitsFields";
+import { fersPensionFieldConfigs, fersPensionProjectionColumns, fersPensionDataKeys } from "@/configs/fersPension";
+import { retirementSavingsFieldConfigs, retirementSavingsProjectionColumns, retirementSavingsDataKeys } from "@/configs/retirementSavings";
+import { socialSecurityFieldConfigs, socialSecurityProjectionColumns, socialSecurityDataKeys } from "@/configs/socialSecurityBenefits";
 import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,6 +19,7 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
+import { ColumnDef, DataKeyOption, FormFieldConfig } from '@/types/forms';
 
 // Projection row union
 import type {
@@ -27,7 +27,6 @@ import type {
   RetirementSavingsProjectionRow,
   SocialSecurityBenefitProjectionRow,
 } from "financial-calcs";
-import { table } from "console";
 
 type ProjectionRow =
   | FersPensionProjectionRow
@@ -98,61 +97,23 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     );
   }
 
-  const FIELD_CONFIGS: Record<string, any[]> = {
-    "fers-pension": fersPensionFieldConfigs,
-    "retirement-savings": retirementSavingsFieldConfigs,
-    "social-security": socialSecurityFieldConfigs,
-  };
-  const readOnlyFields = FIELD_CONFIGS[source.type] ?? [];
-
   // --- Dynamic columns and dataKeys ---
+  let fields: FormFieldConfig<any, any>[] = [];
   let columns: ColumnDef<any>[] = [];
   let dataKeys: DataKeyOption<any>[] = [];
 
   if (source.type === "fers-pension") {
-    columns = [
-      { key: "year", label: "Year" },
-      { key: "age", label: "Age" },
-      { key: "salary", label: "Annual Salary ($)", currency: true, editable: true, min: 0 },
-      { key: "salaryGrowthRate", label: "Salary Growth Rate (%)", editable: true, min: 0, max: 100 },
-      { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
-      { key: "pension", label: "Annual Pension ($)", currency: true },
-      { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
-    ] satisfies ColumnDef<FersPensionProjectionRow>[];
-
-    dataKeys = [
-      { key: "pension", label: "Annual Pension ($)" },
-      { key: "salary", label: "Annual Salary ($)" },
-    ] satisfies DataKeyOption<FersPensionProjectionRow>[];
+    fields = fersPensionFieldConfigs;
+    columns = fersPensionProjectionColumns;
+    dataKeys = fersPensionDataKeys
   } else if (source.type === "retirement-savings") {
-    columns = [
-      { key: "year", label: "Year" },
-      { key: "age", label: "Age" },
-      { key: "beginningBalance", label: "Beginning Balance ($)", currency: true },
-      { key: "contribution", label: "Contribution ($)", currency: true, editable: true, min: 0 },
-      { key: "yieldPercent", label: "Yield %", editable: true, min: -100, max: 100 },
-      { key: "withdrawRate", label: "Withdrawal %", editable: true, min: 0, max: 100 },
-      { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true },
-      { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable: true, min: 0 },
-      { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable: true, min: 0 },
-    ] satisfies ColumnDef<RetirementSavingsProjectionRow>[];
-
-    dataKeys = [
-      { key: "endingBalance", label: "End of Year Balance ($)" },
-      { key: "annualWithdraw", label: "Annual Withdrawal ($)" },
-    ] satisfies DataKeyOption<RetirementSavingsProjectionRow>[];
+    fields = retirementSavingsFieldConfigs;
+    columns = retirementSavingsProjectionColumns;
+    dataKeys = retirementSavingsDataKeys;
   } else {
-    columns = [
-      { key: "year", label: "Year" },
-      { key: "age", label: "Age" },
-      { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
-      { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true },
-      { key: "annualBenefit", label: "Annual Benefit ($)", currency: true },
-    ] satisfies ColumnDef<SocialSecurityBenefitProjectionRow>[];
-
-    dataKeys = [
-      { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
-    ] satisfies DataKeyOption<SocialSecurityBenefitProjectionRow>[];
+    fields = socialSecurityFieldConfigs;
+    columns = socialSecurityProjectionColumns;
+    dataKeys = socialSecurityDataKeys;
   }
 
   // --- Row edit handlers ---
@@ -219,7 +180,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       <div id="formSection"></div>
       <PageContainer title={`${source.label} Projection`} showTitle>
         <ReadOnlyFields
-          fields={readOnlyFields}
+          fields={fields}
           values={source.mergedFields}
           context={{ isAuthenticated: true }}
         />

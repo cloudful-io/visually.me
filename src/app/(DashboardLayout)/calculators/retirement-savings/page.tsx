@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { retirementSavingsFieldConfigs } from '@/configs/retirementSavingsFields';
+import { retirementSavingsFieldConfigs } from '@/configs/retirementSavings';
 import { RetirementSavingsInput } from 'financial-calcs';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';

@@ -1,5 +1,6 @@
 import { FormFieldConfig } from '@/types/forms';
-import { SocialSecurityBenefitInput } from 'financial-calcs';
+import { SocialSecurityBenefitInput, SocialSecurityBenefitProjectionRow } from 'financial-calcs';
+import { ColumnDef, DataKeyOption } from '@/types/forms';
 
 export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitInput, { isAuthenticated: boolean }>[] = [
   {
@@ -52,3 +53,15 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];
+
+export const socialSecurityProjectionColumns: ColumnDef<SocialSecurityBenefitProjectionRow>[] = [
+  { key: "year", label: "Year" },
+  { key: "age", label: "Age" },
+  { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
+  { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true },
+  { key: "annualBenefit", label: "Annual Benefit ($)", currency: true },
+] satisfies ColumnDef<SocialSecurityBenefitProjectionRow>[];
+
+export const socialSecurityDataKeys: DataKeyOption<SocialSecurityBenefitProjectionRow>[] = [
+  { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
+] satisfies DataKeyOption<SocialSecurityBenefitProjectionRow>[];

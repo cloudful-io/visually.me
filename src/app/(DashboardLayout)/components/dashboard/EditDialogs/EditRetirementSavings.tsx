@@ -2,7 +2,7 @@
 
 import { FormFields } from "@/app/(DashboardLayout)/components/shared/FormFields";
 import { RetirementSavingsInput } from "financial-calcs";
-import { retirementSavingsFieldConfigs } from "@/configs/retirementSavingsFields";
+import { retirementSavingsFieldConfigs } from "@/configs/retirementSavings";
 
 interface Props {
   values: RetirementSavingsInput;

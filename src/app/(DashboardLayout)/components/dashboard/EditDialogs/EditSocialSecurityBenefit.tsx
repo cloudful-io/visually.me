@@ -2,7 +2,7 @@
 
 import { FormFields } from "@/app/(DashboardLayout)/components/shared/FormFields";
 import { SocialSecurityBenefitInput } from "financial-calcs";
-import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefitsFields";
+import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefits";
 
 interface Props {
   values: SocialSecurityBenefitInput;

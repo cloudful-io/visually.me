@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { FersPensionInput } from 'financial-calcs';
-import { fersPensionFieldConfigs } from '@/configs/fersPensionFields';
+import { fersPensionFieldConfigs } from '@/configs/fersPension';
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import PageContainer from "../../components/container/PageContainer";

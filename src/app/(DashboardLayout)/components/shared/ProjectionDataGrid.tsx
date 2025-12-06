@@ -10,17 +10,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { currencyFormatter } from "@/lib/formatters/currency";
-
-export type ColumnDef<T> = {
-  key: keyof T;
-  label: string;
-  description?: string;
-  currency?: boolean;
-  editable?: boolean;
-  hiddenOnMobile?: boolean;
-  min?: number;
-  max?: number;
-};
+import { ColumnDef } from '@/types/forms';
 
 type ProjectionDataGridProps<T extends { year: number }> = {
   rows: T[];
@@ -51,6 +41,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
       flex: 1,
       valueFormatter: (value: any) => {
         if (value == null) return "";
+        if (col.key === "salary") console.log("Formatting value for column", col.key, "value:", typeof value);
         return col.currency
           ? currencyFormatter(value)
           : value;

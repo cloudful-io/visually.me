@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { collegeTuitionFieldConfigs } from '@/configs/collegeTuitionFields';
+import { collegeTuitionFieldConfigs } from '@/configs/collegeTuition';
 import { CollegeTuitionInput } from 'financial-calcs';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';

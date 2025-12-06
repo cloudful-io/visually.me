@@ -16,7 +16,7 @@ import { Box, Grid, Button, FormControlLabel, Switch, Typography } from "@mui/ma
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MortgageAmortizationInput } from 'financial-calcs';
-import { mortgageAmortizationFieldConfigs } from '@/configs/mortgageAmortizationFields';
+import { mortgageAmortizationFieldConfigs } from '@/configs/mortgageAmortization';
 import NavigationIcon from "@mui/icons-material/Navigation";
 import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";

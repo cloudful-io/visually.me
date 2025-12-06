@@ -3,11 +3,7 @@ import { Box, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
 import { currencyFormatter } from "@/lib/formatters/currency";
-
-export type DataKeyOption<T> = {
-  key: T extends any ? keyof T : never;
-  label: string;
-};
+import { DataKeyOption } from '@/types/forms';
 
 type Props<T extends Record<string, any>> = {
   data: T[];

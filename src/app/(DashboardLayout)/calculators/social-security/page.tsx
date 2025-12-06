@@ -12,7 +12,7 @@ import { ProjectionDataGrid } from '../../components/shared/ProjectionDataGrid';
 import PageContainer from '../../components/container/PageContainer';
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-import { socialSecurityFieldConfigs } from '@/configs/socialSecurityBenefitsFields';
+import { socialSecurityFieldConfigs } from '@/configs/socialSecurityBenefits';
 import { SocialSecurityBenefitInput } from 'financial-calcs';
 import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBenefitProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';

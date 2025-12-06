@@ -2,7 +2,7 @@
 
 import { FormFields } from "@/app/(DashboardLayout)/components/shared/FormFields";
 import { FersPensionInput } from "financial-calcs";
-import { fersPensionFieldConfigs } from "@/configs/fersPensionFields";
+import { fersPensionFieldConfigs } from "@/configs/fersPension";
 
 interface Props {
   values: FersPensionInput;

@@ -1,5 +1,6 @@
 import { FormFieldConfig } from '@/types/forms';
-import { FersPensionInput } from 'financial-calcs';
+import { FersPensionInput, FersPensionProjectionRow } from 'financial-calcs';
+import { ColumnDef, DataKeyOption } from '@/types/forms';
 
 export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuthenticated: boolean }>[] = [
   {
@@ -110,3 +111,18 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];
+
+export const fersPensionProjectionColumns: ColumnDef<any>[] = [
+  { key: "year", label: "Year" },
+  { key: "age", label: "Age" },
+  { key: "salary", label: "Annual Salary ($)", currency: true, editable: true, min: 0 },
+  { key: "salaryGrowthRate", label: "Salary Growth Rate (%)", editable: true, min: 0, max: 100 },
+  { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
+  { key: "pension", label: "Annual Pension ($)", currency: true },
+  { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
+] satisfies ColumnDef<FersPensionProjectionRow>[];
+
+export const fersPensionDataKeys: DataKeyOption<any>[] = [
+  { key: "pension", label: "Annual Pension ($)" },
+  { key: "salary", label: "Annual Salary ($)" },
+] satisfies DataKeyOption<FersPensionProjectionRow>[];

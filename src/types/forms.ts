@@ -14,3 +14,19 @@ export type FormFieldConfig<T, C = void> = {
   options?: FormFieldOption[]; // Only used if type === 'select'
   shouldDisplay?: (values: T, context: C extends void ? undefined : C) => boolean;
 };
+
+export type ColumnDef<T> = {
+  key: keyof T;
+  label: string;
+  description?: string;
+  currency?: boolean;
+  editable?: boolean;
+  hiddenOnMobile?: boolean;
+  min?: number;
+  max?: number;
+};
+
+export type DataKeyOption<T> = {
+  key: T extends any ? keyof T : never;
+  label: string;
+};
