@@ -3,14 +3,17 @@
 import React, { useState } from "react";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
+import { useUserAttributes } from "@/lib/userAttributes/hook";
 import { ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
+import IncomeSourceDetailedList from "../components/dashboard/IncomeSourceDetailedList";
 import { ProjectionDataGrid } from "../components/shared/ProjectionDataGrid";
 import Loading from "@/app/loading";
 
 export default function IncomeSummaryPage() {
-  const { loading, getCombinedProjection, getCombinedChartRows, computedSources } =
+  const { loading, getCombinedProjection, getCombinedChartRows, computedSources, save, remove, refresh } =
     useIncomeSources();
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();  
 
   const [mode, setMode] = useState<"income" | "balance">("income");
 
@@ -41,7 +44,15 @@ export default function IncomeSummaryPage() {
   return (
     <PageContainer title="Retirement Income and Investment" showTitle>
 
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+      <IncomeSourceDetailedList
+          userAttributes={attrs || {}}
+          sources={computedSources}
+          loading={loading}
+          save={save}
+          remove={remove}
+          refresh={refresh}
+        />
+      <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
         <ToggleButtonGroup
           exclusive
           size="small"
