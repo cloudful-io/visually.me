@@ -39,7 +39,7 @@ export default function IncomeSummaryPage() {
           }));
 
   return (
-    <PageContainer title="Retirement Income and Investment Over Time" showTitle>
+    <PageContainer title="Retirement Income and Investment" showTitle>
 
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <ToggleButtonGroup
@@ -58,6 +58,11 @@ export default function IncomeSummaryPage() {
         xKey="year"
         dataKeys={dataKeys}
         stacked
+        yLabel={
+          mode === "income"
+            ? "Annual Income"
+            : "Total Investment Balance"
+        }
         title={
           mode === "income"
             ? "Annual Income by Source"
