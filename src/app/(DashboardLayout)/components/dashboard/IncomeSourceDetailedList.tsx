@@ -168,28 +168,32 @@ const IncomeSourceDetailedList = ({
                 } catch {
                   label = "(unknown)";
                 }
-
                 return (
                   <Grid container key={src.id} spacing={1} alignItems="center">
                     <Grid size={{ xs: 8 }} container alignItems="center" spacing={1}>
                       <Box display="flex" alignItems="center" gap={1}>
-                        <Typography
-                          component={Link}
-                          href={`/income/${src.id}`}
-                          color="primary"
-                          sx={{
-                            textDecoration: "none",
-                            cursor: "pointer",
-                            "&:hover": { color: "primary.dark" },
-                          }}
+                        <Stack
+                          direction={{ sm: "column", md: "row" }}
+                          spacing={{ sm: 0.5, md: 1 }}
+                          sx={{ width: "100%" }}
                         >
-                          {label}
-                        </Typography>
-
-                        <Box display="flex" alignItems="center" gap={0.5} color="text.secondary">
-                          <IconCalendar size={16} />
-                          <Typography variant="caption">Starts {src.firstYear}</Typography>
-                        </Box>
+                          <Typography
+                            component={Link}
+                            href={`/income/${src.id}`}
+                            color="primary"
+                            sx={{
+                              textDecoration: "none",
+                              cursor: "pointer",
+                              "&:hover": { color: "primary.dark" },
+                            }}
+                          >
+                            {label}
+                          </Typography>
+                          <Box display="flex" alignItems="center" gap={0.5} color="text.secondary">
+                            <IconCalendar size={16} />
+                            <Typography variant="caption">Starts {src.firstYear}</Typography>
+                          </Box>
+                        </Stack>
                       </Box>
                     </Grid>
 
