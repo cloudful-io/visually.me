@@ -1,5 +1,6 @@
 import type {
   FersPensionProjectionRow,
+  MilitaryPensionProjectionRow,
   RetirementSavingsProjectionRow,
   SocialSecurityBenefitProjectionRow,
 } from "financial-calcs";
@@ -8,6 +9,7 @@ import type { IncomeSourcesInput } from "./schema";
 
 export type AnyProjectionRow =
   | FersPensionProjectionRow
+  | MilitaryPensionProjectionRow
   | RetirementSavingsProjectionRow
   | SocialSecurityBenefitProjectionRow;
 

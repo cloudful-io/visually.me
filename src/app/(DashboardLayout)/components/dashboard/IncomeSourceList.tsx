@@ -91,6 +91,9 @@ const IncomeSourceList = ({
             <MenuItem onClick={() => handleSelectType("fers-pension")}>
               FERS Pension
             </MenuItem>
+            <MenuItem onClick={() => handleSelectType("military-pension")}>
+              Uniformed Service Pension
+            </MenuItem>
             <MenuItem onClick={() => handleSelectType("retirement-savings")}>
               Retirement Savings
             </MenuItem>

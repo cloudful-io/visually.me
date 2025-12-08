@@ -17,19 +17,35 @@ export function ReadOnlyFields<T, C = void>({
     <Grid container spacing={2}>
       {fields
         .filter((field) => field.shouldDisplay?.(values, context as any) ?? true)
-        .map((field) => (
-        <Grid key={String(field.name)} size={{xs: 12, sm: 6, md: 3}}>
-          <Typography variant="caption" color="text.secondary">
-            {field.label}
-          </Typography>
-          <Typography variant="body1">
-            {field.type === 'currency'
-              ? currencyFormatter(values[field.name] as number)
-              : startCase(String(values[field.name] ?? ""))
-            }
-          </Typography>
-        </Grid>
-      ))}
+        .map((field) => {
+          const rawValue = values[field.name];
+
+          let displayValue: string | number = rawValue as any;
+
+          if (field.type === "currency") {
+            displayValue = currencyFormatter(rawValue as number);
+          }
+          
+          else if (field.type === "select" && field.options) {
+            const match = field.options.find(opt => opt.value === rawValue);
+            displayValue = match ? match.label : String(rawValue ?? "");
+          }
+          
+          else {
+            displayValue = startCase(String(rawValue ?? ""));
+          }
+
+          return (
+            <Grid key={String(field.name)} size={{xs: 12, sm: 6, md: 3}}>
+              <Typography variant="caption" color="text.secondary">
+                {field.label}
+              </Typography>
+              <Typography variant="body1">
+                {displayValue}
+              </Typography>
+            </Grid>
+          );
+        })}
     </Grid>
   );
 }

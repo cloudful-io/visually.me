@@ -11,7 +11,7 @@ import { useUserAttributes } from '@/lib/userAttributes/hook';
 export default function IncomeSourceOnboarding() {
 
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
-  const requiredTypes = ["fers-pension", "retirement-savings", "social-security"];
+  const requiredTypes = ["fers-pension", "military-pension", "retirement-savings", "social-security"];
   const [typeStatus, setTypeStatus] = useState<{type: string; exists: boolean}[]>([]);
   const { computedSources: sources, loading, save, remove, refresh } = useIncomeSources();
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -125,6 +125,7 @@ export default function IncomeSourceOnboarding() {
 function formatLabel(type: string) {
   switch (type) {
     case "fers-pension": return "Federal Employee Retirement System (FERS) Pension";
+    case "military-pension": return "Uniformed Service Pension";
     case "retirement-savings": return "Retirement Savings";
     case "social-security": return "Social Security Benefits";
     default: return type;

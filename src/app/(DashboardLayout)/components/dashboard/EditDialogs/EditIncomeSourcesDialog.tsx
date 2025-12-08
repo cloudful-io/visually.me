@@ -6,12 +6,15 @@ import { useForm } from "@/hooks/useForm";
 import EditRetirementSavings from "./EditRetirementSavings";
 import EditSocialSecurityBenefit from "./EditSocialSecurityBenefit";
 import EditFERSPension from "./EditFERSPension";
+import EditMilitaryPension from "./EditMilitaryPension";
 import { retirementSavingsFieldConfigs } from "@/configs/retirementSavings";
 import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefits";
 import { fersPensionFieldConfigs } from "@/configs/fersPension";
-import { RetirementSavingsInput, SocialSecurityBenefitInput, FersPensionInput } from "financial-calcs";
+import { militaryPensionFieldConfigs } from "@/configs/militaryPension";
+import { RetirementSavingsInput, SocialSecurityBenefitInput, FersPensionInput, MilitaryPensionInput } from "financial-calcs";
 import { IncomeSourcesInput } from "@/lib/incomeSources/schema";
 import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
+import { useMilitaryPensionProjection } from '@/hooks/useMilitaryPensionProjection';
 import { useRetirementSavingsProjection } from "@/hooks/useRetirementSavingsProjection";
 import { useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
@@ -48,7 +51,7 @@ export default function EditIncomeSourceDialog({
   // ----------------------------
   // Root-level fields
   // ----------------------------
-  type IncomeSourceType = "retirement-savings" | "social-security" | "fers-pension";
+  type IncomeSourceType = "retirement-savings" | "social-security" | "fers-pension" | "military-pension";
   const [type, setType] = useState<IncomeSourceType>("retirement-savings");
   const [label, setLabel] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
@@ -93,6 +96,17 @@ export default function EditIncomeSourceDialog({
     retirementType: 'regular',
   };
 
+  const initialMilitaryPensionValues: MilitaryPensionInput = {
+    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
+    birthYear: userAttributes?.birthYear ?? 1970,
+    retirementType: 'brs',
+    serviceStartYear: 2010,
+    serviceEndYear: 2030,
+    high3Salary: 5000,
+    colaPercent: 2,
+    yearsToProject: userAttributes?.yearsToProject ?? 40,
+  };
+
   const typeConfig: Record<IncomeSourceType, {
     title: string;
     description: string;
@@ -119,7 +133,15 @@ export default function EditIncomeSourceDialog({
       description: "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
       initial: initialFersPensionValues, 
       Component: EditFERSPension, 
-      fieldConfigs: fersPensionFieldConfigs },
+      fieldConfigs: fersPensionFieldConfigs 
+    },
+    "military-pension": { 
+      title: "Uniformed Service Pension",
+      description: "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
+      initial: initialMilitaryPensionValues, 
+      Component: EditMilitaryPension, 
+      fieldConfigs: militaryPensionFieldConfigs 
+    },
   };
 
   const currentType = typeConfig[type] ?? typeConfig["retirement-savings"];
@@ -153,6 +175,8 @@ export default function EditIncomeSourceDialog({
     switch (type) {
       case "fers-pension":
         return useFersPensionProjection(childValues as FersPensionInput);
+      case "military-pension":
+        return useMilitaryPensionProjection(childValues as MilitaryPensionInput);
       case "retirement-savings":
         return useRetirementSavingsProjection(childValues as RetirementSavingsInput);
       case "social-security":
@@ -172,7 +196,8 @@ export default function EditIncomeSourceDialog({
       if (src) {
         if (src.type === "retirement-savings" ||
           src.type === "social-security" ||
-          src.type === "fers-pension") {
+          src.type === "fers-pension" ||
+          src.type === "military-pension") {
         setType(src.type);
         } else {
           setType("retirement-savings");
@@ -202,7 +227,8 @@ export default function EditIncomeSourceDialog({
     // New source
     if (defaultType === "retirement-savings" ||
       defaultType === "social-security" ||
-      defaultType === "fers-pension"
+      defaultType === "fers-pension" ||
+      defaultType === "military-pension"
     ) {
       setType(defaultType);
     } else {
@@ -212,6 +238,7 @@ export default function EditIncomeSourceDialog({
     if (defaultType === "retirement-savings") reset(initialRetirementSavingsValues);
     else if (defaultType === "social-security") reset(initialSocialSecurityValues);
     else if (defaultType === "fers-pension") reset(initialFersPensionValues);
+    else if (defaultType === "military-pension") reset(initialMilitaryPensionValues);
     setErrors({});
   }, [open, sourceId, sources, isEditing, defaultType]);
 

@@ -8,6 +8,7 @@ import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { CircularProgress, Button, Typography } from "@mui/material";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
 import { fersPensionFieldConfigs, getFersPensionProjectionColumns, fersPensionDataKeys } from "@/configs/fersPension";
+import { militaryPensionFieldConfigs, getMilitaryPensionProjectionColumns, militaryPensionDataKeys } from "@/configs/militaryPension";
 import { retirementSavingsFieldConfigs, getRetirementSavingsProjectionColumns, retirementSavingsDataKeys } from "@/configs/retirementSavings";
 import { socialSecurityFieldConfigs, getSocialSecurityProjectionColumns, socialSecurityDataKeys } from "@/configs/socialSecurityBenefits";
 import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
@@ -24,12 +25,14 @@ import { ColumnDef, DataKeyOption, FormFieldConfig } from '@/types/forms';
 // Projection row union
 import type {
   FersPensionProjectionRow,
+  MilitaryPensionProjectionRow,
   RetirementSavingsProjectionRow,
   SocialSecurityBenefitProjectionRow,
 } from "financial-calcs";
 
 type ProjectionRow =
   | FersPensionProjectionRow
+  | MilitaryPensionProjectionRow
   | RetirementSavingsProjectionRow
   | SocialSecurityBenefitProjectionRow;
 
@@ -106,6 +109,10 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     fields = fersPensionFieldConfigs;
     columns = getFersPensionProjectionColumns(true);
     dataKeys = fersPensionDataKeys
+  } else if (source.type === "military-pension") {
+    fields = militaryPensionFieldConfigs;
+    columns = getMilitaryPensionProjectionColumns(true);
+    dataKeys = militaryPensionDataKeys;
   } else if (source.type === "retirement-savings") {
     fields = retirementSavingsFieldConfigs;
     columns = getRetirementSavingsProjectionColumns(true);

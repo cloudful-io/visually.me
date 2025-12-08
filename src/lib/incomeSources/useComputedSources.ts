@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { NormalizedSource } from "./types";
 import {
   calculateFersPensionProjection,
+  calculateMilitaryPensionProjection,
   calculateRetirementSavingsProjection,
   calculateSocialSecurityBenefitProjection,
 } from "financial-calcs";
@@ -29,6 +30,11 @@ export function useComputedSources(
         if (src.type === "fers-pension") {
           mergedFields = { ...parsed.fields, ...base, retirementAge: userAttributes?.targetRetirementAge };
           rows = calculateFersPensionProjection(mergedFields);
+          firstYear = rows.find((r) => (r.pension ?? 0) > 0)?.year ?? null;
+        }
+        else if (src.type === "military-pension") {
+          mergedFields = { ...parsed.fields, ...base };
+          rows = calculateMilitaryPensionProjection(mergedFields);
           firstYear = rows.find((r) => (r.pension ?? 0) > 0)?.year ?? null;
         }
         else if (src.type === "retirement-savings") {

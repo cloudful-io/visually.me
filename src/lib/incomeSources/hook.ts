@@ -4,12 +4,14 @@ import { useUserAttributes } from "@/lib/userAttributes/hook";
 
 import type {
   FersPensionProjectionRow,
+  MilitaryPensionProjectionRow,
   RetirementSavingsProjectionRow,
   SocialSecurityBenefitProjectionRow,
 } from "financial-calcs";
 
 import {
   calculateFersPensionProjection,
+  calculateMilitaryPensionProjection,
   calculateRetirementSavingsProjection,
   calculateSocialSecurityBenefitProjection,
 } from "financial-calcs";
@@ -21,6 +23,7 @@ type SortMode = "type" | "label";
 
 type AnyProjectionRow =
   | FersPensionProjectionRow
+  | MilitaryPensionProjectionRow
   | RetirementSavingsProjectionRow
   | SocialSecurityBenefitProjectionRow;
 
@@ -123,6 +126,15 @@ export function useIncomeSources({ lazy = false } = {}) {
           };
           rows = calculateFersPensionProjection(mergedFields);
           firstYear = rows.find((r) => (r.pension ?? 0) > 0)?.year ?? null;
+        } else if (src.type === "military-pension") {
+          mergedFields = {
+            ...parsed.fields,
+            birthYear: attrs.birthYear,
+            startYear: attrs.startYear,
+            yearsToProject: attrs.yearsToProject
+          };
+          rows = calculateMilitaryPensionProjection(mergedFields);
+          firstYear = rows.find((r) => (r.pension ?? 0) > 0)?.year ?? null;
         } else if (src.type === "retirement-savings") {
           mergedFields = {
             ...parsed.fields,
@@ -203,6 +215,8 @@ export function useIncomeSources({ lazy = false } = {}) {
     if (!src || !src.mergedFields) return [];
     if (src.type === "fers-pension") {
       return calculateFersPensionProjection(src.mergedFields);
+    } else if (src.type === "military-pension") {
+      return calculateMilitaryPensionProjection(src.mergedFields);
     } else if (src.type === "retirement-savings") {
       return calculateRetirementSavingsProjection(src.mergedFields);
     } else if (src.type === "social-security") {
@@ -214,6 +228,12 @@ export function useIncomeSources({ lazy = false } = {}) {
   function isFersPensionRow(
     row: AnyProjectionRow
   ): row is FersPensionProjectionRow {
+    return "pension" in row;
+  }
+
+  function isMilitaryPensionRow(
+    row: AnyProjectionRow
+  ): row is MilitaryPensionProjectionRow {
     return "pension" in row;
   }
 
@@ -271,6 +291,16 @@ export function useIncomeSources({ lazy = false } = {}) {
           if (row.salary && row.salary > 0) {
             income = row.salary; 
           } else if (row.pension && row.pension > 0) {
+            income = row.pension; 
+          }
+          annualIncome += income;
+          sources[src.id] = income;
+        }
+
+        if (isMilitaryPensionRow(row)) {
+          let income = 0;
+
+          if (row.pension && row.pension > 0) {
             income = row.pension; 
           }
           annualIncome += income;
