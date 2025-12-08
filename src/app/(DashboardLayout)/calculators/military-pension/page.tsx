@@ -2,14 +2,14 @@
 import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { FersPensionInput } from 'financial-calcs';
-import { fersPensionFieldConfigs, getFersPensionProjectionColumns } from '@/configs/fersPension';
+import { MilitaryPensionInput } from 'financial-calcs';
+import { militaryPensionFieldConfigs, getMilitaryPensionProjectionColumns } from '@/configs/militaryPension';
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import PageContainer from "../../components/container/PageContainer";
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
+import { useMilitaryPensionProjection } from '@/hooks/useMilitaryPensionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
 import NavigationIcon from "@mui/icons-material/Navigation";
@@ -28,34 +28,30 @@ import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
 
-const FersPensionProjection = () => {
+const MilitaryPensionProjection = () => {
   const {
     values: formValues,
     handleChange,
     errors,
     hasErrors,
-  } = usePersistedForm<FersPensionInput, { isAuthenticated: boolean }>(
-    'fersPensionForm',
+  } = usePersistedForm<MilitaryPensionInput, { isAuthenticated: boolean }>(
+    'militaryPensionForm',
     {
       startYear: new Date().getFullYear(),
-      birthYear: 1970,
-      serviceStartYear: 1990,
-      serviceEndYear: 2010,
-      retirementAge: 62,
-      currentSalary: 85000,
-      salaryGrowthRate: 3,
-      high3Salary: 100000,
+      birthYear: 1990,
+      serviceStartYear: 2010,
+      serviceEndYear: 2030,
+      high3Salary: 5000,
       colaPercent: 2,
-      pensionMultiplier: 1.1,
       yearsToProject: 40,
-      retirementType: 'regular',
+      retirementType: 'brs',
     },
-    fersPensionFieldConfigs
+    militaryPensionFieldConfigs
   );
 
   const isAuthenticated = false;
 
-  const {rows, error, generateTable } = useFersPensionProjection(formValues);
+  const {rows, error, generateTable } = useMilitaryPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
   const handleCalculate = async () => {
@@ -72,15 +68,15 @@ const FersPensionProjection = () => {
     <>
     <div id="formSection"></div>
     <PageContainer 
-      title="Federal Employee Retirement System (FERS) Pension Projection" 
-      description="A FERS pension calculator estimates your monthly annuity based on your years of service, high-3 average salary, and chosen retirement age under the Federal Employees Retirement System." 
+      title="Uniformed Service (Military) Pension Projection" 
+      description="A uniformed service (military) pension calculator estimates your monthly annuity based on your years of service, high-36 average salary, and chosen retirement system (High-36 or Blended Retirement System)." 
       showTitle>
       <Typography variant="body1" sx={{mb:3}}>
-        Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.
+        Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.
       </Typography>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <FormFields
-          fields={fersPensionFieldConfigs}
+          fields={militaryPensionFieldConfigs}
           values={formValues}
           onChange={handleChange}
           context={{ isAuthenticated }}
@@ -111,7 +107,7 @@ const FersPensionProjection = () => {
         variant="outlined"
         sx={{ ml: 2 }}
         startIcon={<FileDownloadIcon />}
-        onClick={() => exportToCSV(rows, "fers_pension_projection.csv")}
+        onClick={() => exportToCSV(rows, "military_pension_projection.csv")}
         disabled={rows.length === 0}
       >
         Export CSV
@@ -129,10 +125,9 @@ const FersPensionProjection = () => {
             data={rows}
             dataKeys={[
               { key: "pension", label: "Annual Pension ($)" },
-              { key: "salary", label: "Annual Salary ($)" },
             ]}
             xKey="year" 
-            title="Income and Pension Over Time"
+            title="Pension Over Time"
           />
         </>
       )}
@@ -143,7 +138,7 @@ const FersPensionProjection = () => {
         <ProjectionDataGrid
           rows={rows}
           highlightYear={new Date().getFullYear()}
-          columns={getFersPensionProjectionColumns(false)}
+          columns={getMilitaryPensionProjectionColumns(false)}
         />
         </>
       )}
@@ -153,17 +148,11 @@ const FersPensionProjection = () => {
           title="Assumptions"
           items={[
             <>
-              Salary grows annually by a fixed percentage until retirement. The average of your highest 3 years of salary before retirement is used to calculate your pension.
+              Calculator currently does not support REDUX or Disability retirement plan.
             </>,
             <>
-              Pension multiplier is typically 1% or 1.1% based on your age and service years.
-            </>,
-            <>
-              Cost-of-Living Adjustments (COLA) start applying after age 62, increasing your pension annually by the estimated COLA percentage.
-            </>,
-            <>
-              This calculator assumes a simplified model for illustrative purposes. Actual FERS pension calculations may include additional factors like retirement type and survivor benefits.
-            </>,
+              Calculator currently only supports service members retiring from Activity Duty.
+            </>
           ]}
         />
       </Box>
@@ -183,4 +172,4 @@ const FersPensionProjection = () => {
   );
 };
 
-export default FersPensionProjection;
+export default MilitaryPensionProjection;

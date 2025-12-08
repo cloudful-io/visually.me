@@ -54,13 +54,15 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
   },
 ];
 
-export const socialSecurityProjectionColumns: ColumnDef<SocialSecurityBenefitProjectionRow>[] = [
-  { key: "year", label: "Year" },
-  { key: "age", label: "Age" },
-  { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
-  { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true },
-  { key: "annualBenefit", label: "Annual Benefit ($)", currency: true },
-] satisfies ColumnDef<SocialSecurityBenefitProjectionRow>[];
+export function getSocialSecurityProjectionColumns(editable: boolean = false): ColumnDef<SocialSecurityBenefitProjectionRow>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "colaApplied", label: "COLA Applied (%)", editable, min: 0, max: 100 },
+    { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true },
+    { key: "annualBenefit", label: "Annual Benefit ($)", currency: true },
+  ];
+}
 
 export const socialSecurityDataKeys: DataKeyOption<SocialSecurityBenefitProjectionRow>[] = [
   { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },

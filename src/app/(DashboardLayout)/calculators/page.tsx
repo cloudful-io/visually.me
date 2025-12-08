@@ -9,6 +9,7 @@ import {
   IconBuildingBank,
   IconSchool,
   IconCoin,
+  IconMilitaryRank
 } from "@tabler/icons-react";
 
 // Define calculator metadata here
@@ -48,6 +49,13 @@ const calculators = [
     route: "/calculators/social-security",
     icon: IconBuildingBank,
   },
+  {
+    id: "military-pension",
+    title: "Uniformed Service Pension Calculator",
+    description: "Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.",
+    route: "/calculators/military-pension",
+    icon: IconMilitaryRank,
+  },
 ];
 
 export default function CalculatorsPage() {
@@ -68,7 +76,7 @@ export default function CalculatorsPage() {
                 <CardContent sx={{ flexGrow: 1 }}>
                   {/* Icon */}
                   <Box sx={{ mb: 2 }}>
-                    <IconComponent color={theme.palette.secondary.main} size={32} stroke={1.5} />
+                    <IconComponent color={theme.palette.secondary.main} size={48} stroke={1.5} />
                   </Box>
                   <Typography variant="h6" gutterBottom>
                     {calc.title}

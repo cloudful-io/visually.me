@@ -78,17 +78,19 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   },
 ];
 
-export const retirementSavingsProjectionColumns: ColumnDef<any>[] = [
-  { key: "year", label: "Year" },
-  { key: "age", label: "Age" },
-  { key: "beginningBalance", label: "Beginning Balance ($)", currency: true },
-  { key: "contribution", label: "Contribution ($)", currency: true, editable: true, min: 0 },
-  { key: "yieldPercent", label: "Yield %", editable: true, min: -100, max: 100 },
-  { key: "withdrawRate", label: "Withdrawal %", editable: true, min: 0, max: 100 },
-  { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true },
-  { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable: true, min: 0 },
-  { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable: true, min: 0 },
-] satisfies ColumnDef<RetirementSavingsProjectionRow>[];
+export function getRetirementSavingsProjectionColumns(editable: boolean = false): ColumnDef<RetirementSavingsProjectionRow>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "beginningBalance", label: "Beginning Balance ($)", currency: true },
+    { key: "contribution", label: "Contribution ($)", currency: true, editable, min: 0 },
+    { key: "yieldPercent", label: "Yield %", editable, min: -100, max: 100 },
+    { key: "withdrawRate", label: "Withdrawal %", editable, min: 0, max: 100 },
+    { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true },
+    { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable, min: 0 },
+    { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable, min: 0 },
+  ];
+}
 
 export const retirementSavingsDataKeys: DataKeyOption<any>[] = [
   { key: "endingBalance", label: "End of Year Balance ($)" },

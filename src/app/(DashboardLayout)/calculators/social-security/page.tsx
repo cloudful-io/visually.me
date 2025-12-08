@@ -7,12 +7,11 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
-import { ProjectionTable } from '@/app/(DashboardLayout)/components/shared/ProjectionTable';
 import { ProjectionDataGrid } from '../../components/shared/ProjectionDataGrid';
 import PageContainer from '../../components/container/PageContainer';
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-import { socialSecurityFieldConfigs } from '@/configs/socialSecurityBenefits';
+import { socialSecurityFieldConfigs, getSocialSecurityProjectionColumns } from '@/configs/socialSecurityBenefits';
 import { SocialSecurityBenefitInput } from 'financial-calcs';
 import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBenefitProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
@@ -133,13 +132,7 @@ const SocialSecurityProjection = () => {
           <ProjectionDataGrid
             rows={rows}
             highlightYear={new Date().getFullYear()}
-            columns={[
-              { key: "year", label: "Year", editable: false },
-              { key: "age", label: "Age", editable: false },
-              { key: "colaApplied", label: "COLA Applied (%)", description: "Cost of Living Adjustment (%)" },
-              { key: "monthlyBenefit", label: "Monthly Benefit ($)", description: "Monthly Social Security Benefit ($)", currency: true },
-              { key: "annualBenefit", label: "Annual Benefit ($)", description: "Annual Social Security Benefit ($)", currency: true },
-            ]}
+            columns={getSocialSecurityProjectionColumns(false)}
           />
         </>
       )}

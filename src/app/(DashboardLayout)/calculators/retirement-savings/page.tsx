@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { retirementSavingsFieldConfigs } from '@/configs/retirementSavings';
+import { retirementSavingsFieldConfigs, getRetirementSavingsProjectionColumns } from '@/configs/retirementSavings';
 import { RetirementSavingsInput } from 'financial-calcs';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
@@ -137,17 +137,7 @@ const RetirementSavingsProjection = () => {
           <ProjectionDataGrid
             rows={rows}
             highlightYear={new Date().getFullYear()}
-            columns={[
-              { key: 'year', label: 'Year' },
-              { key: 'age', label: 'Age' },
-              { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
-              { key: 'contribution', label: 'Contribution ($)', currency: true },
-              { key: 'yieldPercent', label: 'Yield %' },
-              { key: 'withdrawRate', label: 'Withdrawal %', hiddenOnMobile: true },
-              { key: 'monthlyWithdraw', label: 'Monthly Withdrawal ($)', currency: true, hiddenOnMobile: true },
-              { key: 'annualWithdraw', label: 'Annual Withdrawal ($)', currency: true },
-              { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
-            ]}
+            columns={getRetirementSavingsProjectionColumns(false)}
           />
         </>
       )}

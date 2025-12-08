@@ -112,15 +112,17 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   },
 ];
 
-export const fersPensionProjectionColumns: ColumnDef<any>[] = [
-  { key: "year", label: "Year" },
-  { key: "age", label: "Age" },
-  { key: "salary", label: "Annual Salary ($)", currency: true, editable: true, min: 0 },
-  { key: "salaryGrowthRate", label: "Salary Growth Rate (%)", editable: true, min: 0, max: 100 },
-  { key: "colaApplied", label: "COLA Applied (%)", editable: true, min: 0, max: 100 },
-  { key: "pension", label: "Annual Pension ($)", currency: true },
-  { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
-] satisfies ColumnDef<FersPensionProjectionRow>[];
+export function getFersPensionProjectionColumns(editable: boolean = false): ColumnDef<FersPensionProjectionRow>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "salary", label: "Annual Salary ($)", currency: true, editable, min: 0 },
+    { key: "salaryGrowthRate", label: "Salary Growth Rate (%)", editable, min: 0, max: 100 },
+    { key: "colaApplied", label: "COLA Applied (%)", editable, min: 0, max: 100 },
+    { key: "pension", label: "Annual Pension ($)", currency: true },
+    { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
+  ];
+}
 
 export const fersPensionDataKeys: DataKeyOption<any>[] = [
   { key: "pension", label: "Annual Pension ($)" },

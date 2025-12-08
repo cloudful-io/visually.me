@@ -6,7 +6,7 @@ import {
   IconBuildingBank,
   IconSchool,
   IconCoin,
-  IconCalculator
+  IconMilitaryRank
 } from "@tabler/icons-react";
 import { uniqueId } from "lodash";
 
@@ -36,13 +36,6 @@ const Menuitems = [
     subheader: "CALCULATORS",
     authRequired: false,
   },
-  /*{
-    id: uniqueId(),
-    title: "All Calculators",
-    icon: IconCalculator,
-    href: "/calculators",
-    authRequired: false,
-  },*/
   {
     id: uniqueId(),
     title: "College Tuition",
@@ -76,6 +69,13 @@ const Menuitems = [
     title: "Social Security Benefits",
     icon: IconBuildingBank,
     href: "/calculators/social-security",
+    authRequired: false,
+  },
+  {
+    id: uniqueId(),
+    title: "Uniformed Service Pension",
+    icon: IconMilitaryRank,
+    href: "/calculators/military-pension",
     authRequired: false,
   },
 ];

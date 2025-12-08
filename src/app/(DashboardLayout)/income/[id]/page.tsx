@@ -7,9 +7,9 @@ import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarCha
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { CircularProgress, Button, Typography } from "@mui/material";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
-import { fersPensionFieldConfigs, fersPensionProjectionColumns, fersPensionDataKeys } from "@/configs/fersPension";
-import { retirementSavingsFieldConfigs, retirementSavingsProjectionColumns, retirementSavingsDataKeys } from "@/configs/retirementSavings";
-import { socialSecurityFieldConfigs, socialSecurityProjectionColumns, socialSecurityDataKeys } from "@/configs/socialSecurityBenefits";
+import { fersPensionFieldConfigs, getFersPensionProjectionColumns, fersPensionDataKeys } from "@/configs/fersPension";
+import { retirementSavingsFieldConfigs, getRetirementSavingsProjectionColumns, retirementSavingsDataKeys } from "@/configs/retirementSavings";
+import { socialSecurityFieldConfigs, getSocialSecurityProjectionColumns, socialSecurityDataKeys } from "@/configs/socialSecurityBenefits";
 import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -104,15 +104,15 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
   if (source.type === "fers-pension") {
     fields = fersPensionFieldConfigs;
-    columns = fersPensionProjectionColumns;
+    columns = getFersPensionProjectionColumns(true);
     dataKeys = fersPensionDataKeys
   } else if (source.type === "retirement-savings") {
     fields = retirementSavingsFieldConfigs;
-    columns = retirementSavingsProjectionColumns;
+    columns = getRetirementSavingsProjectionColumns(true);
     dataKeys = retirementSavingsDataKeys;
   } else {
     fields = socialSecurityFieldConfigs;
-    columns = socialSecurityProjectionColumns;
+    columns = getSocialSecurityProjectionColumns(true);
     dataKeys = socialSecurityDataKeys;
   }
 
