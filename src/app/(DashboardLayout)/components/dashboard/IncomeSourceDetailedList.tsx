@@ -36,17 +36,17 @@ const IncomeSourceDetailedList = ({
   // --- TAB STATE ---
   const [tabValue, setTabValue] = useState(0);
 
-  const tabToTypeMap: Record<number, string | null> = {
+  const tabToTypeMap: Record<number, string[] | null> = {
     0: null,
-    1: "fers-pension",
-    2: "retirement-savings",
-    3: "social-security",
+    1: ["fers-pension", "military-pension"],
+    2: ["retirement-savings"],
+    3: ["social-security"],
   };
 
   const filteredSources =
     tabToTypeMap[tabValue] === null
       ? sources
-      : sources?.filter((s) => s.type === tabToTypeMap[tabValue]);
+      : sources?.filter((s) => tabToTypeMap[tabValue]?.includes(s.type));
 
   // Edit handlers
   const handleEdit = (id: string) => {
