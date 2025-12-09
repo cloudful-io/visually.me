@@ -37,13 +37,13 @@ export function useCombinedProjections(
         if (!row) continue;
         if (age === null) age = (row as any).age ?? null;
 
-        /*  FERS Pension or Salary Income  */
+        /*  FERS / Military Pension or Salary Income  */
         if ("pension" in row || "salary" in row) {
           let income = 0;
 
-          if (row.salary && row.salary > 0) {
+          if ("salary" in row && row.salary && row.salary > 0) {
             income = row.salary; 
-          } else if (row.pension && row.pension > 0) {
+          } else if ("pension" in row && row.pension && row.pension > 0) {
             income = row.pension; 
           }
           annualIncome += income;
