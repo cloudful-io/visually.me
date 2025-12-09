@@ -29,10 +29,9 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
   // default to first dataKey
   const [selectedKey, setSelectedKey] = useState<DataKeyOption<T>>(dataKeys[0]);
 
-  const xAxisData = data.map((item) => String(item[xKey] ?? ""));
+  const xAxisData = data.map((item) => Number(item[xKey] ?? ""));
 
-  const series: LineSeries[] = [
-  {
+  const series: LineSeries[] = [{
     id: String(selectedKey.key),
     label: selectedKey.label,
     data: data.map((row) =>
@@ -40,10 +39,7 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
     ),
     curve: 'monotoneX', 
     valueFormatter: currencyFormatter
-  },
-];
-
-
+  }];
 
   return (
     <Box mt={4} sx={{ width: "100%" }}>
@@ -72,7 +68,7 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
       <LineChart
         height={height}
         series={series}
-        xAxis={[{ data: xAxisData }]}
+        xAxis={[{ data: xAxisData, /*scaleType: "band"*/ }]}
         yAxis={[{ 
           width: 120, 
           label: yLabel ?? selectedKey.label ?? undefined, 
