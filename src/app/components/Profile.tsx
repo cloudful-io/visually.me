@@ -8,6 +8,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Typography
 } from "@mui/material";
 import { IconUser, IconLayoutDashboard } from "@tabler/icons-react";
 import { supabase } from '@/utils/supabase/client';
@@ -65,13 +66,13 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
         onClick={handleClick}
       >
         <Avatar
-          src={avatarUrl || undefined} // provider image if available
+          src={avatarUrl || undefined} 
           alt={user.email || "User"}
           sx={{ width: 32, height: 32 }}
         >
           {/* fallback initials if no image */}
-          {!avatarUrl && user.email
-            ? user.email.charAt(0).toUpperCase()
+          {!avatarUrl && displayName
+            ? displayName.charAt(0).toUpperCase()
             : null}
         </Avatar>
       </IconButton>
@@ -87,6 +88,31 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
           "& .MuiMenu-paper": { width: "200px" },
         }}
       >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+            px: 3,
+            pb: 2,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <Avatar src={avatarUrl || undefined} sx={{ width: 72, height: 72 }}>
+            {displayName.charAt(0).toUpperCase()}
+          </Avatar>
+          <Typography variant="subtitle1" fontWeight={600} sx={{ mt: 1.5 }}>
+            {displayName}
+          </Typography>
+          <Box sx={{ mt: 2, width: "100%" }}>
+            <AuthLogout
+              onSignOutSuccess={() => router.push("/authentication/logout")}
+              onSignOutError={(err) => alert(`Logout failed: ${err.message}`)}
+            />
+          </Box>
+        </Box>
         {showDashboardLink && (
         <MenuItem component={Link} href="/dashboard" onClick={handleClose}>
           <ListItemIcon>
@@ -101,14 +127,6 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
           </ListItemIcon>
           <ListItemText>My Profile</ListItemText>
         </MenuItem>
-        <Box mt={1} py={1} px={2}>
-          <AuthLogout
-            onSignOutSuccess={() => {
-              router.push("/authentication/logout");
-            }}
-            onSignOutError={(err) => alert(`Logout failed: ${err.message}`)}
-          />
-        </Box>
       </Menu>
     </Box>
   );
