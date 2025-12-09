@@ -97,7 +97,7 @@ export default function AboutPage() {
         {/* Example Team Grid */}
         <Grid container spacing={4} justifyContent="center">
           {[
-            { name: "Will", role: "Founder & Developer", img: "/images/blog/authors/will.jpg" },
+            { name: "Will", role: "Founder & Developer", img: "/images/blog/authors/man.png" },
             { name: "Lorenda", role: "Senior Consultant", img: "/images/blog/authors/woman.png" },
             { name: "Adelynn", role: "Senior Advisor", img: "/images/blog/authors/girl.png" },
             { name: "Arden", role: "Advisor", img: "/images/blog/authors/boy.png" },
