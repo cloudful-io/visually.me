@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { collegeTuitionFieldConfigs } from '@/configs/collegeTuition';
+import { collegeTuitionFieldConfigs, getCollegeTuitionProjectionColumns, collegeTuitionDataKeys } from '@/configs/collegeTuition';
 import { CollegeTuitionInput } from 'financial-calcs';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
@@ -129,10 +129,7 @@ const CollegeTuitionProjection = () => {
         <div id="chartSection"></div>
         <MUIBarChart 
           data={rows} 
-          dataKeys={[
-            { key: "endingBalance", label: "End of Year Balance ($)" },
-            { key: "annualWithdraw", label: "Tuition Withdraw ($)" },
-          ]}
+          dataKeys={collegeTuitionDataKeys}
           xKey="year" 
           title="College Savings and Tuition Over Time" />
         </>
@@ -143,17 +140,7 @@ const CollegeTuitionProjection = () => {
         <ProjectionDataGrid
           rows={rows}
           highlightYear={new Date().getFullYear()}
-          columns={[
-            { key: 'year', label: 'Year' },
-            { key: 'age', label: 'Your Age' },
-            { key: 'childAge', label: 'Child\'s Age' },
-            { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
-            { key: 'contribution', label: 'Contribution ($)', currency: true },
-            { key: 'yieldPercent', label: 'Yield %' },
-            { key: 'tuitionAmount', label: 'Tuition ($)', description: "Estimated Tuition Cost ($)", currency: true },
-            { key: 'annualWithdraw', label: 'Annual Withdrawal ($)', description: "Amount to Withdraw to Cover College Tuition ($)", currency: true },
-            { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
-          ]}
+          columns={getCollegeTuitionProjectionColumns(false)}
         />
         </>
       )}

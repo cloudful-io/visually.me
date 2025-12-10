@@ -16,7 +16,7 @@ import { Box, Grid, Button, FormControlLabel, Switch, Typography } from "@mui/ma
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MortgageAmortizationInput } from 'financial-calcs';
-import { mortgageAmortizationFieldConfigs } from '@/configs/mortgageAmortization';
+import { mortgageAmortizationFieldConfigs, mortgageAmortizationDataKeys, YearlyBalanceRow, getMonthlyMortgageAmortizationProjectionColumns, getYearlyMortgageAmortizationProjectionColumns } from '@/configs/mortgageAmortization';
 import NavigationIcon from "@mui/icons-material/Navigation";
 import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -53,10 +53,6 @@ const MortgageProjection = () => {
       ? yearlyRows
       : rows;
 
-  type YearlyBalanceRow = {
-    year: number;     // X-axis
-    balance: number;  // Y-axis
-  };
   const chartData: YearlyBalanceRow[] = rows
     .filter((row) => row.month % 12 === 0) // yearly snapshot
     .map((row, index) => ({
@@ -151,9 +147,7 @@ const MortgageProjection = () => {
           <div id="chartSection"></div>
           <MUIBarChart<YearlyBalanceRow>
             data={chartData}
-            dataKeys={[
-              { key: "balance", label: "Remaining Balance ($)" },
-            ]}
+            dataKeys={mortgageAmortizationDataKeys}
             xKey="year"
             title="Mortgage Amortization"
           />
@@ -168,22 +162,8 @@ const MortgageProjection = () => {
           highlightYear={new Date().getFullYear()}
           columns={
             displayBy === 'year'
-              ? [
-                  { key: 'year', label: 'Year' },
-                  { key: 'date', label: 'Date' },
-                  { key: 'payment', label: 'Payment ($)', currency: true },
-                  { key: 'principal', label: 'Principal ($)', currency: true },
-                  { key: 'interest', label: 'Interest ($)', currency: true },
-                  { key: 'balance', label: 'Remaining Balance ($)', currency: true },
-                ]
-              : [
-                  { key: 'month', label: 'Month' },
-                  { key: 'date', label: 'Date' },
-                  { key: 'payment', label: 'Payment ($)', currency: true },
-                  { key: 'principal', label: 'Principal ($)', currency: true },
-                  { key: 'interest', label: 'Interest ($)', currency: true },
-                  { key: 'balance', label: 'Remaining Balance ($)', currency: true },
-                ]
+              ? getYearlyMortgageAmortizationProjectionColumns(false)
+              : getMonthlyMortgageAmortizationProjectionColumns(false)
           }
           />
         </>

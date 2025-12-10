@@ -1,5 +1,11 @@
 import { FormFieldConfig } from '@/types/forms';
-import { MortgageAmortizationInput } from 'financial-calcs';
+import { MortgageAmortizationInput, AmortizationRow, YearlyAmortizationRow } from 'financial-calcs';
+import { ColumnDef, DataKeyOption } from '@/types/forms'; 
+
+export type YearlyBalanceRow = {
+  year: number;     // X-axis
+  balance: number;  // Y-axis
+};
 
 export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizationInput, { isAuthenticated: boolean }>[] = [
   {
@@ -41,3 +47,29 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
     helperText: 'Date when mortgage payments begin.',
   },
 ];
+
+export function getYearlyMortgageAmortizationProjectionColumns(editable: boolean = false): ColumnDef<YearlyAmortizationRow>[] {
+  return [
+    { key: 'year', label: 'Year' },
+    { key: 'date', label: 'Date' },
+    { key: 'payment', label: 'Payment ($)', currency: true },
+    { key: 'principal', label: 'Principal ($)', currency: true },
+    { key: 'interest', label: 'Interest ($)', currency: true },
+    { key: 'balance', label: 'Remaining Balance ($)', currency: true },
+  ];
+}
+
+export function getMonthlyMortgageAmortizationProjectionColumns(editable: boolean = false): ColumnDef<AmortizationRow>[] {
+  return [
+    { key: 'month', label: 'Month' },
+    { key: 'date', label: 'Date' },
+    { key: 'payment', label: 'Payment ($)', currency: true },
+    { key: 'principal', label: 'Principal ($)', currency: true },
+    { key: 'interest', label: 'Interest ($)', currency: true },
+    { key: 'balance', label: 'Remaining Balance ($)', currency: true },
+  ];
+}
+
+export const mortgageAmortizationDataKeys: DataKeyOption<YearlyBalanceRow>[] = [
+  { key: "balance", label: "Remaining Balance ($)" },
+] satisfies DataKeyOption<YearlyBalanceRow>[];

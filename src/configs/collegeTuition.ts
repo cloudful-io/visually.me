@@ -1,5 +1,7 @@
 import { FormFieldConfig } from '@/types/forms';
-import { CollegeTuitionInput } from 'financial-calcs';
+import { CollegeTuitionInput, CollegeTuitionProjectionRow } from 'financial-calcs';
+import { ColumnDef, DataKeyOption } from '@/types/forms';
+
 
 export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { isAuthenticated: boolean }>[] = [
   {
@@ -86,3 +88,22 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];
+
+export function getCollegeTuitionProjectionColumns(editable: boolean = false): ColumnDef<CollegeTuitionProjectionRow>[] {
+  return [
+    { key: 'year', label: 'Year' },
+    { key: 'age', label: 'Your Age' },
+    { key: 'childAge', label: 'Child\'s Age' },
+    { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
+    { key: 'contribution', label: 'Contribution ($)', currency: true },
+    { key: 'yieldPercent', label: 'Yield %' },
+    { key: 'tuitionAmount', label: 'Tuition ($)', description: "Estimated Tuition Cost ($)", currency: true },
+    { key: 'annualWithdraw', label: 'Annual Withdrawal ($)', description: "Amount to Withdraw to Cover College Tuition ($)", currency: true },
+    { key: 'endingBalance', label: 'Ending Balance ($)', currency: true },
+  ];
+}
+
+export const collegeTuitionDataKeys: DataKeyOption<any>[] = [
+  { key: "endingBalance", label: "End of Year Balance ($)" },
+  { key: "annualWithdraw", label: "Tuition Withdraw ($)" },
+] satisfies DataKeyOption<CollegeTuitionProjectionRow>[];
