@@ -59,7 +59,7 @@ export function getSocialSecurityProjectionColumns(editable: boolean = false): C
     { key: "year", label: "Year" },
     { key: "age", label: "Age" },
     { key: "colaApplied", label: "COLA Applied (%)", editable, min: 0, max: 100 },
-    { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true },
+    { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true, hiddenOnMobile: true },
     { key: "annualBenefit", label: "Annual Benefit ($)", currency: true },
   ];
 }

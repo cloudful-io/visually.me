@@ -76,7 +76,7 @@ export function getMilitaryPensionProjectionColumns(editable: boolean = false): 
     { key: "age", label: "Age" },
     { key: "colaApplied", label: "COLA Applied (%)", editable, min: 0, max: 100 },
     { key: "pension", label: "Annual Pension ($)", currency: true },
-    { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
+    { key: "monthlyPension", label: "Monthly Pension ($)", currency: true, hiddenOnMobile: true },
   ];
 }
 

@@ -86,7 +86,7 @@ export function getRetirementSavingsProjectionColumns(editable: boolean = false)
     { key: "contribution", label: "Contribution ($)", currency: true, editable, min: 0 },
     { key: "yieldPercent", label: "Yield %", editable, min: -100, max: 100 },
     { key: "withdrawRate", label: "Withdrawal %", editable, min: 0, max: 100 },
-    { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true },
+    { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true, hiddenOnMobile: true },
     { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable, min: 0 },
     { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable, min: 0 },
   ];

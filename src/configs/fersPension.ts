@@ -120,7 +120,7 @@ export function getFersPensionProjectionColumns(editable: boolean = false): Colu
     { key: "salaryGrowthRate", label: "Salary Growth Rate (%)", editable, min: 0, max: 100 },
     { key: "colaApplied", label: "COLA Applied (%)", editable, min: 0, max: 100 },
     { key: "pension", label: "Annual Pension ($)", currency: true },
-    { key: "monthlyPension", label: "Monthly Pension ($)", currency: true },
+    { key: "monthlyPension", label: "Monthly Pension ($)", currency: true, hiddenOnMobile: true },
   ];
 }
 

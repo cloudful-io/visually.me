@@ -86,7 +86,7 @@ export default function IncomeSummaryPage() {
         columns={[
           { key: "year", label: "Year" },
           { key: "age", label: "Age" },
-          { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true },
+          { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
           { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
           { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
         ]}
