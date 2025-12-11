@@ -15,7 +15,7 @@ export function useIncomeSourcesFetch({ lazy = false } = {}) {
       parsed = JSON.parse(src.data || "{}");
       label = parsed?.label ?? "(unknown)";
     } catch {}
-    return { ...src, parsedData: parsed, label, mergedFields: null, firstYear: null };
+    return { ...src, parsedData: parsed, label, mergedFields: null, firstYear: null, firstAmount: null, currentAmount: null };
   }, []);
 
   const doFetch = useCallback(

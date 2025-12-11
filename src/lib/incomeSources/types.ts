@@ -28,4 +28,6 @@ export type NormalizedSource = IncomeSourcesInput & {
   label: string;
   mergedFields?: any | null;
   firstYear?: number | null;
+  firstAmount?: number | null;
+  currentAmount?: number | null;
 };

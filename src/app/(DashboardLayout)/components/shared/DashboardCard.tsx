@@ -34,7 +34,7 @@ const DashboardCard = ({
           </Typography>
         </CardContent>
       ) : (
-        <CardContent sx={{ pt: title ? "30px" : "10px", px: "30px", pb: "30px" }}>
+        <CardContent sx={{ pt: title ? "20px" : "10px", px: "20px", pb: "20px" }}>
           {title ? (
             <Stack
               direction="row"
