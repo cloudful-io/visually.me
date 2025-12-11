@@ -36,7 +36,7 @@ export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps
   } catch {
     label = "(unknown)";
   }
-console.log(src);
+
   const currentYear = new Date().getFullYear();
 
   const amountToShow =

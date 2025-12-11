@@ -9,6 +9,11 @@ import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarCha
 import IncomeSourceDetailedList from "../components/dashboard/IncomeSourceDetailedList";
 import { ProjectionDataGrid } from "../components/shared/ProjectionDataGrid";
 import Loading from "@/app/loading";
+import NavigationIcon from "@mui/icons-material/Navigation";
+import ListIcon from "@mui/icons-material/List";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import SectionSpeedDial from "../components/shared/SectionSpeedDial";
 
 export default function IncomeSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedSources, save, remove, refresh } =
@@ -42,56 +47,69 @@ export default function IncomeSummaryPage() {
           }));
 
   return (
-    <PageContainer title="Retirement Income and Investment" showTitle>
+    <>
+      <div id="formSection"></div>
+      <PageContainer title="Retirement Income and Investment" showTitle>
+        <IncomeSourceDetailedList
+            userAttributes={attrs || {}}
+            sources={computedSources}
+            loading={loading}
+            save={save}
+            remove={remove}
+            refresh={refresh}
+          />
+        <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
+          <ToggleButtonGroup
+            exclusive
+            size="small"
+            value={mode}
+            onChange={(e, v) => v && setMode(v)}
+          >
+            <ToggleButton value="income">Annual Retirement Income</ToggleButton>
+            <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
 
-      <IncomeSourceDetailedList
-          userAttributes={attrs || {}}
-          sources={computedSources}
-          loading={loading}
-          save={save}
-          remove={remove}
-          refresh={refresh}
+        <div id="chartSection"></div>
+        <MUIBarChart
+          data={chartRows}
+          xKey="year"
+          dataKeys={dataKeys}
+          stacked
+          yLabel={
+            mode === "income"
+              ? "Annual Income"
+              : "Total Investment Balance"
+          }
+          title={
+            mode === "income"
+              ? "Annual Income by Source"
+              : "Investment Balance by Account"
+          }
         />
-      <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
-        <ToggleButtonGroup
-          exclusive
-          size="small"
-          value={mode}
-          onChange={(e, v) => v && setMode(v)}
-        >
-          <ToggleButton value="income">Annual Retirement Income</ToggleButton>
-          <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
 
-      <MUIBarChart
-        data={chartRows}
-        xKey="year"
-        dataKeys={dataKeys}
-        stacked
-        yLabel={
-          mode === "income"
-            ? "Annual Income"
-            : "Total Investment Balance"
-        }
-        title={
-          mode === "income"
-            ? "Annual Income by Source"
-            : "Investment Balance by Account"
-        }
-      />
-        
-      <ProjectionDataGrid
-        rows={tableRows}
-        columns={[
-          { key: "year", label: "Year" },
-          { key: "age", label: "Age" },
-          { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
-          { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
-          { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
-        ]}
-        highlightYear={new Date().getFullYear()}
-      />
-    </PageContainer>
+        <div id="tableSection"></div>   
+        <ProjectionDataGrid
+          rows={tableRows}
+          columns={[
+            { key: "year", label: "Year" },
+            { key: "age", label: "Age" },
+            { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
+            { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
+            { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
+          ]}
+          highlightYear={new Date().getFullYear()}
+        />
+        <SectionSpeedDial
+          icon={<NavigationIcon />}  
+          tooltip="Navigate To"   
+          actions={[
+            { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+            { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+            { id: "formSection", label: "List", icon: <ListIcon /> },
+          ]}
+        />
+      </PageContainer>
+    </>
   );
 }

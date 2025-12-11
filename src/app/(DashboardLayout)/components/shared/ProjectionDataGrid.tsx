@@ -34,14 +34,13 @@ export function ProjectionDataGrid<T extends { year: number }>(
     const cols: GridColDef[] = columns.map((col) => ({
       field: col.key as string,
       headerName: col.label,
-      minWidth: isMobile ? 100 : 120,
+      minWidth: (col.label.length < 5) ? 60 : (isMobile ? 100 : 120),
       headerClassName: col.editable ? "editable-column-header" : "",
       description: col.description ?? col.label,
       editable: col.editable ?? false,
       flex: 1,
       valueFormatter: (value: any) => {
         if (value == null) return "";
-        if (col.key === "salary") console.log("Formatting value for column", col.key, "value:", typeof value);
         return col.currency
           ? currencyFormatter(value)
           : value;
