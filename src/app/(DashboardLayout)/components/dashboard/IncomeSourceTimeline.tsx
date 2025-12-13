@@ -9,7 +9,7 @@ import {
 } from "@mui/lab";
 import { Typography, Box, Chip } from "@mui/material";
 import {
- IconCalendar, IconCoin, IconUser, IconBuildingBank, IconMilitaryRank, IconMapPin, IconUserPlus
+ IconCalendar, IconCoin, IconUser, IconBuildingBank, IconMilitaryRank, IconMapPin, IconUserPlus, IconList
 } from "@tabler/icons-react";
 import DashboardCard from "../shared/DashboardCard";
 
@@ -60,18 +60,34 @@ export function IncomeSourceTimeline({
     "military-pension": IconMilitaryRank,
     "current": IconMapPin,
     "retirement": IconUserPlus,
-    "summary": IconUserPlus,
+    "summary": IconList,
   };
   
   const getTimelineDotIcon = (events: TimelineEvent[]) => {
     if (events.length === 1) {
+        // Only one event → use its icon
         const Icon = iconByType[events[0].type] ?? IconCoin;
         return <Icon size={20} />;
     }
-    // Multiple events → use summary icon
+
+    // Multiple events → prioritize current first, then retirement, then summary
+    const hasCurrent = events.find((e) => e.type === "current");
+    if (hasCurrent) {
+        const Icon = iconByType["current"];
+        return <Icon size={20} />;
+    }
+
+    const hasRetirement = events.find((e) => e.type === "retirement");
+    if (hasRetirement) {
+        const Icon = iconByType["retirement"];
+        return <Icon size={20} />;
+    }
+
+    // Otherwise, generic summary icon
     const Icon = iconByType["summary"];
     return <Icon size={20} />;
-  };
+    };
+
 
   /* ------------------------------
      Build timeline grouped by year
@@ -122,15 +138,12 @@ export function IncomeSourceTimeline({
     const nextYear = timelineYears[index + 1]?.year ?? item.year;
     const deltaYears = nextYear - item.year;
 
-    const height =
-      index === 0
-        ? 64
-        : Math.max(64, deltaYears * 24);
+    const height = Math.max(20, deltaYears * 20);
 
     return (
       <TimelineItem
         key={item.year}
-        sx={{ height: height }}
+        sx={{ minHeight: height }}
       >
         <TimelineSeparator>
           <TimelineDot color="info">
