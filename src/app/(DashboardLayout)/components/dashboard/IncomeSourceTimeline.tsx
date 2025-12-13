@@ -125,7 +125,7 @@ export function IncomeSourceTimeline({
     const height =
       index === 0
         ? 64
-        : Math.max(64, deltaYears * 20);
+        : Math.max(64, deltaYears * 24);
 
     return (
       <TimelineItem
