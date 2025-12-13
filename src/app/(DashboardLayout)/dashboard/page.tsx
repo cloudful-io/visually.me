@@ -13,6 +13,9 @@ import UserAttributes from '../components/dashboard/UserAttributes';
 import IncomeSourceList from '../components/dashboard/IncomeSourceList';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
 import { useIncomeSources } from '@/lib/incomeSources/useIncomeSources';
+import RecentTransactions from '../components/dashboard/RecentTransactions';
+import {IncomeSourceTimeline} from '../components/dashboard/IncomeSourceTimeline';
+import { sources } from 'next/dist/compiled/webpack/webpack';
 
 const Dashboard = () => {
 
@@ -35,7 +38,29 @@ const Dashboard = () => {
     <PageContainer title="Visually Me: Dashboard" description="Dashboard displaying financial projections and breakdowns.">
       <Box>
         <Grid container spacing={3}>
-
+          <Grid
+            size={{sm: 12, lg: 4}}
+          >
+            <Grid container spacing={3}>
+              <Grid size={12}>
+                <UserAttributes />
+              </Grid>
+              <Grid size={12}>
+                <IncomeSourceTimeline sources={computedSources!} currentYear={new Date().getFullYear()} birthYear={attrs?.birthYear!} retirementAge={attrs?.targetRetirementAge!}/>
+              </Grid>
+              {/*}
+              <Grid size={12}>
+                <IncomeSourceList
+                  userAttributes={attrs || {}}
+                  sources={computedSources}
+                  loading={loading}
+                  save={save}
+                  remove={remove}
+                  refresh={refresh}
+                />
+              </Grid>*/}
+            </Grid>
+          </Grid>
           {/* Spanning Grid for Income and Investment (4 + 4 = 8) */}
           <Grid
            size={{sm: 12, lg: 8}}
@@ -105,25 +130,7 @@ const Dashboard = () => {
           </Grid>
           
           {/* User Attributes/Income Sources Column (4) - to align the 8+4=12 layout */}
-          <Grid
-            size={{sm: 12, lg: 4}}
-          >
-            <Grid container spacing={3}>
-              <Grid size={12}>
-                <UserAttributes />
-              </Grid>
-              <Grid size={12}>
-                <IncomeSourceList
-                  userAttributes={attrs || {}}
-                  sources={computedSources}
-                  loading={loading}
-                  save={save}
-                  remove={remove}
-                  refresh={refresh}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
+          
         </Grid>
       </Box>
     </PageContainer>
