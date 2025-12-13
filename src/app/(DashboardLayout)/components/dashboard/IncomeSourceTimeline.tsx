@@ -99,7 +99,7 @@ export function IncomeSourceTimeline({
 
   // Retirement
   yearMap.set(retirementYear, [
-    { label: "Target Retirement", type: "retirement" },
+    { label: "Target Retirement Age", type: "retirement" },
   ]);
 
   // Income sources
