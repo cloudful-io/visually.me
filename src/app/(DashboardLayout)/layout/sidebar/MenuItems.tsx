@@ -1,5 +1,6 @@
 import {
   IconHome,
+  IconHomeDollar,
   IconLayoutDashboard,
   IconUser,
   IconCash,
@@ -30,7 +31,13 @@ const Menuitems = [
     href: "/income",
     authRequired: true,
   },
-
+  {
+    id: uniqueId(),
+    title: "Real Estate",
+    icon: IconHome,
+    href: "/real-estate",
+    authRequired: true,
+  },
   {
     navlabel: true,
     subheader: "CALCULATORS",
@@ -53,7 +60,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: "Mortgage Amortization",
-    icon: IconHome,
+    icon: IconHomeDollar,
     href: "/calculators/mortgage",
     authRequired: false,
   },

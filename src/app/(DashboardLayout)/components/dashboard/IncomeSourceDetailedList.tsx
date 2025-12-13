@@ -1,9 +1,6 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
-import { Grid, Stack, Typography, Box, Button, Menu, MenuItem, Tabs, Tab } from "@mui/material";
-import { IconCalendar, IconList, IconCoin, IconUser, IconBuildingBank } from "@tabler/icons-react";
-import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import { Grid, Typography, Box } from "@mui/material";
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 import { IncomeCard } from "./IncomeCard";
 import { AddIncomeCard } from "./AddIncomeCard";
@@ -29,26 +26,9 @@ const IncomeSourceDetailedList = ({
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
 
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [newSourceType, setNewSourceType] = useState<string | null>(null);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  // --- TAB STATE ---
-  const [tabValue, setTabValue] = useState(0);
-
-  const tabToTypeMap: Record<number, string[] | null> = {
-    0: null,
-    1: ["fers-pension", "military-pension"],
-    2: ["retirement-savings"],
-    3: ["social-security"],
-  };
-
-  const filteredSources =
-    tabToTypeMap[tabValue] === null
-      ? sources
-      : sources?.filter((s) => tabToTypeMap[tabValue]?.includes(s.type));
 
   // Edit handlers
   const handleEdit = (id: string) => {
@@ -58,7 +38,6 @@ const IncomeSourceDetailedList = ({
   };
 
   const handleSelectType = (type: string) => {
-    setMenuAnchor(null);
     setNewSourceType(type);
     setEditingSourceId(null);
     setOpenEditDialog(true);

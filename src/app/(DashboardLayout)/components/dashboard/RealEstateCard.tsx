@@ -4,29 +4,22 @@ import { useState } from "react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { Box, Button, Stack, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
-import { IconDotsVertical, IconPencil, IconTrash, IconUser } from "@tabler/icons-react";
+import { IconDotsVertical, IconPencil, IconTrash, IconMapPin } from "@tabler/icons-react";
 import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
-import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
 import { currencyFormatter } from "@/lib/formatters/currency";
 
-interface IncomeSource {
+interface RealEstate {
   id: string;
-  type: string;
   data: string;      
-  firstYear?: number;
-  firstAmount?: number;
-  currentAmount?: number;
 }
 
-interface IncomeCardProps {
-  src: IncomeSource;
-  startYear: number;
+interface RealEstateProps {
+  property: RealEstate;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps) {
-
+export function RealEstateCard({ property, onEdit, onDelete }: RealEstateProps) {
   const handleEdit = (id: string) => {
     setMenuAnchor(null);
     onEdit(id);
@@ -39,47 +32,22 @@ export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps
 
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   let label = "";
+  let address = "";
   let parsed: any = {};
 
   try {
-    parsed = JSON.parse(src.data);
+    parsed = JSON.parse(property.data);
     label = parsed.label ?? "(unknown)";
+    address = parsed.address ?? "";
   } catch {
     label = "(unknown)";
-  }
-
-  const currentYear = new Date().getFullYear();
-
-  const amountToShow =
-    src.currentAmount != null ? src.currentAmount : src.firstAmount ?? null;
-
-  let yearsLeft: number | null = null;
-  let progressPct = 0;
-
-  const withdrawYear = src.firstYear ?? null;
- 
-  if (startYear && withdrawYear) {
-    const totalDuration = withdrawYear - startYear;
-
-    if (totalDuration > 0) {
-      const elapsed = currentYear - startYear;
-
-      progressPct = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-
-            // Remaining years until withdraw
-      yearsLeft = Math.max(0, withdrawYear - currentYear);
-    } else {
-      progressPct = 100;
-      yearsLeft = 0;
-    }
-  }
+  }  
 
   return (
     <DashboardCard 
       title={
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box display="flex" flexDirection="column" gap={1}>
           {/* Icon for the income type */}
-          {IncomeSourcesIcon[src.type] ?? <IconUser size={20} />}
 
           {/* Label */}
           <Typography variant="h6" fontWeight={600} noWrap>
@@ -92,7 +60,7 @@ export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps
         <IconButton
           size="small"
           color="info"
-          aria-label="Add Source"
+          aria-label="Add Property"
           onClick={(e) => setMenuAnchor(e.currentTarget)}
         >
           <IconDotsVertical />
@@ -103,13 +71,13 @@ export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps
           open={Boolean(menuAnchor)}
           onClose={() => setMenuAnchor(null)}
         >
-          <MenuItem onClick={() => handleEdit(src.id)}>
+          <MenuItem onClick={() => handleEdit(property.id)}>
             <ListItemIcon>
               <IconPencil fontSize="small" />
             </ListItemIcon>
             <ListItemText>Edit</ListItemText>
           </MenuItem>
-          <MenuItem onClick={() => handleDelete(src.id)}>
+          <MenuItem onClick={() => handleDelete(property.id)}>
             <ListItemIcon>
               <IconTrash fontSize="small" />
             </ListItemIcon>
@@ -118,32 +86,25 @@ export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps
         </Menu>
       </>
     }>
-      <Box display="flex" flexDirection="column">
-        <Stack spacing={1.5}>
+      <Box display="flex" flexDirection="column" justifyContent="flex-start" mt={-2}>
+        
+        <Stack spacing={0}>
 
           {/* Body Content */}
+          
           <Stack spacing={2}>
-            {amountToShow != null && (
-              <Typography variant="h5" fontWeight={700}>
-                {currencyFormatter(amountToShow)} / year
+          {address && (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              <IconMapPin size={16} style={{ flexShrink: 0 }} />
+              <Typography variant="body2" noWrap>
+                {address}
               </Typography>
-            )}
-            {src.firstYear && (
-              <Box width="100%">
-                <LinearProgressWithLabel
-                  value={progressPct}
-                  label={
-                    yearsLeft !== null && yearsLeft > 0
-                      ? `${yearsLeft}y until first withdraw (${src.firstYear})`
-                      : "Withdrawing now"
-                  }
-                />
-              </Box>
-            )}
+            </Box>
+          )}
             <Box>
               <Button
                 component={Link}
-                href={`/income/${src.id}`}
+                href={`/real-estate/${property.id}`}
                 variant="outlined"
                 size="small"
                 color="primary"
