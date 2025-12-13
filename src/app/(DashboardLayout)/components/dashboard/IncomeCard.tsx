@@ -20,12 +20,12 @@ interface IncomeSource {
 
 interface IncomeCardProps {
   src: IncomeSource;
-  startYear: number;
+  birthYear: number;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps) {
+export function IncomeCard({ src, birthYear, onEdit, onDelete }: IncomeCardProps) {
 
   const handleEdit = (id: string) => {
     setMenuAnchor(null);
@@ -58,11 +58,11 @@ export function IncomeCard({ src, startYear, onEdit, onDelete }: IncomeCardProps
 
   const withdrawYear = src.firstYear ?? null;
  
-  if (startYear && withdrawYear) {
-    const totalDuration = withdrawYear - startYear;
+  if (birthYear && withdrawYear) {
+    const totalDuration = withdrawYear - birthYear;
 
     if (totalDuration > 0) {
-      const elapsed = currentYear - startYear;
+      const elapsed = currentYear - birthYear;
 
       progressPct = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
 

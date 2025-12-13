@@ -87,7 +87,7 @@ const IncomeSourceDetailedList = ({
                 <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={src.id}>
                   <IncomeCard
                     src={src}
-                    startYear={userAttributes.startYear}
+                    birthYear={userAttributes.birthYear}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                   />
