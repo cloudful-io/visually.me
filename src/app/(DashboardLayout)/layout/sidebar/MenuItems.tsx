@@ -33,7 +33,7 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Real Estate",
+    title: "Real Estate Properties",
     icon: IconHome,
     href: "/real-estate",
     authRequired: true,
