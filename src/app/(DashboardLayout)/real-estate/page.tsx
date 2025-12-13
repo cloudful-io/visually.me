@@ -33,7 +33,6 @@ export default function RealEstateSummaryPage() {
   const chartRows = getCombinedChartRows;
   const tableRows = getCombinedProjection();
 
-  console.log(computedProperties)
   /*const dataKeys =
     mode === "income"
       ? computedSources.map((src) => ({

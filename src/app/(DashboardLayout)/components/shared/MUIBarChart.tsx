@@ -21,7 +21,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
   const theme = useTheme();
   const [selectedKey, setSelectedKey] = useState(dataKeys[0]);
 
-  const xAxisData = data.map((item) => String(item[xKey] ?? ''));
+  const xAxisData = data.map((item) => Number(item[xKey] ?? ''));
 
   const series = stacked
     ? dataKeys.map((opt) => ({
