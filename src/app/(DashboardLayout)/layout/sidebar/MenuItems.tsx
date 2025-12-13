@@ -31,13 +31,13 @@ const Menuitems = [
     href: "/income",
     authRequired: true,
   },
-  {
+  /*{
     id: uniqueId(),
     title: "Real Estate",
     icon: IconHome,
     href: "/real-estate",
     authRequired: true,
-  },
+  },*/
   {
     navlabel: true,
     subheader: "CALCULATORS",
