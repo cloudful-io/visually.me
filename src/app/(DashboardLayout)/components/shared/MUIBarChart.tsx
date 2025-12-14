@@ -89,7 +89,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
         colors={
           stacked
             ? undefined              
-            : [theme.palette.primary.main] 
+            : [theme.palette.primary.light] 
         }
       />
     </Box>
