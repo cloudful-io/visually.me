@@ -5,7 +5,7 @@ import { useRealEstate } from "@/lib/realEstate/useRealEstate";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
-import { CircularProgress, Button, Typography } from "@mui/material";
+import { ToggleButton, ToggleButtonGroup, CircularProgress, Button, Typography, Box } from "@mui/material";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
 import { realEstateFieldConfigs, getRealEstateProjectionColumns, realEstateDataKeys } from "@/configs/realEstate";
 import EditRealEstateDialog from "../../components/dashboard/EditDialogs/EditRealEstateDialog";
@@ -14,6 +14,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
 import NavigationIcon from "@mui/icons-material/Navigation";
 import ListIcon from "@mui/icons-material/List";
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import TocIcon from '@mui/icons-material/Toc';
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
@@ -33,6 +35,24 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
 
   const property = computedProperties?.find(s => s.id === id);
   const tableRows: RealEstatePropertyProjectionRow[] = projectionTables?.[id] ?? [];
+
+  const chartRows = tableRows.map((row) => ({
+    ...row,
+    netCashFlow: row.monthlyIncome - row.monthlyExpense,
+  }));
+
+  const detailChartRows = tableRows.map((row) => ({
+    ...row,
+    mortgage: row.monthlyMortgage,
+    hoaFee: row.monthlyHoaFee,
+    insurance: row.annualInsurance/12,
+    propertyTax: row.annualPropertyTax/12,
+    rentalIncome: row.monthlyIncome,
+  }));
+
+
+  type ViewMode = "summary" | "detail";
+  const [viewMode, setViewMode] = useState<ViewMode>("summary");
 
   const handleEditDialogOpen = (id: string) => {
     setEditingPropertyId(id);
@@ -83,8 +103,14 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
   }
 
   // --- Dynamic columns and dataKeys ---
-  let fields: FormFieldConfig<any, any>[] = realEstateFieldConfigs;
-  let columns: ColumnDef<any>[] = getRealEstateProjectionColumns(true);
+  const fields: FormFieldConfig<any, any>[] = realEstateFieldConfigs;
+
+  const isSummary = viewMode === "summary";
+  const columns: ColumnDef<RealEstatePropertyProjectionRow>[] =
+    getRealEstateProjectionColumns(
+      !isSummary, /* editable */
+      isSummary   /* summary */
+    );
   let dataKeys: DataKeyOption<any>[] = realEstateDataKeys;
 
   // --- Row edit handlers ---
@@ -103,7 +129,6 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
       yearOverrides[String(year)] = newOverride;
 
       existingInput.yearOverrides = yearOverrides;
-console.log(existingInput);
       await save({
         id: property.id!,
         data: JSON.stringify(existingInput),
@@ -172,16 +197,55 @@ console.log(existingInput);
           Delete
         </Button>
 
+        <Box sx={{ mt: 3 }}>
+          <ToggleButtonGroup
+            value={viewMode}
+            exclusive
+            size="small"
+            sx={{ mb: 2 }}
+            onChange={(_, next) => {
+              if (next !== null) setViewMode(next);
+            }}
+          >
+            <ToggleButton value="summary">
+              <SummarizeIcon fontSize="small" sx={{ mr: 1 }} />
+              Summary
+            </ToggleButton>
+
+            <ToggleButton value="detail">
+              <TocIcon fontSize="small" sx={{ mr: 1 }} />
+              Detail
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
         <div id="chartSection" />
-        {/*
-        <MUIBarChart
-          data={tableRows}
-          xKey="year"
-          dataKeys={dataKeys}
-          title={`${property.label} Over Time`}
-        />
-        */}
-<br/><br/>
+        {viewMode === "summary" && (
+          <MUIBarChart
+            data={chartRows}
+            xKey="year"
+            dataKeys={[
+              { key: "netCashFlow", label: "Net Cash Flow ($)" },
+            ]}
+            title="Net Cash Flow by Year"
+          />
+        )}
+        {viewMode === "detail" && (
+          <MUIBarChart
+            data={detailChartRows}
+            xKey="year"
+            yLabel="Total Expense ($)"
+            dataKeys={[
+              { key: "mortgage", label: "Mortgage ($)" },
+              { key: "propertyTax", label: "Property Tax ($)" },
+              { key: "insurance", label: "Insurance ($)" },
+              { key: "hoaFee", label: "HOA Fee ($)" },
+              //{ key: "rentalIncome", label: "Rental Income ($)" },
+            ]}
+            title="Expense Breakdown"
+            stacked
+          />
+        )}
+
         <div id="tableSection" />
         <ProjectionDataGrid
           rows={tableRows}

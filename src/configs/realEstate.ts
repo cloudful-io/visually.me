@@ -117,16 +117,28 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   },
 ];
 
-export function getRealEstateProjectionColumns(editable: boolean = false): ColumnDef<RealEstatePropertyProjectionRow>[] {
-  return [
-    { key: "year", label: "Year" },
-    { key: "age", label: "Age" },
-    { key: "monthlyRentalIncome", label: "Monthly Rental Income ($)", currency: true, editable, min: 0 },
-    { key: "monthlyMortgage", label: "Monthly Mortgage Payment ($)", currency: true, editable, min: 1 },
-    { key: "annualPropertyTax", label: "Annual Property Tax ($)", currency: true, editable, min: 0 },
-    { key: "annualInsurance", label: "Annual Insurance ($)", currency: true, editable, min: 0 },
-    { key: "monthlyHoaFee", label: "Monthly HOA Fee ($)", currency: true, editable, min: 0 },
-  ];
+export function getRealEstateProjectionColumns(editable: boolean = false, summary: boolean = false): ColumnDef<RealEstatePropertyProjectionRow>[] {
+  if (summary) {
+    return [
+      { key: "year", label: "Year" },
+      { key: "age", label: "Age" },
+      { key: "monthlyIncome", label: "Monthly Income ($)", currency: true,  },
+      { key: "annualIncome", label: "Annual Income ($)", currency: true, hiddenOnMobile: true },
+      { key: "monthlyExpense", label: "Monthly Expense ($)", currency: true, },
+      { key: "annualExpense", label: "Annual Expense ($)", currency: true, hiddenOnMobile: true },
+    ];
+  }
+  else {
+    return [
+      { key: "year", label: "Year" },
+      { key: "age", label: "Age" },
+      { key: "monthlyRentalIncome", label: "Monthly Rental Income ($)", currency: true, editable, min: 0 },
+      { key: "monthlyMortgage", label: "Monthly Mortgage Payment ($)", currency: true, editable, min: 1 },
+      { key: "annualPropertyTax", label: "Annual Property Tax ($)", currency: true, editable, min: 0 },
+      { key: "annualInsurance", label: "Annual Insurance ($)", currency: true, editable, min: 0 },
+      { key: "monthlyHoaFee", label: "Monthly HOA Fee ($)", currency: true, editable, min: 0 },
+    ];
+  }
 }
 
 export const realEstateDataKeys: DataKeyOption<any>[] = [
