@@ -45,8 +45,8 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
     ...row,
     mortgage: row.monthlyMortgage,
     hoaFee: row.monthlyHoaFee,
-    insurance: row.annualInsurance/12,
-    propertyTax: row.annualPropertyTax/12,
+    insurance: Math.round(row.annualInsurance/12),
+    propertyTax: Math.round(row.annualPropertyTax/12),
     rentalIncome: row.monthlyIncome,
   }));
 
