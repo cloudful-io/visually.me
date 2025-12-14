@@ -133,47 +133,49 @@ export function IncomeSourceTimeline({
         </Box>
       }
     >
-  <Timeline position="alternate-reverse">
-  {timelineYears.map((item, index) => {
-    const nextYear = timelineYears[index + 1]?.year ?? item.year;
-    const deltaYears = nextYear - item.year;
+    <Timeline position="alternate-reverse">
+    {timelineYears.map((item, index) => {
+        const nextYear = timelineYears[index + 1]?.year ?? item.year;
+        const deltaYears = nextYear - item.year;
 
-    const height = Math.max(20, deltaYears * 20);
+        const height = Math.max(20, deltaYears * 20);
 
-    return (
-      <TimelineItem
-        key={item.year}
-        sx={{ minHeight: height }}
-      >
-        <TimelineSeparator>
-          <TimelineDot color="info">
-            {getTimelineDotIcon(item.events)}
-          </TimelineDot>
-          {index < timelineYears.length - 1 && <TimelineConnector />}
-        </TimelineSeparator>
+        return (
+        <TimelineItem
+            key={item.year}
+            sx={{ minHeight: height }}
+        >
+            <TimelineSeparator>
+            <TimelineDot 
+              color={item.events.some(e => e.type === "retirement") ? "info" : "grey"}
+            >
+                {getTimelineDotIcon(item.events)}
+            </TimelineDot>
+            {index < timelineYears.length - 1 && <TimelineConnector />}
+            </TimelineSeparator>
 
-        <TimelineContent>
-          <Box>
-            <Chip
-              size="small"
-              label={String(item.year)}
-              variant="filled"
-              color="secondary"
-              sx={{ mb: 0.75 }}
-            />
+            <TimelineContent>
+            <Box>
+              <Chip
+                size="small"
+                label={String(item.year)}
+                variant="filled"
+                color="secondary"
+                sx={{ mb: 0.75 }}
+              />
 
-            {item.events.map((event, i) => (
-              <Typography key={i} variant="body2">
-                {item.events.length > 1 ? `• ` : ""}
-                {event.label}
-              </Typography>
-            ))}
-          </Box>
-        </TimelineContent>
-      </TimelineItem>
-    );
-  })}
-</Timeline>
+                {item.events.map((event, i) => (
+                <Typography key={i} variant="body2">
+                    {item.events.length > 1 ? `• ` : ""}
+                    {event.label}
+                </Typography>
+                ))}
+            </Box>
+            </TimelineContent>
+        </TimelineItem>
+        );
+    })}
+    </Timeline>
 </DashboardCard>
 );
 }
