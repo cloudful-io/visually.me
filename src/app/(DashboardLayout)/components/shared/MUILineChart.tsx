@@ -1,9 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Typography, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import {
+  Box,
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+  useMediaQuery,
+} from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
-import { LineSeries } from '@mui/x-charts/LineChart';
+import { LineSeries } from "@mui/x-charts/LineChart";
 import { useTheme } from "@mui/material/styles";
 import { currencyFormatter } from "@/lib/formatters/currency";
 
@@ -12,68 +18,137 @@ export type DataKeyOption<T> = {
   label: string;
 };
 
+type YearRange = 5 | 10 | 25 | "all";
+
 type Props<T extends Record<string, any>> = {
   data: T[];
   xKey: keyof T;
   title: string;
-  dataKeys: DataKeyOption<T>[];  // required, but can contain 1 or 2 keys
+  dataKeys: DataKeyOption<T>[];  
   height?: number;
   yLabel?: string;
+
+  /** NEW */
+  enableRangeFilter?: boolean;
+  defaultRange?: YearRange;
 };
 
 export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
-  const { data, xKey, title, dataKeys, height = 300, yLabel } = props;
+  const {
+    data,
+    xKey,
+    title,
+    dataKeys,
+    height = 300,
+    yLabel,
+    enableRangeFilter = false,
+    defaultRange,
+  } = props;
 
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // default to first dataKey
   const [selectedKey, setSelectedKey] = useState<DataKeyOption<T>>(dataKeys[0]);
 
-  const xAxisData = data.map((item) => Number(item[xKey] ?? ""));
+  // Range state
+  const [range, setRange] = useState<YearRange>(() => {
+    if (defaultRange) return defaultRange;
+    return isMobile ? 10 : "all";
+  });
 
-  const series: LineSeries[] = [{
-    id: String(selectedKey.key),
-    label: selectedKey.label,
-    data: data.map((row) =>
-      typeof row[selectedKey.key] === "number" ? Math.round(row[selectedKey.key]) : 0
-    ),
-    curve: 'monotoneX', 
-    valueFormatter: currencyFormatter
-  }];
+  // Filter data by range
+  const filteredData =
+    range === "all" ? data : data.slice(0, range);
+
+  const xAxisData = filteredData.map((item) => Number(item[xKey] ?? 0));
+
+  const series: LineSeries[] = [
+    {
+      id: String(selectedKey.key),
+      label: selectedKey.label,
+      data: filteredData.map((row) =>
+        typeof row[selectedKey.key] === "number" ? Math.round(row[selectedKey.key]) : 0
+      ),
+      curve: "monotoneX",
+      valueFormatter: currencyFormatter,
+    },
+  ];
+
+  const ranges: YearRange[] = [5, 10, 25, "all"];
 
   return (
     <Box mt={4} sx={{ width: "100%" }}>
-      {/* Toggle only if multiple keys */}
-      {dataKeys.length > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <ToggleButtonGroup
-            size="small"
-            exclusive
-            value={selectedKey.key}
-            onChange={(e, value) => {
-              if (!value) return;
-              const found = dataKeys.find((k) => k.key === value);
-              if (found) setSelectedKey(found);
-            }}
-          >
-            {dataKeys.map((opt) => (
-              <ToggleButton key={String(opt.key)} value={opt.key}>
-                {opt.label}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
+      <Typography variant="h6" gutterBottom>
+        {title}
+      </Typography>
+
+      {/* Controls */}
+      {(enableRangeFilter || dataKeys.length > 1) && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            mb: 1,
+            gap: 1,
+            flexWrap: "wrap",
+          }}
+        >
+          {/* Range selector */}
+          {enableRangeFilter && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={range}
+                onChange={(_, value) => value && setRange(value)}
+                sx={{ mr: 1 }}
+              >
+                {ranges.map((r) => (
+                  <ToggleButton key={r} value={r} sx={{ px: 1.5 }}>
+                    {typeof r === "number" ? `${r}Y` : "All"}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            </Box>
+          )}
+
+          {/* Metric selector */}
+          {dataKeys.length > 1 && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={selectedKey.key}
+                onChange={(_, value) => {
+                  if (!value) return;
+                  const found = dataKeys.find((k) => k.key === value);
+                  if (found) setSelectedKey(found);
+                }}
+              >
+                {dataKeys.map((opt) => (
+                  <ToggleButton key={String(opt.key)} value={opt.key} sx={{ px: 1.5 }}>
+                    {opt.label}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            </Box>
+          )}
         </Box>
       )}
 
       <LineChart
         height={height}
         series={series}
-        xAxis={[{ data: xAxisData, /*scaleType: "band"*/ }]}
-        yAxis={[{ 
-          width: 120, 
-          label: yLabel ?? selectedKey.label ?? undefined, 
-          valueFormatter: currencyFormatter
-        }]}
+        xAxis={[{ data: xAxisData }]}
+        yAxis={[
+          {
+            width: 120,
+            label: yLabel ?? selectedKey.label ?? undefined,
+            valueFormatter: currencyFormatter,
+          },
+        ]}
         colors={[theme.palette.primary.main]}
       />
     </Box>

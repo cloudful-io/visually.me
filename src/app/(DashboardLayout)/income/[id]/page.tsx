@@ -217,6 +217,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           xKey="year"
           dataKeys={dataKeys}
           title={`${source.label} Over Time`}
+          enableRangeFilter
         />
 
         <div id="tableSection" />

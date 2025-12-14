@@ -227,6 +227,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
               { key: "netCashFlow", label: "Net Monthly Cash Flow ($)" },
             ]}
             title="Net Monthly Cash Flow by Year"
+            enableRangeFilter
           />
         )}
         {viewMode === "detail" && (
@@ -243,6 +244,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
             ]}
             title="Monthly Income and Expense Breakdown"
             stacked
+            enableRangeFilter
           />
         )}
 

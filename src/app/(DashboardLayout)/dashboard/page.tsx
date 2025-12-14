@@ -115,13 +115,14 @@ const Dashboard = () => {
               <Grid size={12}>
                 <DashboardCard title="Income and Investment Over Time">
                 <MUILineChart
-                  title="Income vs Investment Over Time"
+                  title=""
                   data={chartRows}
                   xKey="age"
                   dataKeys={[
-                    { key: 'annualIncome', label: 'Income' },
-                    { key: 'annualInvestmentBalance', label: 'Investment' },
+                    { key: 'annualIncome', label: 'Annual Income' },
+                    { key: 'annualInvestmentBalance', label: 'Investment Balance' },
                   ]}
+                  enableRangeFilter
                 />
                 </DashboardCard>
               </Grid>

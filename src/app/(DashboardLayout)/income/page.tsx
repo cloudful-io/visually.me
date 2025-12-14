@@ -86,6 +86,7 @@ export default function IncomeSummaryPage() {
               ? "Annual Income by Source"
               : "Investment Balance by Account"
           }
+          enableRangeFilter
         />
 
         <div id="tableSection"></div>   
