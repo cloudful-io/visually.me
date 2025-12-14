@@ -4,7 +4,7 @@ import { useState } from "react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { Box, Button, Stack, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
-import { IconDotsVertical, IconPencil, IconTrash, IconMapPin } from "@tabler/icons-react";
+import { IconDotsVertical, IconPencil, IconTrash, IconMapPin, IconFlagFilled } from "@tabler/icons-react";
 import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
 import { currencyFormatter } from "@/lib/formatters/currency";
 
@@ -42,17 +42,22 @@ export function RealEstateCard({ property, onEdit, onDelete }: RealEstateProps) 
   } catch {
     label = "(unknown)";
   }  
-
+console.log(parsed.fields.propertyType);
   return (
     <DashboardCard 
       title={
         <Box display="flex" flexDirection="column" gap={1}>
-          {/* Icon for the income type */}
+          <Box display="flex" alignItems="center" gap={1}>
 
           {/* Label */}
           <Typography variant="h6" fontWeight={600} noWrap>
               {label}
           </Typography>
+          {/* Show flag if primary home */}
+          {parsed.fields.propertyType === 'residence' && (
+            <IconFlagFilled color="grey"/>
+          )}
+          </Box>
         </Box>
       }
       action={

@@ -224,16 +224,16 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
             data={chartRows}
             xKey="year"
             dataKeys={[
-              { key: "netCashFlow", label: "Net Cash Flow ($)" },
+              { key: "netCashFlow", label: "Net Monthly Cash Flow ($)" },
             ]}
-            title="Net Cash Flow by Year"
+            title="Net Monthly Cash Flow by Year"
           />
         )}
         {viewMode === "detail" && (
           <MUIBarChart
             data={detailChartRows}
             xKey="year"
-            yLabel="Total Expense ($)"
+            yLabel="Total Monthly Expense ($)"
             dataKeys={[
               { key: "mortgage", label: "Mortgage ($)" },
               { key: "propertyTax", label: "Property Tax ($)" },
@@ -241,7 +241,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
               { key: "hoaFee", label: "HOA Fee ($)" },
               //{ key: "rentalIncome", label: "Rental Income ($)" },
             ]}
-            title="Expense Breakdown"
+            title="Monthly Expense Breakdown"
             stacked
           />
         )}
