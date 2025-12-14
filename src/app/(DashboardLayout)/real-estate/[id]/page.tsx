@@ -43,10 +43,10 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
 
   const detailChartRows = tableRows.map((row) => ({
     ...row,
-    mortgage: row.monthlyMortgage,
-    hoaFee: row.monthlyHoaFee,
-    insurance: Math.round(row.annualInsurance/12),
-    propertyTax: Math.round(row.annualPropertyTax/12),
+    mortgage: (-1*row.monthlyMortgage),
+    hoaFee: (-1*row.monthlyHoaFee),
+    insurance: (-1*Math.round(row.annualInsurance/12)),
+    propertyTax: (-1*Math.round(row.annualPropertyTax/12)),
     rentalIncome: row.monthlyIncome,
   }));
 
@@ -233,15 +233,15 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
           <MUIBarChart
             data={detailChartRows}
             xKey="year"
-            yLabel="Total Monthly Expense ($)"
+            yLabel="Total Monthly Income and Expense ($)"
             dataKeys={[
               { key: "mortgage", label: "Mortgage ($)" },
               { key: "propertyTax", label: "Property Tax ($)" },
               { key: "insurance", label: "Insurance ($)" },
               { key: "hoaFee", label: "HOA Fee ($)" },
-              //{ key: "rentalIncome", label: "Rental Income ($)" },
+              { key: "rentalIncome", label: "Rental Income ($)" },
             ]}
-            title="Monthly Expense Breakdown"
+            title="Monthly Income and Expense Breakdown"
             stacked
           />
         )}
@@ -269,7 +269,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
           tooltip="Navigate To"
           actions={[
             { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
-         /*   { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },*/
+            { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
             { id: "formSection", label: "Form", icon: <ListIcon /> },
           ]}
         />
