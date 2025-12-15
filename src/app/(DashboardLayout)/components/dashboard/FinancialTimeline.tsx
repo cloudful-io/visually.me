@@ -98,7 +98,7 @@ export function FinancialTimeline({
   (realEstateProperties ?? []).forEach((p) => {
     if (p.mergedFields.mortgageEndYear != null) {
       const events = yearMap.get(p.mergedFields.mortgageEndYear) ?? [];
-      events.push({ label: `${p.label} Mortgage Ends`, type: "mortgage-end" });
+      events.push({ label: `${p.label} Mortgage Payoff`, type: "mortgage-end" });
       yearMap.set(p.mergedFields.mortgageEndYear, events);
     }
   });
