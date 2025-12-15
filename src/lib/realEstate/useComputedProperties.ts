@@ -27,9 +27,6 @@ export function useComputedProperties(
           yearsToProject: userAttributes?.yearsToProject,
         };
 
-        const getRowByYear = (year: number) =>
-          rows.find((r) => r.year === year);
-
         mergedFields = { ...parsed.fields, ...base };
         rows = calculateRealEstatePropertyProjectionWithOverrides({
             ...mergedFields,

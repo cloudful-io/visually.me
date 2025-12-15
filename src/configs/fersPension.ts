@@ -44,7 +44,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     min: 1900,
     step: 1,
     helperText: 'Year you ended federal service under FERS',
-    shouldDisplay: (values) => values.retirementType === "deferred", // hide if retirement type is not deferred
+    shouldDisplay: (values) => (values.retirementType === "deferred"), // hide if retirement type is not deferred
   },
   {
     name: 'retirementAge',

@@ -40,12 +40,11 @@ export function useCombinedProjections(
         let income = 0;
         let expense = 0;
 
-        income = row.monthlyRentalIncome ? row.monthlyRentalIncome*12 : 0;
-        expense = (row.annualInsurance ?? 0) + (row.annualPropertyTax ?? 0) + (row.monthlyHoaFee ? row.monthlyHoaFee*12 : 0) + (row.monthlyMortgage * 12);
+        income = row.annualIncome;
+        expense = row.annualExpense;
         
         annualIncome += income;
         annualExpense += expense;
-        
       }
 
       result.push({
