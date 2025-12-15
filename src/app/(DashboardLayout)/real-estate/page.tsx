@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { useRealEstate } from "@/lib/realEstate/useRealEstate";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
@@ -20,7 +20,29 @@ export default function RealEstateSummaryPage() {
     useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();  
 
-  const [mode, setMode] = useState<"income" | "balance">("income");
+  type ChartMode = "income" | "net";
+  const [mode, setMode] = useState<ChartMode>("net");
+
+  const tableRows = getCombinedProjection();
+
+  const incomeChartRows = useMemo(
+    () =>
+      tableRows.map((row) => ({
+        year: row.year,
+        annualIncome: row.annualIncome,
+        annualExpense: (-1*row.annualExpense),
+      })),
+    [tableRows]
+  );
+
+  const netCashFlowChartRows = useMemo(
+    () =>
+      tableRows.map((row) => ({
+        year: row.year,
+        netCashFlow: row.annualIncome - row.annualExpense,
+      })),
+    [tableRows]
+  );
 
   if (loading || !computedProperties) {
     return (
@@ -29,22 +51,6 @@ export default function RealEstateSummaryPage() {
       </PageContainer>
     );
   }
-
-  const chartRows = getCombinedChartRows;
-  const tableRows = getCombinedProjection();
-
-  /*const dataKeys =
-    mode === "income"
-      ? computedSources.map((src) => ({
-          key: src.id!,          
-          label: src.label,
-        }))
-      : computedSources
-          .filter((src) => src.type === "retirement-savings")
-          .map((src) => ({
-            key: `balance_${src.id}` as keyof (typeof chartRows)[number],
-            label: `${src.label} Balance`,
-          }));*/
 
   return (
     <>
@@ -58,48 +64,59 @@ export default function RealEstateSummaryPage() {
             remove={remove}
             refresh={refresh}
           />
-        {/*<Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
-          <ToggleButtonGroup
-            exclusive
-            size="small"
-            value={mode}
-            onChange={(e, v) => v && setMode(v)}
-          >
-            <ToggleButton value="income">Annual Retirement Income</ToggleButton>
-            <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
-          </ToggleButtonGroup>
-        </Box>*/}
 
         <div id="chartSection"></div>
-        {/*<MUIBarChart
-          data={chartRows}
-          xKey="year"
-          dataKeys={dataKeys}
-          stacked
-          yLabel={
-            mode === "income"
-              ? "Annual Income"
-              : "Total Investment Balance"
-          }
-          title={
-            mode === "income"
-              ? "Annual Income by Source"
-              : "Investment Balance by Account"
-          }
-        />*/}
+        {/* ---- Chart Mode Toggle ---- */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
+          <ToggleButtonGroup
+            size="small"
+            exclusive
+            value={mode}
+            onChange={(_, v) => v && setMode(v)}
+          >
+            <ToggleButton value="net">Net Cash Flow</ToggleButton>
+            <ToggleButton value="income">Income and Expense</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+         {mode === "net" && (
+          <MUIBarChart
+            data={netCashFlowChartRows}
+            xKey="year"
+            dataKeys={[
+              { key: "netCashFlow", label: "Annual Net Cash Flow ($)" },
+            ]}
+            title="Annual Net Cash Flow"
+            enableRangeFilter
+          />
+        )}
+
+        {mode === "income" && (
+          <MUIBarChart
+            data={incomeChartRows}
+            xKey="year"
+            stacked
+            dataKeys={[
+              { key: "annualIncome", label: "Annual Income ($)" },
+              { key: "annualExpense", label: "Annual Expense ($)" },
+            ]}
+            title="Income vs Expense"
+            enableRangeFilter
+          />
+        )}
 
         <div id="tableSection"></div>   
-        {/*<ProjectionDataGrid
+        <ProjectionDataGrid
           rows={tableRows}
           columns={[
             { key: "year", label: "Year" },
             { key: "age", label: "Age" },
             { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
             { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
-            { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
+            { key: "monthlyExpense", label: "Total Monthly Expense ($)", currency: true, hiddenOnMobile: true },
+            { key: "annualExpense", label: "Total Annual Expense ($)", currency: true },
           ]}
           highlightYear={new Date().getFullYear()}
-        />*/}
+        />
         <SectionSpeedDial
           icon={<NavigationIcon />}  
           tooltip="Navigate To"   

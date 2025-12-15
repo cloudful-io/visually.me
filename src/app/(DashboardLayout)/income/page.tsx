@@ -58,58 +58,62 @@ export default function IncomeSummaryPage() {
             remove={remove}
             refresh={refresh}
           />
-        <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
-          <ToggleButtonGroup
-            exclusive
-            size="small"
-            value={mode}
-            onChange={(e, v) => v && setMode(v)}
-          >
-            <ToggleButton value="income">Annual Retirement Income</ToggleButton>
-            <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
+        {computedSources.length > 0 && (
+        <>
+          <div id="chartSection"></div>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={mode}
+              onChange={(e, v) => v && setMode(v)}
+            >
+              <ToggleButton value="income">Annual Retirement Income</ToggleButton>
+              <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+          
+          <MUIBarChart
+            data={chartRows}
+            xKey="year"
+            dataKeys={dataKeys}
+            stacked
+            yLabel={
+              mode === "income"
+                ? "Annual Income"
+                : "Total Investment Balance"
+            }
+            title={
+              mode === "income"
+                ? "Annual Income by Source"
+                : "Investment Balance by Account"
+            }
+            enableRangeFilter
+          />
 
-        <div id="chartSection"></div>
-        <MUIBarChart
-          data={chartRows}
-          xKey="year"
-          dataKeys={dataKeys}
-          stacked
-          yLabel={
-            mode === "income"
-              ? "Annual Income"
-              : "Total Investment Balance"
-          }
-          title={
-            mode === "income"
-              ? "Annual Income by Source"
-              : "Investment Balance by Account"
-          }
-          enableRangeFilter
-        />
-
-        <div id="tableSection"></div>   
-        <ProjectionDataGrid
-          rows={tableRows}
-          columns={[
-            { key: "year", label: "Year" },
-            { key: "age", label: "Age" },
-            { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
-            { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
-            { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
-          ]}
-          highlightYear={new Date().getFullYear()}
-        />
-        <SectionSpeedDial
-          icon={<NavigationIcon />}  
-          tooltip="Navigate To"   
-          actions={[
-            { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
-            { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
-            { id: "formSection", label: "List", icon: <ListIcon /> },
-          ]}
-        />
+          <div id="tableSection"></div>   
+          <ProjectionDataGrid
+            rows={tableRows}
+            columns={[
+              { key: "year", label: "Year" },
+              { key: "age", label: "Age" },
+              { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
+              { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
+              { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
+            ]}
+            highlightYear={new Date().getFullYear()}
+          />
+          <SectionSpeedDial
+            icon={<NavigationIcon />}  
+            tooltip="Navigate To"   
+            actions={[
+              { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+              { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+              { id: "formSection", label: "List", icon: <ListIcon /> },
+            ]}
+          />
+        </>
+        )}
       </PageContainer>
     </>
   );
