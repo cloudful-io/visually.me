@@ -10,16 +10,16 @@ import { InvestmentBreakdown } from '../components/dashboard/InvestmentBreakdown
 import DashboardCard from '../components/shared/DashboardCard';
 import { MUILineChart } from '../components/shared/MUILineChart';
 import UserAttributes from '../components/dashboard/UserAttributes';
-import IncomeSourceList from '../components/dashboard/IncomeSourceList';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
 import { useIncomeSources } from '@/lib/incomeSources/useIncomeSources';
-import RecentTransactions from '../components/dashboard/RecentTransactions';
-import {IncomeSourceTimeline} from '../components/dashboard/IncomeSourceTimeline';
+import { useRealEstate } from '@/lib/realEstate/useRealEstate';
+import {FinancialTimeline} from '../components/dashboard/FinancialTimeline';
 import { sources } from 'next/dist/compiled/webpack/webpack';
 
 const Dashboard = () => {
 
   const { computedSources, loading, getCombinedProjection, getCombinedChartRows, save, remove, refresh } = useIncomeSources();
+  const { computedProperties } = useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
 
   const combined = getCombinedProjection() ?? [];
@@ -46,7 +46,7 @@ const Dashboard = () => {
                 <UserAttributes />
               </Grid>
               <Grid size={12}>
-                <IncomeSourceTimeline sources={computedSources!} currentYear={new Date().getFullYear()} birthYear={attrs?.birthYear!} retirementAge={attrs?.targetRetirementAge!}/>
+                <FinancialTimeline incomeSources={computedSources!} realEstateProperties={computedProperties} currentYear={new Date().getFullYear()} birthYear={attrs?.birthYear!} retirementAge={attrs?.targetRetirementAge!}/>
               </Grid>
               {/*}
               <Grid size={12}>

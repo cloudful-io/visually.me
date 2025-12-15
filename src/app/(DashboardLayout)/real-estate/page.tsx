@@ -65,67 +65,71 @@ export default function RealEstateSummaryPage() {
             refresh={refresh}
           />
 
-        <div id="chartSection"></div>
-        {/* ---- Chart Mode Toggle ---- */}
-        <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
-          <ToggleButtonGroup
-            size="small"
-            exclusive
-            value={mode}
-            onChange={(_, v) => v && setMode(v)}
-          >
-            <ToggleButton value="net">Net Cash Flow</ToggleButton>
-            <ToggleButton value="income">Income and Expense</ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
-         {mode === "net" && (
-          <MUIBarChart
-            data={netCashFlowChartRows}
-            xKey="year"
-            dataKeys={[
-              { key: "netCashFlow", label: "Annual Net Cash Flow ($)" },
-            ]}
-            title="Annual Net Cash Flow"
-            enableRangeFilter
-          />
-        )}
+        {computedProperties.length > 0 && (
+          <>
+            <div id="chartSection"></div>
+            {/* ---- Chart Mode Toggle ---- */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={mode}
+                onChange={(_, v) => v && setMode(v)}
+              >
+                <ToggleButton value="net">Net Cash Flow</ToggleButton>
+                <ToggleButton value="income">Income and Expense</ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+            {mode === "net" && (
+              <MUIBarChart
+                data={netCashFlowChartRows}
+                xKey="year"
+                dataKeys={[
+                  { key: "netCashFlow", label: "Annual Net Cash Flow ($)" },
+                ]}
+                title="Annual Net Cash Flow"
+                enableRangeFilter
+              />
+            )}
 
-        {mode === "income" && (
-          <MUIBarChart
-            data={incomeChartRows}
-            xKey="year"
-            stacked
-            dataKeys={[
-              { key: "annualIncome", label: "Annual Income ($)" },
-              { key: "annualExpense", label: "Annual Expense ($)" },
-            ]}
-            title="Income vs Expense"
-            enableRangeFilter
-          />
-        )}
+            {mode === "income" && (
+              <MUIBarChart
+                data={incomeChartRows}
+                xKey="year"
+                stacked
+                dataKeys={[
+                  { key: "annualIncome", label: "Annual Income ($)" },
+                  { key: "annualExpense", label: "Annual Expense ($)" },
+                ]}
+                title="Income vs Expense"
+                enableRangeFilter
+              />
+            )}
 
-        <div id="tableSection"></div>   
-        <ProjectionDataGrid
-          rows={tableRows}
-          columns={[
-            { key: "year", label: "Year" },
-            { key: "age", label: "Age" },
-            { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
-            { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
-            { key: "monthlyExpense", label: "Total Monthly Expense ($)", currency: true, hiddenOnMobile: true },
-            { key: "annualExpense", label: "Total Annual Expense ($)", currency: true },
-          ]}
-          highlightYear={new Date().getFullYear()}
-        />
-        <SectionSpeedDial
-          icon={<NavigationIcon />}  
-          tooltip="Navigate To"   
-          actions={[
-            { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
-            { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
-            { id: "formSection", label: "List", icon: <ListIcon /> },
-          ]}
-        />
+            <div id="tableSection"></div>   
+            <ProjectionDataGrid
+              rows={tableRows}
+              columns={[
+                { key: "year", label: "Year" },
+                { key: "age", label: "Age" },
+                { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
+                { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
+                { key: "monthlyExpense", label: "Total Monthly Expense ($)", currency: true, hiddenOnMobile: true },
+                { key: "annualExpense", label: "Total Annual Expense ($)", currency: true },
+              ]}
+              highlightYear={new Date().getFullYear()}
+            />
+            <SectionSpeedDial
+              icon={<NavigationIcon />}  
+              tooltip="Navigate To"   
+              actions={[
+                { id: "tableSection", label: "Table", icon: <TableChartIcon /> },
+                { id: "chartSection", label: "Chart", icon: <BarChartIcon /> },
+                { id: "formSection", label: "List", icon: <ListIcon /> },
+              ]}
+            />
+          </>
+        )}
       </PageContainer>
     </>
   );
