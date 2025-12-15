@@ -11,6 +11,7 @@ import { fersPensionFieldConfigs, getFersPensionProjectionColumns, fersPensionDa
 import { militaryPensionFieldConfigs, getMilitaryPensionProjectionColumns, militaryPensionDataKeys } from "@/configs/militaryPension";
 import { retirementSavingsFieldConfigs, getRetirementSavingsProjectionColumns, retirementSavingsDataKeys } from "@/configs/retirementSavings";
 import { socialSecurityFieldConfigs, getSocialSecurityProjectionColumns, socialSecurityDataKeys } from "@/configs/socialSecurityBenefits";
+import BackToList from "../../components/shared/BackToList";
 import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -185,7 +186,11 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   return (
     <>
       <div id="formSection"></div>
-      <PageContainer title={`${source.label} Projection`} showTitle>
+      <BackToList
+          href="/income"
+          listLabel="Income and Investment"
+        />
+      <PageContainer title={ source.label} showTitle>
         <ReadOnlyFields
           fields={fields}
           values={source.mergedFields}

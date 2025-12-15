@@ -8,6 +8,7 @@ import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { ToggleButton, ToggleButtonGroup, CircularProgress, Button, Typography, Box } from "@mui/material";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
 import { realEstateFieldConfigs, getRealEstateProjectionColumns, realEstateDataKeys } from "@/configs/realEstate";
+import BackToList from "../../components/shared/BackToList";
 import EditRealEstateDialog from "../../components/dashboard/EditDialogs/EditRealEstateDialog";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -171,7 +172,12 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
   return (
     <>
       <div id="formSection"></div>
+      <BackToList
+        href="/real-estate"
+        listLabel="Real Estate Properties"
+      />
       <PageContainer title={`${property.label} Projection`} showTitle>
+        
         <ReadOnlyFields
           fields={fields}
           values={property.mergedFields}
