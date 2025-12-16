@@ -137,7 +137,7 @@ export default function EditIncomeSourceDialog({
     },
     "military-pension": { 
       title: "Uniformed Service Pension",
-      description: "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
+      description: "Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.",
       initial: initialMilitaryPensionValues, 
       Component: EditMilitaryPension, 
       fieldConfigs: militaryPensionFieldConfigs 

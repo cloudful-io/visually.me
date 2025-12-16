@@ -7,31 +7,10 @@ import {
   Button,
   Box,
 } from '@mui/material';
-import { FormFieldConfig } from '@/types/forms';
-import { FormFields, Props, BaseFormProps } from './FormFields';
-
-/*type FormWizardProps<T, C = void> = C extends void
-  ? {
-      fields: FormFieldConfig<T, C>[];
-      values: T;
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-      onDateChange?: (name: keyof T, value: Date | null) => void;
-      errors?: Partial<Record<keyof T, string>>;
-      dialog?: boolean;
-    }
-  : {
-      fields: FormFieldConfig<T, C>[];
-      values: T;
-      context: C; // required only when C is not void
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-      onDateChange?: (name: keyof T, value: Date | null) => void;
-      errors?: Partial<Record<keyof T, string>>;
-      dialog?: boolean;
-    };*/
+import { FormFields, BaseFormProps } from './FormFields';
 
 export type FormWizardProps<T, C = void> =
   BaseFormProps<T> & (C extends void ? {} : { context: C });
-
 
 export function FormWizard<T, C = void>(props: FormWizardProps<T, C>) {
   const {
@@ -80,7 +59,6 @@ export function FormWizard<T, C = void>(props: FormWizardProps<T, C>) {
 
             <Box mt={2}>
               <Button
-                variant='contained'
                 disabled={index === 0}
                 onClick={() => setActiveStep((s) => s - 1)}
                 sx={{ mr: 1 }}
@@ -90,7 +68,7 @@ export function FormWizard<T, C = void>(props: FormWizardProps<T, C>) {
 
               {index < groups.length - 1 && (
                 <Button variant="contained" onClick={() => setActiveStep(s => s + 1)}>
-                    Next
+                  Next
                 </Button>
               )}
             </Box>
