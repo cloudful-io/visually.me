@@ -1,6 +1,7 @@
 "use client";
 
 import { FormFields } from "@/app/(DashboardLayout)/components/shared/FormFields";
+import { FormWizard } from "../../shared/FormWizard";
 import { SocialSecurityBenefitInput } from "financial-calcs";
 import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefits";
 
