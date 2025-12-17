@@ -1,6 +1,16 @@
-import { FormFieldConfig } from '@/types/forms';
+import { FormFieldConfig, FormFieldGroup } from '@/types/forms';
 import { SocialSecurityBenefitInput, SocialSecurityBenefitProjectionRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms';
+
+const PERSONAL_INFO: FormFieldGroup = {
+  id: 'personal',
+  label: 'Personal Information',
+};
+
+const SALARY_INFO: FormFieldGroup = {
+  id: 'salary',
+  label: 'Salary and Benefit Information',
+};
 
 export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitInput, { isAuthenticated: boolean }>[] = [
   {
@@ -10,6 +20,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     step: 1,
     helperText: 'Year to begin displaying data',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+    group: PERSONAL_INFO,
   },
   {
     name: 'birthYear',
@@ -18,6 +29,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     max: new Date().getFullYear(),
     step: 1,
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+    group: PERSONAL_INFO,
   },
   {
     name: 'claimingAge',
@@ -26,6 +38,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     max: 70,
     step: 1,
     helperText: 'You must be at least 62 to begin collecting benefits',
+    group: PERSONAL_INFO,
   },
   {
     name: 'averageIncome',
@@ -34,6 +47,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     min: 0,
     step: 1000,
     helperText: 'Estimated average yearly earnings used to calculate benefit',
+    group: SALARY_INFO,
   },
   {
     name: 'averageCOLA',
@@ -42,6 +56,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     max: 10,
     step: 0.1,
     helperText: 'Cost-of-Living Adjustment applied annually after claiming',
+    group: SALARY_INFO,
   },
   {
     name: 'yearsToProject',
@@ -51,6 +66,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     step: 1,
     helperText: 'Number of years to show benefit projections',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+    group: PERSONAL_INFO,
   },
 ];
 

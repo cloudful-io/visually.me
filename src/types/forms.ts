@@ -3,6 +3,12 @@ export type FormFieldOption = {
   label: string;
 };
 
+export type FormFieldGroup = {
+  id: string;
+  label: string;
+  description?: string;
+};
+
 export type FormFieldConfig<T, C = void> = {
   name: keyof T;
   label: string;
@@ -13,6 +19,7 @@ export type FormFieldConfig<T, C = void> = {
   helperText?: string;
   options?: FormFieldOption[]; // Only used if type === 'select'
   shouldDisplay?: (values: T, context: C extends void ? undefined : C) => boolean;
+  group?: FormFieldGroup;
 };
 
 export type ColumnDef<T> = {

@@ -5,9 +5,21 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
-type GenericFormValues = Record<string, number | string | Date | undefined>;
+export type BaseFormProps<T> = {
+  fields: FormFieldConfig<T, any>[];
+  values: T;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onDateChange?: (name: keyof T, value: Date | null) => void;
+  errors?: Partial<Record<keyof T, string>>;
+  dialog?: boolean;
+};
 
-type Props<T, C = void> = C extends void
+export type Props<T, C = void> =
+  C extends void
+    ? BaseFormProps<T>
+    : BaseFormProps<T> & { context: C };
+
+/*export type Props<T, C = void> = C extends void
   ? {
       fields: FormFieldConfig<T, C>[];
       values: T;
@@ -25,7 +37,7 @@ type Props<T, C = void> = C extends void
       errors?: Partial<Record<keyof T, string>>;
       dialog?: boolean;
     };
-
+*/
 
 export function FormFields<T, C = void>(props: Props<T, C>) {
   const { fields, values, onChange, onDateChange, errors, dialog = false } = props;
