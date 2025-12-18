@@ -49,7 +49,11 @@ export function useRetirementSavingsProjection(formValues: RetirementSavingsInpu
     return errors;
   }
 
-  return { rows, error, generateTable, generateTableWithOverrides, validateInput };
+  const reset = () => {
+    setRows([]);
+  }
+  
+  return { rows, error, reset, generateTable, generateTableWithOverrides, validateInput };
 }
 
 export function getSummaryMessage(

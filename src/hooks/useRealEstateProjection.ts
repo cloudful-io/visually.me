@@ -49,5 +49,9 @@ export function useRealEstateProjection(formValues: RealEstatePropertyInput) {
     return errors;
   }
 
-  return { rows, error, validateInput, generateTable, generateTableWithOverrides };
+  const reset = () => {
+    setRows([]);
+  }
+
+  return { rows, error, reset, validateInput, generateTable, generateTableWithOverrides };
 }

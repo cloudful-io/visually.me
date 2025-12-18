@@ -37,5 +37,10 @@ export function useMortgageAmortization(input: MortgageAmortizationInput) {
     return errors;
   }
 
-  return { rows, yearlyRows, error, generateTable, validateInput };
+  const reset = () => {
+    setRows([]);
+    setYearlyRows([]);
+  }
+
+  return { rows, yearlyRows, reset, error, generateTable, validateInput };
 }

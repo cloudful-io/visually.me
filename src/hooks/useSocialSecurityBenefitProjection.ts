@@ -49,5 +49,9 @@ export function useSocialSecurityBenefitProjection(formValues: SocialSecurityBen
     return errors;
   }
 
-  return { rows, error, generateTable, generateTableWithOverrides, validateInput };
+  const reset = () => {
+    setRows([]);
+  }
+  
+  return { rows, error, reset, generateTable, generateTableWithOverrides, validateInput };
 }

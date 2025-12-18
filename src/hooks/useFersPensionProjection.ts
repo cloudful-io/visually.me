@@ -49,5 +49,9 @@ export function useFersPensionProjection(formValues: FersPensionInput) {
     return errors;
   }
 
-  return { rows, error, validateInput, generateTable, generateTableWithOverrides };
+  const reset = () => {
+    setRows([]);
+  }
+
+  return { rows, error, reset, validateInput, generateTable, generateTableWithOverrides };
 }

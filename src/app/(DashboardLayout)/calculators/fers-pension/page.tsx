@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { FersPensionInput } from 'financial-calcs';
@@ -54,7 +55,8 @@ const FersPensionProjection = () => {
   );
 
   const isAuthenticated = false;
-
+  const router = useRouter();
+  const [advancedMode, setAdvancedMode] = useState(false);
   const {rows, error, generateTable } = useFersPensionProjection(formValues);
   const [showChart, setShowChart] = useState(true);
 
@@ -75,9 +77,33 @@ const FersPensionProjection = () => {
       title="Federal Employee Retirement System (FERS) Pension Projection" 
       description="A FERS pension calculator estimates your monthly annuity based on your years of service, high-3 average salary, and chosen retirement age under the Federal Employees Retirement System." 
       showTitle>
-      <Typography variant="body1" sx={{mb:3}}>
-        Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 3,
+        }}
+      >
+        <Typography variant="body1">
+          Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.
+        </Typography>
+        <FormControlLabel
+          control={
+            <Switch
+              aria-label="Switch to Scenario Mode"
+              checked={advancedMode}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  router.push("/calculators/fers-pension/scenarios");
+                }
+              }}
+            />
+          }
+          label="Scenario Mode"
+          sx={{ ml: 2, whiteSpace: "nowrap" }}
+        />
+      </Box>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <FormFields
           fields={fersPensionFieldConfigs}

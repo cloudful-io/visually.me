@@ -21,10 +21,9 @@ type Props<T extends Record<string, any>> = {
   height?: number;
   stacked?: boolean;
   yLabel?: string;
-
-  /** NEW (optional) */
   enableRangeFilter?: boolean;
   defaultRange?: YearRange;
+  disableMetricToggle?: boolean;
 };
 
 export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
@@ -38,6 +37,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
     yLabel,
     enableRangeFilter = false,
     defaultRange,
+    disableMetricToggle = false
   } = props;
 
   const theme = useTheme();
@@ -62,11 +62,11 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
     String(item[xKey] ?? '')
   );
 
-  const series = stacked
+  const series = stacked  || disableMetricToggle
     ? dataKeys.map((opt) => ({
         id: String(opt.key),
         label: opt.label,
-        stack: 'stack',
+        ...(stacked ? { stack: 'stack' } : {}),
         data: filteredData.map((row) =>
           typeof row[opt.key] === 'number'
             ? Math.round(row[opt.key])
@@ -126,7 +126,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
           )}
 
           {/* Metric selector */}
-          {!stacked && dataKeys.length > 1 && (
+          {!stacked && dataKeys.length > 1 && !disableMetricToggle && (
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <ToggleButtonGroup
               size="small"
@@ -167,7 +167,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
         series={series}
         height={height}
         colors={
-          stacked
+          stacked || disableMetricToggle
             ? undefined
             : [theme.palette.primary.light]
         }

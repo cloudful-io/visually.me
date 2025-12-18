@@ -32,7 +32,11 @@ export function useCollegeTuitionProjection(formValues: CollegeTuitionInput) {
     return errors;
   }
 
-  return { rows, error, generateTable, validateInput };
+  const reset = () => {
+    setRows([]);
+  }
+
+  return { rows, error, reset, generateTable, validateInput };
 }
 
 export function getSummaryMessage(
