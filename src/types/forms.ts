@@ -29,6 +29,7 @@ export type ColumnDef<T> = {
   currency?: boolean;
   editable?: boolean;
   hiddenOnMobile?: boolean;
+  isDifference?: boolean;
   min?: number;
   max?: number;
 };

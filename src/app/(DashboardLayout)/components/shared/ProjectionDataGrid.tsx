@@ -58,6 +58,38 @@ export function ProjectionDataGrid<T extends { year: number }>(
 
         return { ...params.props, error: hasError };
       },
+      renderCell: (params) => {
+        const value = params.value;
+
+        if (value == null) return "";
+
+        const isDiff = col.isDifference && typeof value === "number";
+
+        const color = isDiff
+          ? value > 0
+            ? theme.palette.success.main
+            : value < 0
+            ? theme.palette.error.main
+            : theme.palette.text.primary
+          : theme.palette.text.primary;
+
+        const displayValue = col.currency
+          ? currencyFormatter(value)
+          : value;
+
+        return (
+          <Box
+            component="span"
+            sx={{
+              color,
+              fontWeight: isDiff ? 600 : 400,
+            }}
+          >
+            {displayValue}
+          </Box>
+        );
+      },
+
 
     }));
 

@@ -124,6 +124,20 @@ export function getFersPensionProjectionColumns(editable: boolean = false): Colu
   ];
 }
 
+export function getFersPensionComparisonColumns(): ColumnDef<any>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "salary1", label: "Annual Salary (S1)", currency: true },
+    { key: "salary2", label: "Annual Salary (S2)", currency: true },
+    { key: "salaryDiff", label: "Difference in Salary", currency: true, isDifference: true },
+    { key: "pension1", label: "Annual Pension (S1)", currency: true },
+    { key: "pension2", label: "Annual Pension (S2)", currency: true },
+    { key: "pensionDiff", label: "Difference in Pension", currency: true, isDifference: true },
+  ];
+}
+
+
 export const fersPensionDataKeys: DataKeyOption<any>[] = [
   { key: "pension", label: "Annual Pension ($)" },
   { key: "salary", label: "Annual Salary ($)" },

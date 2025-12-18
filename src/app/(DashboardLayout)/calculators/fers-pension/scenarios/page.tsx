@@ -5,7 +5,7 @@ import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields
 import { ReadOnlyFields } from "@/app/(DashboardLayout)/components/shared/ReadOnlyFields";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { FersPensionInput } from 'financial-calcs';
-import { fersPensionFieldConfigs, getFersPensionProjectionColumns } from '@/configs/fersPension';
+import { fersPensionFieldConfigs, getFersPensionComparisonColumns } from '@/configs/fersPension';
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionDataGrid } from "../../../components/shared/ProjectionDataGrid";
 import PageContainer from "../../../components/container/PageContainer";
@@ -80,7 +80,27 @@ const FersPensionProjection = () => {
     scenario2: number;
   };
 
+  type ComparisonRow = {
+    year: number;
+    age?: number;
+
+    pension1: number;
+    pension2: number;
+    pensionDiff: number;
+
+    salary1: number;
+    salary2: number;
+    salaryDiff: number;
+  };
+
+  const comparisonRows = React.useMemo(() => {
+    if (!rows1.length || !rows2.length) return [];
+    return buildComparisonRows(rows1, rows2);
+  }, [rows1, rows2]);
+
+
   const [showScenario2, setShowScenario2] = useState(false);
+  const [comparisonMode, setComparisonMode] = useState(false);
   const [metric, setMetric] = useState<'Salary' | 'Pension'>('Salary');
   const chartDataKeys: DataKeyOption<CombinedRow>[] = [
     { key: 'scenario1', label: 'Scenario 1' },
@@ -88,6 +108,7 @@ const FersPensionProjection = () => {
   ];
 
   const handleCalculate = () => {
+    setComparisonMode(true);
     generateTable1();
     generateTable2();
 
@@ -98,6 +119,7 @@ const FersPensionProjection = () => {
 
   const handleReset = () => {
     setShowScenario2(false);
+    setComparisonMode(false);
     reset1();
     reset2();
   }
@@ -106,7 +128,6 @@ const FersPensionProjection = () => {
     setShowScenario2(true);
     setValues2({ ...formValues1 });
   };
-
 
   function buildCombinedChartData(
     rows1: { year: number; salary?: number; pension?: number }[],
@@ -137,6 +158,41 @@ const FersPensionProjection = () => {
         };
       });
   }
+
+  function buildComparisonRows(
+    rows1: any[],
+    rows2: any[]
+  ): ComparisonRow[] {
+    const byYear1 = new Map(rows1.map(r => [r.year, r]));
+    const byYear2 = new Map(rows2.map(r => [r.year, r]));
+
+    const allYears = Array.from(
+      new Set([...byYear1.keys(), ...byYear2.keys()])
+    ).sort((a, b) => a - b);
+
+    return allYears.map(year => {
+      const r1 = byYear1.get(year);
+      const r2 = byYear2.get(year);
+
+      const pension1 = r1?.pension ?? 0;
+      const pension2 = r2?.pension ?? 0;
+
+      const salary1 = r1?.salary ?? 0;
+      const salary2 = r2?.salary ?? 0;
+
+      return {
+        year,
+        age: r1?.age ?? r2?.age,
+        salary1,
+        salary2,
+        salaryDiff: salary2 - salary1,
+        pension1,
+        pension2,
+        pensionDiff: pension2 - pension1,
+      };
+    });
+  }
+
 
   return (
     <>
@@ -232,13 +288,21 @@ const FersPensionProjection = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={2} sx={{ mt: 2 }}>
-                    <FormFields
-                      fields={fersPensionFieldConfigs}
-                      values={formValues2}
-                      onChange={handleChange2}
-                      context={{ isAuthenticated }}
-                      errors={errors2}
-                    />
+                    { comparisonMode ? (
+                      <ReadOnlyFields
+                        fields={fersPensionFieldConfigs}
+                        values={formValues2}
+                        context={{ isAuthenticated }}
+                        />
+                    ) : (
+                      <FormFields
+                        fields={fersPensionFieldConfigs}
+                        values={formValues2}
+                        onChange={handleChange2}
+                        context={{ isAuthenticated }}
+                        errors={errors2}
+                      />
+                    )}
                   </Grid>
                 </AccordionDetails>
               </Accordion>
@@ -250,7 +314,7 @@ const FersPensionProjection = () => {
           variant="contained"
           startIcon={<CompareIcon />}
           onClick={handleCalculate}
-          disabled={!showScenario2 || (hasErrors1 || hasErrors2)}
+          disabled={!showScenario2 || comparisonMode || (hasErrors1 || hasErrors2)}
         >
           Compare Scenarios
         </Button>
@@ -263,7 +327,7 @@ const FersPensionProjection = () => {
           onClick={handleReset}
           disabled={rows1.length === 0 && rows2.length === 0}
         >
-          Reset Scenarios
+          Reset
         </Button>
 
         {(error1 || error2) && (
@@ -299,27 +363,20 @@ const FersPensionProjection = () => {
           </>
         )}
 
-        {rows1.length > 0 && (
+        {comparisonRows.length > 0 && (
           <>
-            <Typography variant="h6" sx={{ mt: 4 }}>Scenario 1 Table</Typography>
+            <Typography variant="h6" sx={{ my: 2 }}>
+              Scenario Comparison
+            </Typography>
+
             <ProjectionDataGrid
-              rows={rows1}
+              rows={comparisonRows}
               highlightYear={new Date().getFullYear()}
-              columns={getFersPensionProjectionColumns(false)}
+              columns={getFersPensionComparisonColumns()}
             />
           </>
         )}
 
-        {rows2.length > 0 && (
-          <>
-            <Typography variant="h6" sx={{ mt: 4 }}>Scenario 2 Table</Typography>
-            <ProjectionDataGrid
-              rows={rows2}
-              highlightYear={new Date().getFullYear()}
-              columns={getFersPensionProjectionColumns(false)}
-            />
-          </>
-        )}
 
         <Box sx={{ mt: 4 }}>
           <Assumptions
