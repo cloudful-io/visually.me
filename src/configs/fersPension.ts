@@ -44,7 +44,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     min: 1900,
     step: 1,
     helperText: 'Year you ended federal service under FERS',
-    shouldDisplay: (values) => (values.retirementType === "deferred"), // hide if retirement type is not deferred
+    shouldDisplay: (values) => (!!values && values.retirementType === "deferred"), // hide if retirement type is not deferred
   },
   {
     name: 'retirementAge',
@@ -62,7 +62,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     min: 0,
     step: 1000,
     helperText: 'Your current annual basic salary',
-    shouldDisplay: (values) => values.retirementType !== "deferred", // hide if retirement type is deferred
+    shouldDisplay: (values) => (!!values && values.retirementType !== "deferred"), // hide if retirement type is deferred
   },
   {
     name: 'salaryGrowthRate',
@@ -71,7 +71,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     max: 100,
     step: 0.1,
     helperText: 'Estimated annual increase in salary before retirement',
-    shouldDisplay: (values) => values.retirementType !== "deferred", // hide if retirement type is deferred
+    shouldDisplay: (values) => (!!values && values.retirementType !== "deferred"), // hide if retirement type is deferred
   },
   {
     name: 'high3Salary',
@@ -80,7 +80,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     min: 0,
     step: 1000,
     helperText: 'Average of the highest basic pay earned during any three consecutive years of service',
-    shouldDisplay: (values) => values.retirementType === "deferred", // hide if retirement type is deferred
+    shouldDisplay: (values) => (!!values && values.retirementType === "deferred"), // hide if retirement type is deferred
   },
   {
     name: 'colaPercent',

@@ -13,6 +13,7 @@ export function ReadOnlyFields<T, C = void>({
   context?: C;
 }) {
 
+  if (!values) return null;
   return (
     <Grid container spacing={2}>
       {fields
