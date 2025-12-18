@@ -217,6 +217,16 @@ export function ProjectionDataGrid<T extends { year: number }>(
             "& .MuiDataGrid-columnHeaders .editable-column-header": {
               borderTop: `4px solid ${theme.palette.info.main}`,
             },
+            "& .MuiDataGrid-columnHeaders": {
+              position: "sticky",
+              top: 0,
+              zIndex: 10,
+              backgroundColor: theme.palette.background.paper, 
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              maxHeight: "575px",     // roughly 10 rows of data
+              overflow: "auto",
+            },
 
           }}
           rows={rows}
