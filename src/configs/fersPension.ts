@@ -128,12 +128,12 @@ export function getFersPensionComparisonColumns(): ColumnDef<any>[] {
   return [
     { key: "year", label: "Year" },
     { key: "age", label: "Age" },
-    { key: "salary1", label: "Annual Salary (S1)", currency: true },
-    { key: "salary2", label: "Annual Salary (S2)", currency: true },
-    { key: "salaryDiff", label: "Difference in Salary", currency: true, isDifference: true },
-    { key: "pension1", label: "Annual Pension (S1)", currency: true },
-    { key: "pension2", label: "Annual Pension (S2)", currency: true },
-    { key: "pensionDiff", label: "Difference in Pension", currency: true, isDifference: true },
+    { key: "salary1", label: "Scenario 1 Salary ($)", currency: true },
+    { key: "salary2", label: "Scenario 2 Salary ($)", currency: true },
+    { key: "salaryDiff", label: "Salary Difference ($)", currency: true, isDifference: true },
+    { key: "pension1", label: "Scenario 1 Pension ($)", currency: true },
+    { key: "pension2", label: "Scenario 2 Pension ($)", currency: true },
+    { key: "pensionDiff", label: "Pension Difference ($)", currency: true, isDifference: true },
   ];
 }
 
