@@ -28,6 +28,7 @@ import {
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { FormControlLabel, Switch } from "@mui/material";
+import ScenarioModeToggle from "@/app/(DashboardLayout)/components/shared/ScenarioModeToggle";
 
 const FersPensionProjection = () => {
   const {
@@ -75,20 +76,9 @@ const FersPensionProjection = () => {
         <Typography variant="body1">
           {fersPensionConfig.calculatorDescription}
         </Typography>
-        <FormControlLabel
-          control={
-            <Switch
-              aria-label="Switch to Scenario Mode"
-              checked={advancedMode}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  router.push("/calculators/fers-pension/scenarios");
-                }
-              }}
-            />
-          }
-          label="Scenario Mode"
-          sx={{ ml: 2, whiteSpace: "nowrap" }}
+        <ScenarioModeToggle
+          calculatorRoute={fersPensionConfig.calculatorRoute}
+          scenarioRoute={fersPensionConfig.scenarioRoute!}
         />
       </Box>
       <Grid container spacing={2} sx={{ mb: 2 }}>

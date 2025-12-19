@@ -18,10 +18,44 @@ export const retirementSavingsConfig: CalculatorConfig<RetirementSavingsInput> =
   scenarioRoute: "/calculators/retirement-savings/scenarios",
   chartTitle: "Retirement Savings and Withdrawal Over Time",
   assumptions: [
-    "This calculator assumes that contribution increases at a fixed percentage rate over your lifetime. In reality, if you are contributing at the <a href='https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits' target='_blank' rel='noopener noreferrer'>maximum limit</a> allowed by the Internal Revenue Service (IRS), the growth rate varies year-over-year. For instance, there was no change between 2020 and 2021 at $19,500; while it increased from $20,500 to $22,500 between 2022 and 2023.",
-    "This calculator assumes that withdrawal is kept at a fixed percentage rate. In reality, the limiting factor is the <a href='https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds' target='_blank' rel='noopener noreferrer'>Required Minimum Distribution (RMD)</a>, which requires you to withdraw a minimum percentage of your balance, starting at age 73. The exception is if your retirement savings is a Roth 401k or Roth IRA account.",
-    "This calculator simplifies the calculation of annual yield by assuming that the annual contribution is added to your account at the <strong>end of each year</strong>. In reality, contribution is likely deducted from your monthly or bi-weekly paycheck that will benefit from the annual yield / growth of the current year.",
+    <>
+      This calculator assumes that contributions increase at a fixed percentage
+      rate over your lifetime. In practice, if you are contributing at the{" "}
+      <a
+        href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        IRS maximum limit
+      </a>
+      , the contribution limit itself may change year over year. For example,
+      there was no change between 2020 and 2021 ($19,500), while the limit increased
+      from $20,500 to $22,500 between 2022 and 2023.
+    </>,
+
+    <>
+      This calculator assumes withdrawals occur at a fixed percentage rate. In
+      reality, withdrawals may be constrained by{" "}
+      <a
+        href="https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Required Minimum Distributions (RMDs)
+      </a>
+      , which mandate a minimum withdrawal percentage starting at age 73. This
+      requirement does not apply to Roth 401(k) or Roth IRA accounts.
+    </>,
+
+    <>
+      This calculator simplifies annual investment growth by assuming that each
+      year’s contribution is added to your account at the{" "}
+      <strong>end of the year</strong>. In reality, contributions are typically
+      made throughout the year (for example, via monthly or bi-weekly paychecks),
+      which may benefit from market growth during the same year.
+    </>,
   ],
+
   initialFormValues: {
     startYear: new Date().getFullYear(),
     birthYear: 1970,

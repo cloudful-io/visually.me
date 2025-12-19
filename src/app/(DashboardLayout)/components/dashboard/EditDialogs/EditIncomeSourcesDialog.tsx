@@ -7,10 +7,10 @@ import EditRetirementSavings from "./EditRetirementSavings";
 import EditSocialSecurityBenefit from "./EditSocialSecurityBenefit";
 import EditFERSPension from "./EditFERSPension";
 import EditMilitaryPension from "./EditMilitaryPension";
-import { retirementSavingsFieldConfigs } from "@/configs/retirementSavings";
-import { socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefits";
-import { fersPensionFieldConfigs } from "@/configs/fersPension";
-import { militaryPensionFieldConfigs } from "@/configs/militaryPension";
+import { retirementSavingsConfig, retirementSavingsFieldConfigs } from "@/configs/retirementSavings";
+import { socialSecurityConfig, socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefits";
+import { fersPensionConfig, fersPensionFieldConfigs } from "@/configs/fersPension";
+import { militaryPensionConfig, militaryPensionFieldConfigs } from "@/configs/militaryPension";
 import { RetirementSavingsInput, SocialSecurityBenefitInput, FersPensionInput, MilitaryPensionInput } from "financial-calcs";
 import { IncomeSourcesInput } from "@/lib/incomeSources/schema";
 import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
@@ -116,28 +116,28 @@ export default function EditIncomeSourceDialog({
   }> = {
     "retirement-savings": { 
       title: "Retirement Savings",
-      description: "Project how long your retirement savings will last given your initial investment balance, annual contribution, estimated yield and withdraw rates.",
+      description: retirementSavingsConfig.calculatorDescription,
       initial: initialRetirementSavingsValues, 
       Component: EditRetirementSavings, 
       fieldConfigs: retirementSavingsFieldConfigs,
     },
     "social-security": { 
       title: "Social Security Benefits",
-      description: "Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).",
+      description: socialSecurityConfig.calculatorDescription,
       initial: initialSocialSecurityValues, 
       Component: EditSocialSecurityBenefit, 
       fieldConfigs: socialSecurityFieldConfigs,
     },
     "fers-pension": { 
       title: "Federal Employee Retirement System (FERS) Pension",
-      description: "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
+      description: fersPensionConfig.calculatorDescription,
       initial: initialFersPensionValues, 
       Component: EditFERSPension, 
       fieldConfigs: fersPensionFieldConfigs 
     },
     "military-pension": { 
       title: "Uniformed Service Pension",
-      description: "Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.",
+      description: militaryPensionConfig.calculatorDescription,
       initial: initialMilitaryPensionValues, 
       Component: EditMilitaryPension, 
       fieldConfigs: militaryPensionFieldConfigs 

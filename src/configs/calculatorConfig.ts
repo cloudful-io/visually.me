@@ -12,7 +12,7 @@ export type CalculatorConfig<FormValues = any> = {
   calculatorRoute: string;
   scenarioRoute?: string;
 
-  assumptions?: string[];
+  assumptions?: (string | React.ReactNode)[];
   initialFormValues?: FormValues;
 
   ui?: {

@@ -24,6 +24,7 @@ import CompareIcon from '@mui/icons-material/Compare';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { DataKeyOption } from "@/types/forms";
+import ScenarioModeToggle from "@/app/(DashboardLayout)/components/shared/ScenarioModeToggle";
 
 const FersPensionProjection = () => {
   const isAuthenticated = false;
@@ -187,20 +188,9 @@ const FersPensionProjection = () => {
             {fersPensionConfig.scenarioDescription}
           </Typography>
 
-          <FormControlLabel
-            control={
-              <Switch
-                aria-label="Switch to Calculator Mode"
-                checked={advancedMode}
-                onChange={(e) => {
-                  if (!e.target.checked) {
-                    router.push("/calculators/fers-pension");
-                  }
-                }}
-              />
-            }
-            label="Scenario Mode"
-            sx={{ ml: 2, whiteSpace: "nowrap" }}
+          <ScenarioModeToggle
+            calculatorRoute={fersPensionConfig.calculatorRoute}
+            scenarioRoute={fersPensionConfig.scenarioRoute!}
           />
         </Box>
 
