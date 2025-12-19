@@ -1,6 +1,36 @@
+import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig, FormFieldGroup } from '@/types/forms';
 import { SocialSecurityBenefitInput, SocialSecurityBenefitProjectionRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms';
+import { IconBuildingBank } from "@tabler/icons-react";
+
+export const socialSecurityConfig: CalculatorConfig<SocialSecurityBenefitInput> = {
+  id: "social-security",
+  icon: IconBuildingBank,
+  shortTitle: "Social Security Calculator",
+  calculatorTitle: "Social Security Benefit Projection",
+  calculatorDescription:
+    "Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).",
+  calculatorRoute: "/calculators/social-security",
+  scenarioTitle: "Social Security Benefit Scenario Comparison",
+  scenarioDescription:
+    "Build scenarios to compare your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA). ",
+  scenarioRoute: "/calculators/social-security/scenarios",
+  chartTitle: "Annual Social Security Benefit Over Time",
+  assumptions: [
+    "This calculator uses a simplified formula to estimate Social Security benefits. It assumes a linear relationship between income and the Primary Insurance Amount (PIA), and uses your claiming age to adjust the benefit according to Social Security Administration (SSA) rules.",
+    "The annual benefit increases each year after claiming based on your specified Cost-of-Living Adjustment (COLA), which averages around 2.6% historically but is not guaranteed.",
+    "This tool assumes you begin collecting benefits at a fixed age and continue receiving them annually for the number of years you specify. It does not account for taxes, spousal benefits, or income-related reductions.",
+  ],
+  initialFormValues: {
+    startYear: new Date().getFullYear(),
+    birthYear: 1970,
+    claimingAge: 67,
+    averageIncome: 100000,
+    averageCOLA: 2.5,
+    yearsToProject: 45,
+  },
+};
 
 const PERSONAL_INFO: FormFieldGroup = {
   id: 'personal',

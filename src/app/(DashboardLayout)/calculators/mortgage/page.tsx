@@ -16,7 +16,7 @@ import { Box, Grid, Button, FormControlLabel, Switch, Typography } from "@mui/ma
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MortgageAmortizationInput } from 'financial-calcs';
-import { mortgageAmortizationFieldConfigs, mortgageAmortizationDataKeys, YearlyBalanceRow, getMonthlyMortgageAmortizationProjectionColumns, getYearlyMortgageAmortizationProjectionColumns } from '@/configs/mortgageAmortization';
+import { mortgageAmortizationConfig, mortgageAmortizationFieldConfigs, mortgageAmortizationDataKeys, YearlyBalanceRow, getMonthlyMortgageAmortizationProjectionColumns, getYearlyMortgageAmortizationProjectionColumns } from '@/configs/mortgageAmortization';
 import NavigationIcon from "@mui/icons-material/Navigation";
 import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -32,13 +32,7 @@ const MortgageProjection = () => {
     setValues,
   } = usePersistedForm<MortgageAmortizationInput, { isAuthenticated: boolean }>(
     'mortgageForm',
-    {
-      loanAmount: 300000,
-      annualRate: 6,
-      termYears: 30,
-      extraPayment: 0,
-      startDate: new Date(),
-    },
+    mortgageAmortizationConfig.initialFormValues!,
     mortgageAmortizationFieldConfigs
   );
   
@@ -75,12 +69,12 @@ const MortgageProjection = () => {
     <>
     <div id="formSection"></div>
     <PageContainer 
-      title="Mortgage Amortization Calculator" 
-      description="A mortgage amortization calculator helps you estimate your monthly loan payments and see how each payment is divided between principal and interest over the life of the mortgage." 
+      title={mortgageAmortizationConfig.calculatorTitle}
+      description={mortgageAmortizationConfig.calculatorDescription}
       showTitle>
       <div id="formSection"></div>
       <Typography variant="body1" sx={{mb:3}}>
-        Determine how your loan payments are split between principal and interest over time, based on loan amount, interest rate, loan term, and whether extra monthly payments are made.
+        {mortgageAmortizationConfig.calculatorDescription}
       </Typography>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -149,7 +143,7 @@ const MortgageProjection = () => {
             data={chartData}
             dataKeys={mortgageAmortizationDataKeys}
             xKey="year"
-            title="Mortgage Amortization"
+            title={mortgageAmortizationConfig.chartTitle!}
           />
         </>
       )}
@@ -169,28 +163,13 @@ const MortgageProjection = () => {
         </>
       )}
 
-      <Box sx={{ mt: 4 }}>
-        <Assumptions
-          title="Assumptions"
-          items={[
-            <>
-              Mortgage has a fixed interest rate that never changes during the life of the loan.  
-            </>,
-            <>
-              Monthly principal and interest payments remain constant throughout the term.
-            </>,
-            <>
-              Amortization chart and table does not include property taxes, homeowners insurance, Homeowner Association (HOA) fees, or Private Mortgage Insurance (PMI) in the payment calculation.
-            </>,
-            <>
-              Any extra payments are applied directly to the loan principal without penalties or restrictions.
-            </>,
-            <>
-              Loan begins immediately and the first payment occurs one month after the start date.
-            </>,
-          ]}
-        />
-      </Box>
+      {mortgageAmortizationConfig.assumptions && (
+        <Box sx={{ mt: 4 }}>
+          <Assumptions items={mortgageAmortizationConfig.assumptions}
+          />
+        </Box>
+      )}
+
       {rows.length > 0 && !error && (
       <SectionSpeedDial
         icon={<NavigationIcon />}  

@@ -1,7 +1,39 @@
+import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig } from '@/types/forms';
 import { RetirementSavingsInput, RetirementSavingsProjectionRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms';
+import { IconCoin } from "@tabler/icons-react";
 
+export const retirementSavingsConfig: CalculatorConfig<RetirementSavingsInput> = {
+  id: "retirement-savings",
+  icon: IconCoin,
+  shortTitle: "Retirement Savings & Withdrawal Calculator",
+  calculatorTitle: "Retirement Savings and Withdrawal Projection",
+  calculatorDescription:
+    "Project how long your retirement savings will last given your initial investment balance, annual contribution, estimated yield and withdraw rates.",
+  calculatorRoute: "/calculators/retirement-savings",
+  scenarioTitle: "Retirement Savings and Withdrawal Scenario Comparison",
+  scenarioDescription:
+    "Build scenarios to compare your retirement savings based on your initial investment balance, annual contribution, estimated yield and withdraw rates.",
+  scenarioRoute: "/calculators/retirement-savings/scenarios",
+  chartTitle: "Retirement Savings and Withdrawal Over Time",
+  assumptions: [
+    "This calculator assumes that contribution increases at a fixed percentage rate over your lifetime. In reality, if you are contributing at the <a href='https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits' target='_blank' rel='noopener noreferrer'>maximum limit</a> allowed by the Internal Revenue Service (IRS), the growth rate varies year-over-year. For instance, there was no change between 2020 and 2021 at $19,500; while it increased from $20,500 to $22,500 between 2022 and 2023.",
+    "This calculator assumes that withdrawal is kept at a fixed percentage rate. In reality, the limiting factor is the <a href='https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-required-minimum-distributions-rmds' target='_blank' rel='noopener noreferrer'>Required Minimum Distribution (RMD)</a>, which requires you to withdraw a minimum percentage of your balance, starting at age 73. The exception is if your retirement savings is a Roth 401k or Roth IRA account.",
+    "This calculator simplifies the calculation of annual yield by assuming that the annual contribution is added to your account at the <strong>end of each year</strong>. In reality, contribution is likely deducted from your monthly or bi-weekly paycheck that will benefit from the annual yield / growth of the current year.",
+  ],
+  initialFormValues: {
+    startYear: new Date().getFullYear(),
+    birthYear: 1970,
+    initialBalance: 200000,
+    initialContribution: 23000,
+    estimatedYield: 6,
+    estimatedWithdrawRate: 5,
+    contributionIncreaseRate: 2,
+    withdrawStartAge: 60,
+    yearsToProject: 40,
+  },
+};
 
 export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInput, { isAuthenticated: boolean }>[] = [
   {

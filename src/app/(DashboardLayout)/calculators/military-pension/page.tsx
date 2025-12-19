@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { MilitaryPensionInput } from 'financial-calcs';
-import { militaryPensionFieldConfigs, getMilitaryPensionProjectionColumns } from '@/configs/militaryPension';
+import { militaryPensionConfig, militaryPensionFieldConfigs, getMilitaryPensionProjectionColumns, militaryPensionDataKeys } from '@/configs/militaryPension';
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import PageContainer from "../../components/container/PageContainer";
@@ -36,16 +36,7 @@ const MilitaryPensionProjection = () => {
     hasErrors,
   } = usePersistedForm<MilitaryPensionInput, { isAuthenticated: boolean }>(
     'militaryPensionForm',
-    {
-      startYear: new Date().getFullYear(),
-      birthYear: 1990,
-      serviceStartYear: 2010,
-      serviceEndYear: 2030,
-      high3Salary: 5000,
-      colaPercent: 2,
-      yearsToProject: 40,
-      retirementType: 'brs',
-    },
+    militaryPensionConfig.initialFormValues!,
     militaryPensionFieldConfigs
   );
 
@@ -68,11 +59,11 @@ const MilitaryPensionProjection = () => {
     <>
     <div id="formSection"></div>
     <PageContainer 
-      title="Uniformed Service (Military) Pension Projection" 
-      description="A uniformed service (military) pension calculator estimates your monthly annuity based on your years of service, high-36 average salary, and chosen retirement system (High-36 or Blended Retirement System)." 
+      title={militaryPensionConfig.calculatorTitle}
+      description={militaryPensionConfig.calculatorDescription}
       showTitle>
       <Typography variant="body1" sx={{mb:3}}>
-        Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.
+        {militaryPensionConfig.calculatorDescription}
       </Typography>
       <Grid container spacing={2} sx={{ mb: 2 }}>
         <FormFields
@@ -123,11 +114,9 @@ const MilitaryPensionProjection = () => {
           <div id="chartSection"></div>
           <MUIBarChart
             data={rows}
-            dataKeys={[
-              { key: "pension", label: "Annual Pension ($)" },
-            ]}
+            dataKeys={militaryPensionDataKeys}
             xKey="year" 
-            title="Pension Over Time"
+            title={militaryPensionConfig.chartTitle!}
           />
         </>
       )}
@@ -143,19 +132,13 @@ const MilitaryPensionProjection = () => {
         </>
       )}
 
-      <Box sx={{ mt: 4 }}>
-        <Assumptions
-          title="Assumptions"
-          items={[
-            <>
-              Calculator currently does not support REDUX or Disability retirement plan.
-            </>,
-            <>
-              Calculator currently only supports service members retiring from Activity Duty.
-            </>
-          ]}
-        />
-      </Box>
+      {militaryPensionConfig.assumptions && (
+        <Box sx={{ mt: 4 }}>
+          <Assumptions items={militaryPensionConfig.assumptions}
+          />
+        </Box>
+      )}
+
       {rows.length > 0 && !error && (
       <SectionSpeedDial
         icon={<NavigationIcon />}  

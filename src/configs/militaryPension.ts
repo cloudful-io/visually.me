@@ -1,6 +1,37 @@
+import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig } from '@/types/forms';
 import { MilitaryPensionInput, MilitaryPensionProjectionRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms';
+import { IconMilitaryRank } from "@tabler/icons-react";
+
+export const militaryPensionConfig: CalculatorConfig<MilitaryPensionInput> = {
+  id: "military-pension",
+  icon: IconMilitaryRank,
+  shortTitle: "Uniformed Service Pension Calculator",
+  calculatorTitle: "Uniformed Service (Military) Pension Projection",
+  calculatorDescription:
+    "Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.",
+  calculatorRoute: "/calculators/military-pension",
+  scenarioTitle: "Uniformed Service Pension Scenario Comparison",
+  scenarioDescription:
+    "Build scenarios to compare your Uniformed Service (Military) pension based on retirement syste, years of service, and high-36 salary.",
+  scenarioRoute: "/calculators/military-pension/scenarios",
+  chartTitle: "Pension Over Time",
+  assumptions: [
+    "Calculator currently does not support REDUX or Disability retirement plan.",
+    "Calculator currently only supports service members retiring from Active Duty.",
+  ],
+  initialFormValues: {
+    startYear: new Date().getFullYear(),
+    birthYear: 1990,
+    serviceStartYear: 2010,
+    serviceEndYear: 2030,
+    high3Salary: 5000,
+    colaPercent: 2,
+    yearsToProject: 40,
+    retirementType: 'brs',
+  },
+};
 
 export const militaryPensionFieldConfigs: FormFieldConfig<MilitaryPensionInput, { isAuthenticated: boolean }>[] = [
   {

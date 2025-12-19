@@ -1,8 +1,41 @@
+import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig } from '@/types/forms';
 import { CollegeTuitionInput, CollegeTuitionProjectionRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms';
+import { IconSchool } from "@tabler/icons-react";
 
-
+export const collegeTuitionConfig: CalculatorConfig<CollegeTuitionInput> = {
+  id: "college-tuition",
+  icon: IconSchool,
+  shortTitle: "College Tuition Calculator",
+  calculatorTitle: "College Savings and Tuition Projection",
+  calculatorDescription:
+    "Estimate how much you need to save to cover future tuition costs, based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.",
+  calculatorRoute: "/calculators/college-tuition",
+  scenarioTitle: "College Savings and Tuition Scenario Comparison",
+  scenarioDescription:
+    "Build scenarios to compare your college tuition and savings based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.",
+  scenarioRoute: "/calculators/college-tuition/scenarios",
+  chartTitle: "College Savings and Tuition Over Time",
+  assumptions: [
+    "This calculator assumes that contribution is made annually, and it simplies the calculation of annual yield by assume that the annual contribution is added to your account at the beginning of each year.  In reality, contribution may be added incrementally throughout a year.",
+    "This calculator assumes that contribution automatically stops at the end of the last year of college.",
+    "This calculator assumes that the balance will never go negative, meaning that the withdraw amount for tuition will never be larger than the available balance.",
+  ],
+  initialFormValues: {
+    startYear: new Date().getFullYear(),
+    birthYear: 1990,
+    childBirthYear: 2010,
+    childCollegeFirstYear: 2028,
+    childCollegeLastYear: 2031,
+    initialBalance: 20000,
+    annualContribution: 10000,
+    estimatedYield: 5,
+    estimatedFirstYearTuition: 50000,
+    estimatedInflationRate: 3,
+    yearsToProject: 20,
+  },
+};
 export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { isAuthenticated: boolean }>[] = [
   {
     name: 'startYear',

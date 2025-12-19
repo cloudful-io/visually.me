@@ -14,11 +14,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheveronRightIcon from "@mui/icons-material/ChevronRight";
 
 type AssumptionsProps = {
-  title: string;
+  title?: string;
   items: (string | React.ReactNode)[];
 };
 
-const Assumptions = ({ title, items }: AssumptionsProps) => (
+const Assumptions = ({ title = "Assumptions", items }: AssumptionsProps) => (
   <Accordion>
     <AccordionSummary
       expandIcon={<ExpandMoreIcon />}

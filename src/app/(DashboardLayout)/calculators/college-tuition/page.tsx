@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields';
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { collegeTuitionFieldConfigs, getCollegeTuitionProjectionColumns, collegeTuitionDataKeys } from '@/configs/collegeTuition';
+import { collegeTuitionConfig, collegeTuitionFieldConfigs, getCollegeTuitionProjectionColumns, collegeTuitionDataKeys } from '@/configs/collegeTuition';
 import { CollegeTuitionInput } from 'financial-calcs';
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
@@ -36,19 +36,7 @@ const CollegeTuitionProjection = () => {
     hasErrors,
   } = usePersistedForm<CollegeTuitionInput, { isAuthenticated: boolean }>(
     'collegeTuitionForm',
-    {
-      startYear: new Date().getFullYear(),
-      birthYear: 1970,
-      childBirthYear: 2010,
-      childCollegeFirstYear: 2028,
-      childCollegeLastYear: 2031,
-      initialBalance: 20000,
-      annualContribution: 10000,
-      estimatedYield: 5,
-      estimatedFirstYearTuition: 50000,
-      estimatedInflationRate: 3,
-      yearsToProject: 20,
-    },
+    collegeTuitionConfig.initialFormValues!,
     collegeTuitionFieldConfigs
   );
 
@@ -71,11 +59,11 @@ const CollegeTuitionProjection = () => {
     <>
      <div id="formSection"></div>  
     <PageContainer 
-      title="College Savings and Tuition Projection" 
-      description="A college savings and tuition calculator helps you estimate how much you’ll need to save and how your contributions, growth rate, and time horizon affect your ability to cover future education costs." 
+      title={collegeTuitionConfig.calculatorTitle} 
+      description={collegeTuitionConfig.calculatorDescription}
       showTitle>
       <Typography variant="body1" sx={{mb:3}}>
-        Estimate how much you need to save to cover future tuition costs, based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.
+        {collegeTuitionConfig.calculatorDescription}
       </Typography>
       
       <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -131,7 +119,7 @@ const CollegeTuitionProjection = () => {
           data={rows} 
           dataKeys={collegeTuitionDataKeys}
           xKey="year" 
-          title="College Savings and Tuition Over Time" />
+          title={collegeTuitionConfig.chartTitle!} />
         </>
       )}
       {rows.length > 0 && !error && (
@@ -144,22 +132,14 @@ const CollegeTuitionProjection = () => {
         />
         </>
       )}
-      <Box sx={{ mt: 4 }}>
-        <Assumptions
-          title="Assumptions"
-          items={[
-            <>
-              This calculator assumes that contribution is made annually, and it simplies the calculation of annual yield by assume that the annual contribution is added to your account at the <strong>beginning of each year</strong>.  In reality, contribution may be added incrementally throughout a year.
-            </>,
-            <>
-              This calculator assumes that contribution automatically stops at the end of the last year of college.
-            </>,
-            <>
-              This calculator assumes that the balance will never go negative, meaning that the withdraw amount for tuition will never be larger than the available balance.  
-            </>,
-          ]}
-        />
-      </Box>
+      
+      {collegeTuitionConfig.assumptions && (
+        <Box sx={{ mt: 4 }}>
+          <Assumptions items={collegeTuitionConfig.assumptions}
+          />
+        </Box>
+      )}
+
       {rows.length > 0 && !error && (
         <SectionSpeedDial
           icon={<NavigationIcon />}  

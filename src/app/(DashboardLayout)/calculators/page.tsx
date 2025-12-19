@@ -3,58 +3,56 @@ import { Grid, Box, Card, CardContent, CardActions, Typography, Button } from "@
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from "next/navigation";
 import PageContainer from "../components/container/PageContainer";
-import {
-  IconHome,
-  IconUser,
-  IconBuildingBank,
-  IconSchool,
-  IconCoin,
-  IconMilitaryRank
-} from "@tabler/icons-react";
+import { collegeTuitionConfig } from "@/configs/collegeTuition";
+import { fersPensionConfig } from "@/configs/fersPension";
+import { militaryPensionConfig } from "@/configs/militaryPension";
+import { mortgageAmortizationConfig } from "@/configs/mortgageAmortization";
+import { retirementSavingsConfig } from "@/configs/retirementSavings";
+import { socialSecurityConfig } from "@/configs/socialSecurityBenefits";
 
 // Define calculator metadata here
 const calculators = [
   {
-    id: "college-tuition",
-    title: "College Tuition Calculator",
-    description: "Estimate how much you need to save to cover future tuition costs, based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.",
-    route: "/calculators/college-tuition",
-    icon: IconSchool,
+    id: collegeTuitionConfig.id,
+    title: collegeTuitionConfig.shortTitle,
+    description: collegeTuitionConfig.calculatorDescription,
+    route: collegeTuitionConfig.calculatorRoute,
+    icon: collegeTuitionConfig.icon,
   },
   {
-    id: "fers-pension",
-    title: "FERS Pension Calculator",
-    description: "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
-    route: "/calculators/fers-pension",
-    icon: IconUser,
+    id: fersPensionConfig.id,
+    title: fersPensionConfig.shortTitle,
+    description: fersPensionConfig.calculatorDescription,
+    route: fersPensionConfig.calculatorRoute,
+    icon: fersPensionConfig.icon,
   },
   {
-    id: "mortgage-amortization",
-    title: "Mortgage Amortization Calculator",
-    description: "Determine how your loan payments are split between principal and interest over time, based on loan amount, interest rate, loan term, and whether extra monthly payments are made.",
-    route: "/calculators/mortgage",
-    icon: IconHome,
+    id: mortgageAmortizationConfig.id,
+    title: mortgageAmortizationConfig.shortTitle,
+    description: mortgageAmortizationConfig.calculatorDescription,
+    route: mortgageAmortizationConfig.calculatorRoute,
+    icon: mortgageAmortizationConfig.icon,
   },
   {
-    id: "retirement-savings",
-    title: "Retirement Savings & Withdrawal Calculator",
-    description: "Project how long your retirement savings will last given your initial investment balance, annual contribution, estimated yield and withdraw rates.",
-    route: "/calculators/retirement-savings",
-    icon: IconCoin,
+    id: retirementSavingsConfig.id,
+    title: retirementSavingsConfig.shortTitle,
+    description: retirementSavingsConfig.calculatorDescription,
+    route: retirementSavingsConfig.calculatorRoute,
+    icon: retirementSavingsConfig.icon,
   },
   {
-    id: "social-security",
-    title: "Social Security Calculator",
-    description: "Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).",
-    route: "/calculators/social-security",
-    icon: IconBuildingBank,
+    id: socialSecurityConfig.id,
+    title: socialSecurityConfig.shortTitle,
+    description: socialSecurityConfig.calculatorDescription,
+    route: socialSecurityConfig.calculatorRoute,
+    icon: socialSecurityConfig.icon,
   },
   {
-    id: "military-pension",
-    title: "Uniformed Service Pension Calculator",
-    description: "Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.",
-    route: "/calculators/military-pension",
-    icon: IconMilitaryRank,
+    id: militaryPensionConfig.id,
+    title: militaryPensionConfig.shortTitle,
+    description: militaryPensionConfig.calculatorDescription,
+    route: militaryPensionConfig.calculatorRoute,
+    icon: militaryPensionConfig.icon,
   },
 ];
 
@@ -76,7 +74,11 @@ export default function CalculatorsPage() {
                 <CardContent sx={{ flexGrow: 1 }}>
                   {/* Icon */}
                   <Box sx={{ mb: 2 }}>
-                    <IconComponent color={theme.palette.secondary.main} size={48} stroke={1.5} />
+                    <IconComponent
+                      color={theme.palette.secondary.main}
+                      size={48}
+                      stroke={1.5}
+                    />   
                   </Box>
                   <Typography variant="h6" gutterBottom>
                     {calc.title}

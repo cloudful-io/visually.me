@@ -1,6 +1,37 @@
+import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig } from '@/types/forms';
 import { MortgageAmortizationInput, AmortizationRow, YearlyAmortizationRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms'; 
+import { IconHome } from "@tabler/icons-react";
+
+export const mortgageAmortizationConfig: CalculatorConfig<MortgageAmortizationInput> = {
+  id: "mortgage-amortization",
+  icon: IconHome,
+  shortTitle: "Mortgage Amortization Calculator",
+  calculatorTitle: "Mortgage Amortization Calculator",
+  calculatorDescription:
+    "Determine how your loan payments are split between principal and interest over time, based on loan amount, interest rate, loan term, and whether extra monthly payments are made.",
+  calculatorRoute: "/calculators/mortgage",
+  scenarioTitle: "Mortgage Amortization Scenario Comparison",
+  scenarioDescription:
+    "Build scenarios to compare your mortgage amortization based on loan amount, interest rate, loan term, and whether extra monthly payments are made.",
+  scenarioRoute: "/calculators/mortgage/scenarios",
+  chartTitle: "Mortgage Amortization",
+  assumptions: [
+    "Mortgage has a fixed interest rate that never changes during the life of the loan.",
+    "Monthly principal and interest payments remain constant throughout the term.",
+    "Amortization chart and table does not include property taxes, homeowners insurance, Homeowner Association (HOA) fees, or Private Mortgage Insurance (PMI) in the payment calculation.",
+    "Any extra payments are applied directly to the loan principal without penalties or restrictions.",
+    "Loan begins immediately and the first payment occurs one month after the start date.",
+  ],
+  initialFormValues: {
+    loanAmount: 300000,
+    annualRate: 6,
+    termYears: 30,
+    extraPayment: 0,
+    startDate: new Date(),
+  },
+};
 
 export type YearlyBalanceRow = {
   year: number;     // X-axis

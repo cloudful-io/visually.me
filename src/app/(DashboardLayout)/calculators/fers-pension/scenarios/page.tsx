@@ -5,12 +5,11 @@ import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields
 import { ReadOnlyFields } from "@/app/(DashboardLayout)/components/shared/ReadOnlyFields";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { FersPensionInput } from 'financial-calcs';
-import { fersPensionFieldConfigs, getFersPensionComparisonColumns } from '@/configs/fersPension';
+import { fersPensionConfig, fersPensionFieldConfigs, getFersPensionComparisonColumns } from '@/configs/fersPension';
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionDataGrid } from "../../../components/shared/ProjectionDataGrid";
 import PageContainer from "../../../components/container/PageContainer";
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
-import { exportToCSV } from '@/utils/exportToCSV';
 import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
 import { CalculatorStatsService } from "@/services/calculator-stats-service";
@@ -32,40 +31,14 @@ const FersPensionProjection = () => {
   const { values: formValues1, setValues: setValues1, handleChange: handleChange1, errors: errors1, hasErrors: hasErrors1 } =
     usePersistedForm<FersPensionInput, { isAuthenticated: boolean }>(
       'fersPensionForm1',
-      {
-        startYear: new Date().getFullYear(),
-        birthYear: 1970,
-        serviceStartYear: 1990,
-        serviceEndYear: 2010,
-        retirementAge: 62,
-        currentSalary: 85000,
-        salaryGrowthRate: 3,
-        high3Salary: 100000,
-        colaPercent: 2,
-        pensionMultiplier: 1.1,
-        yearsToProject: 40,
-        retirementType: 'regular',
-      },
+      fersPensionConfig.initialFormValues!,
       fersPensionFieldConfigs
     );
 
   const { values: formValues2, setValues: setValues2, handleChange: handleChange2, errors: errors2, hasErrors: hasErrors2 } =
     usePersistedForm<FersPensionInput, { isAuthenticated: boolean }>(
       'fersPensionForm2',
-      {
-        startYear: new Date().getFullYear(),
-        birthYear: 1970,
-        serviceStartYear: 1990,
-        serviceEndYear: 2010,
-        retirementAge: 62,
-        currentSalary: 85000,
-        salaryGrowthRate: 3,
-        high3Salary: 100000,
-        colaPercent: 2,
-        pensionMultiplier: 1.1,
-        yearsToProject: 40,
-        retirementType: 'regular',
-      },
+      fersPensionConfig.initialFormValues!,
       fersPensionFieldConfigs
     );
 
@@ -198,8 +171,8 @@ const FersPensionProjection = () => {
     <>
       <div id="formSection"></div>
       <PageContainer
-        title="Federal Employee Retirement System (FERS) Pension Scenario Comparison"
-        description="A FERS pension calculator estimates your monthly annuity based on your years of service, high-3 average salary, and chosen retirement age under the Federal Employees Retirement System."
+        title={fersPensionConfig.scenarioTitle}
+        description={fersPensionConfig.scenarioDescription}
         showTitle
       >
         <Box
@@ -211,7 +184,7 @@ const FersPensionProjection = () => {
           }}
         >
           <Typography variant="body1">
-            Build scenarios to compare your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.
+            {fersPensionConfig.scenarioDescription}
           </Typography>
 
           <FormControlLabel
@@ -377,18 +350,12 @@ const FersPensionProjection = () => {
           </>
         )}
 
-
+        {fersPensionConfig.assumptions && (
         <Box sx={{ mt: 4 }}>
-          <Assumptions
-            title="Assumptions"
-            items={[
-              <>Salary grows annually by a fixed percentage until retirement. The average of your highest 3 years of salary before retirement is used to calculate your pension.</>,
-              <>Pension multiplier is typically 1% or 1.1% based on your age and service years.</>,
-              <>Cost-of-Living Adjustments (COLA) start applying after age 62, increasing your pension annually by the estimated COLA percentage.</>,
-              <>This calculator assumes a simplified model for illustrative purposes. Actual FERS pension calculations may include additional factors like retirement type and survivor benefits.</>,
-            ]}
+          <Assumptions items={fersPensionConfig.assumptions}
           />
         </Box>
+        )}
 
         {(rows1.length > 0 || rows2.length > 0) && (
           <SectionSpeedDial

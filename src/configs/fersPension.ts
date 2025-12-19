@@ -1,6 +1,43 @@
+import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig } from '@/types/forms';
 import { FersPensionInput, FersPensionProjectionRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms';
+import { IconUser } from "@tabler/icons-react";
+
+export const fersPensionConfig: CalculatorConfig<FersPensionInput> = {
+  id: "fers-pension",
+  icon: IconUser,
+  shortTitle: "FERS Pension Calculator",
+  calculatorTitle: "Federal Employee Retirement System (FERS) Pension Projection",
+  calculatorDescription:
+    "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
+  calculatorRoute: "/calculators/fers-pension",
+  scenarioTitle: "Federal Employee Retirement System (FERS) Pension Scenario Comparison",
+  scenarioDescription:
+    "Build scenarios to compare your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
+  scenarioRoute: "/calculators/fers-pension/scenarios",
+  chartTitle: "Income and Pension Over Time",
+  assumptions: [
+    "Salary grows annually by a fixed percentage until retirement. The average of your highest 3 years of salary before retirement is used to calculate your pension.",
+    "Pension multiplier is typically 1% or 1.1% based on your age and service years.",
+    "Cost-of-Living Adjustments (COLA) start applying after age 62, increasing your pension annually by the estimated COLA percentage.",
+    "This calculator assumes a simplified model for illustrative purposes. Actual FERS pension calculations may include additional factors like retirement type and survivor benefits.",
+  ],
+  initialFormValues: {
+    startYear: new Date().getFullYear(),
+    birthYear: 1970,
+    serviceStartYear: 1990,
+    serviceEndYear: 2010,
+    retirementAge: 62,
+    currentSalary: 85000,
+    salaryGrowthRate: 3,
+    high3Salary: 100000,
+    colaPercent: 2,
+    pensionMultiplier: 1.1,
+    yearsToProject: 40,
+    retirementType: 'regular',
+  },
+};
 
 export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuthenticated: boolean }>[] = [
   {

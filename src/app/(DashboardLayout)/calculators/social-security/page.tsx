@@ -11,7 +11,7 @@ import { ProjectionDataGrid } from '../../components/shared/ProjectionDataGrid';
 import PageContainer from '../../components/container/PageContainer';
 import Assumptions from '@/app/(DashboardLayout)/components/shared/Assumptions';
 import { exportToCSV } from '@/utils/exportToCSV';
-import { socialSecurityFieldConfigs, getSocialSecurityProjectionColumns } from '@/configs/socialSecurityBenefits';
+import { socialSecurityConfig, socialSecurityFieldConfigs, getSocialSecurityProjectionColumns, socialSecurityDataKeys } from '@/configs/socialSecurityBenefits';
 import { SocialSecurityBenefitInput } from 'financial-calcs';
 import { useSocialSecurityBenefitProjection } from '@/hooks/useSocialSecurityBenefitProjection';
 import { usePersistedForm } from '@/hooks/usePersistedForm';
@@ -30,14 +30,7 @@ const SocialSecurityProjection = () => {
     hasErrors,
   } = usePersistedForm<SocialSecurityBenefitInput, { isAuthenticated: boolean }>(
     'socialSecurityForm',
-    {
-      startYear: new Date().getFullYear(),
-      birthYear: 1970,
-      claimingAge: 67,
-      averageIncome: 100000,
-      averageCOLA: 2.5,
-      yearsToProject: 45,
-    },
+    socialSecurityConfig.initialFormValues!,
     socialSecurityFieldConfigs
   );
   
@@ -60,12 +53,12 @@ const SocialSecurityProjection = () => {
     <>
     <div id="formSection"></div>
     <PageContainer 
-      title="Social Security Benefit Projection" 
-      description="A Social Security calculator estimates your future monthly benefits based on your earnings history, retirement age, and eligibility under the Social Security program." 
+      title={socialSecurityConfig.calculatorTitle}
+      description={socialSecurityConfig.calculatorDescription}
       showTitle>
       <div id="formSection"></div>
       <Typography variant="body1" sx={{mb:3}}>
-        Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).
+        {socialSecurityConfig.calculatorDescription}
       </Typography>
 
       <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -117,11 +110,9 @@ const SocialSecurityProjection = () => {
           <div id="chartSection"></div>
           <MUIBarChart
             data={rows}
-            dataKeys={[
-              { key: "annualBenefit", label: "Annual Social Security Benefit ($)" },
-            ]}
+            dataKeys={socialSecurityDataKeys}
             xKey="year"
-            title="Annual Social Security Benefit Over Time"
+            title={socialSecurityConfig.chartTitle!}
           />
         </>
       )}
@@ -137,22 +128,13 @@ const SocialSecurityProjection = () => {
         </>
       )}
 
-      <Box sx={{ mt: 4 }}>
-        <Assumptions
-          title="Assumptions"
-          items={[
-            <>
-              This calculator uses a simplified formula to estimate Social Security benefits. It assumes a linear relationship between income and the Primary Insurance Amount (PIA), and uses your claiming age to adjust the benefit according to Social Security Administration (SSA) rules.
-            </>,
-            <>
-              The annual benefit increases each year after claiming based on your specified Cost-of-Living Adjustment (COLA), which averages around 2.6% historically but is not guaranteed.
-            </>,
-            <>
-              This tool assumes you begin collecting benefits at a fixed age and continue receiving them annually for the number of years you specify. It does not account for taxes, spousal benefits, or income-related reductions.
-            </>,
-          ]}
-        />
-      </Box>
+      {socialSecurityConfig.assumptions && (
+        <Box sx={{ mt: 4 }}>
+          <Assumptions items={socialSecurityConfig.assumptions}
+          />
+        </Box>
+      )}
+      
       {rows.length > 0 && !error && (
       <SectionSpeedDial
         icon={<NavigationIcon />}  
