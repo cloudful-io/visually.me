@@ -16,7 +16,7 @@ import { Box, Grid, Button, FormControlLabel, Switch, Typography } from "@mui/ma
 import TableViewIcon from "@mui/icons-material/TableView";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { MortgageAmortizationInput } from 'financial-calcs';
-import { mortgageAmortizationConfig, mortgageAmortizationFieldConfigs, mortgageAmortizationDataKeys, YearlyBalanceRow, getMonthlyMortgageAmortizationProjectionColumns, getYearlyMortgageAmortizationProjectionColumns } from '@/configs/mortgageAmortization';
+import { mortgageAmortizationConfig, mortgageAmortizationFieldConfigs, mortgageAmortizationDataKeys, YearlyBalanceRow, getMortgageAmortizationProjectionColumns } from '@/configs/mortgageAmortization';
 import NavigationIcon from "@mui/icons-material/Navigation";
 import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -154,11 +154,7 @@ const MortgageProjection = () => {
         <ProjectionDataGrid
           rows={tableRows}
           highlightYear={new Date().getFullYear()}
-          columns={
-            displayBy === 'year'
-              ? getYearlyMortgageAmortizationProjectionColumns(false)
-              : getMonthlyMortgageAmortizationProjectionColumns(false)
-          }
+          columns={getMortgageAmortizationProjectionColumns(false, displayBy === 'year')}
           />
         </>
       )}

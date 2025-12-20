@@ -14,10 +14,4 @@ export type CalculatorConfig<FormValues = any> = {
 
   assumptions?: (string | React.ReactNode)[];
   initialFormValues?: FormValues;
-
-  ui?: {
-    showScenarioComparison?: boolean;
-    showTimeline?: boolean;
-    showCharts?: boolean;
-  };
 };

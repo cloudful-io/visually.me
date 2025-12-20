@@ -7,7 +7,7 @@ import { IconSchool } from "@tabler/icons-react";
 export const collegeTuitionConfig: CalculatorConfig<CollegeTuitionInput> = {
   id: "college-tuition",
   icon: IconSchool,
-  shortTitle: "College Tuition Calculator",
+  shortTitle: "College Savings & Tuition",
   calculatorTitle: "College Savings and Tuition Projection",
   calculatorDescription:
     "Estimate how much you need to save to cover future tuition costs, based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.",

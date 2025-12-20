@@ -1,15 +1,18 @@
 import {
   IconHome,
-  IconHomeDollar,
   IconLayoutDashboard,
-  IconUser,
   IconCash,
-  IconBuildingBank,
-  IconSchool,
-  IconCoin,
-  IconMilitaryRank
 } from "@tabler/icons-react";
 import { uniqueId } from "lodash";
+import { calculatorRegistry } from "@/lib/calculators/registry";
+
+const calculatorMenuItems = Object.values(calculatorRegistry).map((entry) => ({
+  id: uniqueId(),
+  title: entry.config.shortTitle,
+  icon: entry.config.icon,
+  href: entry.config.calculatorRoute,
+  authRequired: false,
+}));
 
 const Menuitems = [
   {
@@ -43,48 +46,7 @@ const Menuitems = [
     subheader: "CALCULATORS",
     authRequired: false,
   },
-  {
-    id: uniqueId(),
-    title: "College Tuition",
-    icon: IconSchool,
-    href: "/calculators/college-tuition",
-    authRequired: false,
-  },
-  {
-    id: uniqueId(),
-    title: "FERS Pension",
-    icon: IconUser,
-    href: "/calculators/fers-pension",
-    authRequired: false,
-  },
-  {
-    id: uniqueId(),
-    title: "Mortgage Amortization",
-    icon: IconHomeDollar,
-    href: "/calculators/mortgage",
-    authRequired: false,
-  },
-  {
-    id: uniqueId(),
-    title: "Retirement Savings",
-    icon: IconCoin,
-    href: "/calculators/retirement-savings",
-    authRequired: false,
-  },
-  {
-    id: uniqueId(),
-    title: "Social Security Benefits",
-    icon: IconBuildingBank,
-    href: "/calculators/social-security",
-    authRequired: false,
-  },
-  {
-    id: uniqueId(),
-    title: "Uniformed Service Pension",
-    icon: IconMilitaryRank,
-    href: "/calculators/military-pension",
-    authRequired: false,
-  },
+  ...calculatorMenuItems,
 ];
 
 export default Menuitems;

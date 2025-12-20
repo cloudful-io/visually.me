@@ -7,7 +7,7 @@ import { IconCoin } from "@tabler/icons-react";
 export const retirementSavingsConfig: CalculatorConfig<RetirementSavingsInput> = {
   id: "retirement-savings",
   icon: IconCoin,
-  shortTitle: "Retirement Savings & Withdrawal Calculator",
+  shortTitle: "Retirement Savings & Withdrawal",
   calculatorTitle: "Retirement Savings and Withdrawal Projection",
   calculatorDescription:
     "Project how long your retirement savings will last given your initial investment balance, annual contribution, estimated yield and withdraw rates.",

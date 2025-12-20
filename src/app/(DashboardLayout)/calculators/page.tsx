@@ -3,58 +3,15 @@ import { Grid, Box, Card, CardContent, CardActions, Typography, Button } from "@
 import { useTheme } from '@mui/material/styles';
 import { useRouter } from "next/navigation";
 import PageContainer from "../components/container/PageContainer";
-import { collegeTuitionConfig } from "@/configs/collegeTuition";
-import { fersPensionConfig } from "@/configs/fersPension";
-import { militaryPensionConfig } from "@/configs/militaryPension";
-import { mortgageAmortizationConfig } from "@/configs/mortgageAmortization";
-import { retirementSavingsConfig } from "@/configs/retirementSavings";
-import { socialSecurityConfig } from "@/configs/socialSecurityBenefits";
+import { calculatorRegistry } from "@/lib/calculators/registry";
 
-// Define calculator metadata here
-const calculators = [
-  {
-    id: collegeTuitionConfig.id,
-    title: collegeTuitionConfig.shortTitle,
-    description: collegeTuitionConfig.calculatorDescription,
-    route: collegeTuitionConfig.calculatorRoute,
-    icon: collegeTuitionConfig.icon,
-  },
-  {
-    id: fersPensionConfig.id,
-    title: fersPensionConfig.shortTitle,
-    description: fersPensionConfig.calculatorDescription,
-    route: fersPensionConfig.calculatorRoute,
-    icon: fersPensionConfig.icon,
-  },
-  {
-    id: mortgageAmortizationConfig.id,
-    title: mortgageAmortizationConfig.shortTitle,
-    description: mortgageAmortizationConfig.calculatorDescription,
-    route: mortgageAmortizationConfig.calculatorRoute,
-    icon: mortgageAmortizationConfig.icon,
-  },
-  {
-    id: retirementSavingsConfig.id,
-    title: retirementSavingsConfig.shortTitle,
-    description: retirementSavingsConfig.calculatorDescription,
-    route: retirementSavingsConfig.calculatorRoute,
-    icon: retirementSavingsConfig.icon,
-  },
-  {
-    id: socialSecurityConfig.id,
-    title: socialSecurityConfig.shortTitle,
-    description: socialSecurityConfig.calculatorDescription,
-    route: socialSecurityConfig.calculatorRoute,
-    icon: socialSecurityConfig.icon,
-  },
-  {
-    id: militaryPensionConfig.id,
-    title: militaryPensionConfig.shortTitle,
-    description: militaryPensionConfig.calculatorDescription,
-    route: militaryPensionConfig.calculatorRoute,
-    icon: militaryPensionConfig.icon,
-  },
-];
+const calculators = Object.values(calculatorRegistry).map((entry) => ({
+  id: entry.config.id,
+  title: entry.config.shortTitle,
+  description: entry.config.calculatorDescription,
+  route: entry.config.calculatorRoute,
+  icon: entry.config.icon,
+}));
 
 export default function CalculatorsPage() {
   const router = useRouter();

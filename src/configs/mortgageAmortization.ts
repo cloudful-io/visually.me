@@ -7,15 +7,15 @@ import { IconHome } from "@tabler/icons-react";
 export const mortgageAmortizationConfig: CalculatorConfig<MortgageAmortizationInput> = {
   id: "mortgage-amortization",
   icon: IconHome,
-  shortTitle: "Mortgage Amortization Calculator",
+  shortTitle: "Mortgage Amortization",
   calculatorTitle: "Mortgage Amortization Calculator",
   calculatorDescription:
     "Determine how your loan payments are split between principal and interest over time, based on loan amount, interest rate, loan term, and whether extra monthly payments are made.",
-  calculatorRoute: "/calculators/mortgage",
+  calculatorRoute: "/calculators/mortgage-amortization",
   scenarioTitle: "Mortgage Amortization Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your mortgage amortization based on loan amount, interest rate, loan term, and whether extra monthly payments are made.",
-  scenarioRoute: "/calculators/mortgage/scenarios",
+  scenarioRoute: "/calculators/mortgage-amortization/scenarios",
   chartTitle: "Mortgage Amortization",
   assumptions: [
     "Mortgage has a fixed interest rate that never changes during the life of the loan.",
@@ -79,20 +79,9 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
   },
 ];
 
-export function getYearlyMortgageAmortizationProjectionColumns(editable: boolean = false): ColumnDef<YearlyAmortizationRow>[] {
+export function getMortgageAmortizationProjectionColumns(editable: boolean = false, isYearly: boolean = false): ColumnDef<AmortizationRow>[] {
   return [
-    { key: 'year', label: 'Year' },
-    { key: 'date', label: 'Date' },
-    { key: 'payment', label: 'Payment ($)', currency: true },
-    { key: 'principal', label: 'Principal ($)', currency: true },
-    { key: 'interest', label: 'Interest ($)', currency: true },
-    { key: 'balance', label: 'Remaining Balance ($)', currency: true },
-  ];
-}
-
-export function getMonthlyMortgageAmortizationProjectionColumns(editable: boolean = false): ColumnDef<AmortizationRow>[] {
-  return [
-    { key: 'month', label: 'Month' },
+    isYearly ? { key: 'year', label: 'Year' } : { key: 'month', label: 'Month' },
     { key: 'date', label: 'Date' },
     { key: 'payment', label: 'Payment ($)', currency: true },
     { key: 'principal', label: 'Principal ($)', currency: true },

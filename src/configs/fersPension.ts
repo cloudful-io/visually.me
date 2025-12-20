@@ -7,7 +7,7 @@ import { IconUser } from "@tabler/icons-react";
 export const fersPensionConfig: CalculatorConfig<FersPensionInput> = {
   id: "fers-pension",
   icon: IconUser,
-  shortTitle: "FERS Pension Calculator",
+  shortTitle: "FERS Pension",
   calculatorTitle: "Federal Employee Retirement System (FERS) Pension Projection",
   calculatorDescription:
     "Calculate your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",

@@ -7,7 +7,7 @@ import { IconBuildingBank } from "@tabler/icons-react";
 export const socialSecurityConfig: CalculatorConfig<SocialSecurityBenefitInput> = {
   id: "social-security",
   icon: IconBuildingBank,
-  shortTitle: "Social Security Calculator",
+  shortTitle: "Social Security Benefit",
   calculatorTitle: "Social Security Benefit Projection",
   calculatorDescription:
     "Estimate your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA).",
