@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { Grid, Box, Button, Typography } from '@mui/material';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Grid, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
 import { IncomeAtAge } from '../components/dashboard/IncomeAtAge';
@@ -9,23 +9,33 @@ import { IncomeBreakdown } from '../components/dashboard/IncomeBreakdown';
 import { InvestmentBreakdown } from '../components/dashboard/InvestmentBreakdown';
 import DashboardCard from '../components/shared/DashboardCard';
 import { MUILineChart } from '../components/shared/MUILineChart';
+import { MUIBarChart } from '../components/shared/MUIBarChart';
 import UserAttributes from '../components/dashboard/UserAttributes';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
 import { useIncomeSources } from '@/lib/incomeSources/useIncomeSources';
 import { useRealEstate } from '@/lib/realEstate/useRealEstate';
-import {FinancialTimeline} from '../components/dashboard/FinancialTimeline';
-import { sources } from 'next/dist/compiled/webpack/webpack';
+import { FinancialTimeline } from '../components/dashboard/FinancialTimeline';
+import { buildCashFlowTable, CashFlowSourceRow } from '@/lib/dashboard/util';
 
 const Dashboard = () => {
 
-  const { computedSources, loading, getCombinedProjection, getCombinedChartRows, save, remove, refresh } = useIncomeSources();
-  const { computedProperties } = useRealEstate();
+  const { computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources();
+  const { computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
 
   const combined = getCombinedProjection() ?? [];
-  const chartRows = getCombinedChartRows;
+  const incomeChartRows = getCombinedIncomeChartRows;
+  const propertiesChartRows = getCombinedPrpoertiesChartRows;
   const [selectedAge, setSelectedAge] = useState(60);
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
+
+  const netCashFlow = useMemo(() => 
+    buildCashFlowTable([
+      incomeChartRows as CashFlowSourceRow[],
+      propertiesChartRows as CashFlowSourceRow[],
+    ]),
+    [incomeChartRows, propertiesChartRows]
+  );
 
   useEffect(() => {
     if (attrs?.targetRetirementAge != null) {
@@ -102,25 +112,23 @@ const Dashboard = () => {
                 </Grid>
               </Grid>
               <Grid size={12}>
-                <DashboardCard title="Income and Investment Over Time">
-                <MUILineChart
-                  title=""
-                  data={chartRows}
-                  xKey="age"
-                  dataKeys={[
-                    { key: 'annualIncome', label: 'Annual Income' },
-                    { key: 'annualInvestmentBalance', label: 'Investment Balance' },
-                  ]}
-                  enableRangeFilter
-                />
+                <DashboardCard 
+                  title="Overall Income and Expense Over Time" 
+                  subtitle="Shows total income from all sources and real estate expenses over time, with net cash flow for each year.">
+                  <MUILineChart
+                    title=""
+                    data={netCashFlow}
+                    xKey="age"
+                    dataKeys={[
+                      { key: 'netCashFlow', label: 'Net Cash Flow' },
+                    ]}
+                    enableRangeFilter
+                  />
                 </DashboardCard>
               </Grid>
               
             </Grid>
-          </Grid>
-          
-          {/* User Attributes/Income Sources Column (4) - to align the 8+4=12 layout */}
-          
+          </Grid>          
         </Grid>
       </Box>
     </PageContainer>

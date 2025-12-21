@@ -24,24 +24,23 @@ export default function RealEstateSummaryPage() {
   const [mode, setMode] = useState<ChartMode>("net");
 
   const tableRows = getCombinedProjection();
+  const chartRows = getCombinedChartRows;
 
-  const incomeChartRows = useMemo(
-    () =>
-      tableRows.map((row) => ({
-        year: row.year,
-        annualIncome: row.annualIncome,
-        annualExpense: (-1*row.annualExpense),
-      })),
-    [tableRows]
+  const incomeChartRows = useMemo(() =>
+    chartRows.map((row) => ({
+      year: row.year,
+      annualIncome: row.annualIncome,
+      annualExpense: (-1*row.annualExpense),
+    })),
+    [chartRows]
   );
 
-  const netCashFlowChartRows = useMemo(
-    () =>
-      tableRows.map((row) => ({
-        year: row.year,
-        netCashFlow: row.annualIncome - row.annualExpense,
-      })),
-    [tableRows]
+  const netCashFlowChartRows = useMemo(() =>
+    chartRows.map((row) => ({
+      year: row.year,
+      netCashFlow: row.annualIncome - row.annualExpense,
+    })),
+    [chartRows]
   );
 
   if (loading || !computedProperties) {
@@ -52,7 +51,6 @@ export default function RealEstateSummaryPage() {
     );
   }
 
-  console.log(projectionTables);
   return (
     <>
       <div id="formSection"></div>
