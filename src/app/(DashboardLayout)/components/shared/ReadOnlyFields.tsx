@@ -30,6 +30,11 @@ export function ReadOnlyFields<T, C = void>({
             displayValue = String(rawValue);
           }
 
+          else if (field.type === "date") {
+            const date = new Date(String(rawValue));
+            displayValue = date.toLocaleDateString("en-US"); 
+          }
+
           else if (field.type === "select" && field.options) {
             const match = field.options.find(opt => opt.value === rawValue);
             displayValue = match ? match.label : String(rawValue ?? "");
