@@ -233,7 +233,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
             },
             "& .MuiDataGrid-columnHeader": {
               height: "unset !important",
-              maxHeight: "112px !important"
+              maxHeight: "168px !important"
             },
           }}
           rows={rows}

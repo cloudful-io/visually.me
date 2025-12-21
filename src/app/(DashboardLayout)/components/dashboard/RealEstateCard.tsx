@@ -125,20 +125,7 @@ export function RealEstateCard({ property, projectionTable, onEdit, onDelete }: 
             </Box>
           )}
             <Box mt={1}>
-              <Stack direction="row" spacing={2} alignItems="center">
-                {/* Net Cash Flow */}
-                <Box flex={1} textAlign="center">
-                  <Typography variant="caption" color="text.secondary">
-                    Monthly Cash Flow
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    fontWeight={600}
-                    color={monthlyNetCashFlow >= 0 ? "success.main" : "error.main"}
-                  >
-                    {currencyFormatter(monthlyNetCashFlow)}
-                  </Typography>
-                </Box>
+              <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center">
                 {/* Income */}
                 <Box flex={1} textAlign="center">
                   <Typography variant="caption" color="text.secondary">
@@ -149,6 +136,11 @@ export function RealEstateCard({ property, projectionTable, onEdit, onDelete }: 
                   </Typography>
                 </Box>
 
+                {/* Minus */}
+                <Typography variant="body2" color="text.secondary">
+                  −
+                </Typography>
+
                 {/* Expenses */}
                 <Box flex={1} textAlign="center">
                   <Typography variant="caption" color="text.secondary">
@@ -158,7 +150,27 @@ export function RealEstateCard({ property, projectionTable, onEdit, onDelete }: 
                     {currencyFormatter(monthlyExpense)}
                   </Typography>
                 </Box>
+
+                {/* Equals */}
+                <Typography variant="body2" color="text.secondary">
+                  =
+                </Typography>
+
+                {/* Net Cash Flow */}
+                <Box flex={1} textAlign="center">
+                  <Typography variant="caption" color="text.secondary">
+                    Cash Flow (Month)
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    color={monthlyNetCashFlow >= 0 ? "success.main" : "error.main"}
+                  >
+                    {currencyFormatter(monthlyNetCashFlow)}
+                  </Typography>
+                </Box>
               </Stack>
+
             </Box>
 
             <Box>
