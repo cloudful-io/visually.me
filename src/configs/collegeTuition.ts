@@ -15,7 +15,7 @@ export const collegeTuitionConfig: CalculatorConfig<CollegeTuitionInput> = {
   scenarioTitle: "College Savings and Tuition Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your college tuition and savings based on initial balance of savings, years of college education, annual contributions, estimated yield and inflation rates, and cost of college education.",
-  scenarioRoute: "/calculators/college-tuition/scenarios",
+  scenarioRoute: "/calculators/college-tuition/scenario",
   chartTitle: "College Savings and Tuition Over Time",
   assumptions: [
     "This calculator assumes that contribution is made annually, and it simplies the calculation of annual yield by assume that the annual contribution is added to your account at the beginning of each year.  In reality, contribution may be added incrementally throughout a year.",
@@ -40,6 +40,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'startYear',
     label: 'Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying college savings and tuition',
@@ -48,6 +49,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'birthYear',
     label: 'Birth Year',
+    type: "number",
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
@@ -56,18 +58,21 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'childBirthYear',
     label: "Child's Birth Year",
+    type: "number",
     min: 1900,
     step: 1,
   },  
   {
     name: 'childCollegeFirstYear',
     label: "Child's First Year of College",
+    type: "number",
     min: 2000,
     step: 1,
   },  
   {
     name: 'childCollegeLastYear',
     label: "Child's Last Year of College",
+    type: "number",
     min: 2000,
     step: 1,
   },  
@@ -90,6 +95,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'estimatedYield',
     label: 'Estimated Annual Yield (%)',
+    type: "number",
     min: 0,
     max: 100,
     step: 0.1,
@@ -106,6 +112,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'estimatedInflationRate',
     label: 'Estimated Inflation Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     step: 0.1,
@@ -114,6 +121,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
   {
     name: 'yearsToProject',
     label: 'Years to Project',
+    type: "number",
     min: 1,
     max: 40,
     step: 1,
@@ -136,7 +144,20 @@ export function getCollegeTuitionProjectionColumns(editable: boolean = false): C
   ];
 }
 
+export function getCollegeTuitionScenarioColumns(): ColumnDef<any>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "endingBalance1", label: "Scenario 1 Balance ($)", currency: true },
+    { key: "endingBalance2", label: "Scenario 2 Balance ($)", currency: true },
+    { key: "endingBalanceDiff", label: "Balance Difference ($)", currency: true, isDifference: true },
+    { key: "annualWithdraw1", label: "Scenario 1 Tuition Withdrawal ($)", currency: true },
+    { key: "annualWithdraw2", label: "Scenario 2 Tuition Withdrawal ($)", currency: true },
+    { key: "annualWithdrawDiff", label: "Tuition Withdrawal Difference ($)", currency: true, isDifference: true },
+  ];
+}
+
 export const collegeTuitionDataKeys: DataKeyOption<any>[] = [
   { key: "endingBalance", label: "End of Year Balance ($)" },
-  { key: "annualWithdraw", label: "Tuition Withdraw ($)" },
+  { key: "annualWithdraw", label: "Tuition Withdrawal ($)" },
 ] satisfies DataKeyOption<CollegeTuitionProjectionRow>[];

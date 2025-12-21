@@ -2,36 +2,42 @@ import {
   collegeTuitionConfig,
   collegeTuitionFieldConfigs,
   getCollegeTuitionProjectionColumns,
+  getCollegeTuitionScenarioColumns,
   collegeTuitionDataKeys,
 } from "@/configs/collegeTuition"
 import {
   fersPensionConfig,
   fersPensionFieldConfigs,
   getFersPensionProjectionColumns,
+  getFersPensionScenarioColumns,
   fersPensionDataKeys,
 } from "@/configs/fersPension"
 import {
   militaryPensionConfig,
   militaryPensionFieldConfigs,
   getMilitaryPensionProjectionColumns,
+  getMilitaryPensionScenarioColumns,
   militaryPensionDataKeys,
 } from "@/configs/militaryPension"
 import {
   mortgageAmortizationConfig,
   mortgageAmortizationFieldConfigs,
-  mortgageAmortizationDataKeys,
   getMortgageAmortizationProjectionColumns,
+  getMortgageAmortizationScenarioColumns,
+  mortgageAmortizationDataKeys,
 } from "@/configs/mortgageAmortization"
 import {
   retirementSavingsConfig,
   retirementSavingsFieldConfigs,
   getRetirementSavingsProjectionColumns,
+  getRetirementSavingsScenarioColumns,
   retirementSavingsDataKeys,
 } from "@/configs/retirementSavings"
 import {
   socialSecurityConfig,
   socialSecurityFieldConfigs,
   getSocialSecurityProjectionColumns,
+  getSocialSecurityScenarioColumns,
   socialSecurityDataKeys,
 } from "@/configs/socialSecurityBenefits"
 
@@ -43,6 +49,7 @@ import { getSummaryMessage as getRetirementSavingsSummaryMessage, useRetirementS
 import { useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
 import { CalculatorConfig } from "@/configs/calculatorConfig"
 import { DataKeyOption } from "@/types/forms"
+import { FormFieldConfig } from "@/types/forms"
 
 export type ProjectionResult<Row = any> = {
   rows: Row[];
@@ -54,11 +61,12 @@ export type YearlyProjectionResult<Row = any> = ProjectionResult<Row> & {
   yearlyRows: Row[];
 };
 
-export interface CalculatorEntry<FormValues = any, Row = any> {
+export interface CalculatorEntry<FormValues = any, Row = any, Context = any> {
   config: CalculatorConfig<FormValues>;
-  fieldConfigs: any; 
+  fieldConfigs: FormFieldConfig<FormValues, Context>[];
   useProjection: (values: FormValues) => ProjectionResult<Row> | YearlyProjectionResult<Row>;
   getColumns: (editable?: boolean, isYearly?: boolean) => any;
+  getScenarioColumns?: () => any;
   getSummary?: (rows: Row[], error?: string[] | null) => any;
   dataKeys: DataKeyOption<any>[];
 }
@@ -69,6 +77,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     fieldConfigs: collegeTuitionFieldConfigs,
     useProjection: useCollegeTuitionProjection,
     getColumns: getCollegeTuitionProjectionColumns,
+    getScenarioColumns: getCollegeTuitionScenarioColumns,
     getSummary: getCollegeTuitionSummaryMessage,
     dataKeys: collegeTuitionDataKeys,
   },
@@ -77,6 +86,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     fieldConfigs: fersPensionFieldConfigs,
     useProjection: useFersPensionProjection,
     getColumns: getFersPensionProjectionColumns,
+    getScenarioColumns: getFersPensionScenarioColumns,
     dataKeys: fersPensionDataKeys,
   },
   "military-pension": {
@@ -84,6 +94,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     fieldConfigs: militaryPensionFieldConfigs,
     useProjection: useMilitaryPensionProjection,
     getColumns: getMilitaryPensionProjectionColumns,
+    getScenarioColumns: getMilitaryPensionScenarioColumns,
     dataKeys: militaryPensionDataKeys,
   },
   "mortgage-amortization": {
@@ -91,6 +102,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     fieldConfigs: mortgageAmortizationFieldConfigs,
     useProjection: useMortgageAmortization,
     getColumns: getMortgageAmortizationProjectionColumns,
+    getScenarioColumns: getMortgageAmortizationScenarioColumns,
     dataKeys: mortgageAmortizationDataKeys,
   },
   "retirement-savings": {
@@ -98,6 +110,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     fieldConfigs: retirementSavingsFieldConfigs,
     useProjection: useRetirementSavingsProjection,
     getColumns: getRetirementSavingsProjectionColumns,
+    getScenarioColumns: getRetirementSavingsScenarioColumns,
     getSummary: getRetirementSavingsSummaryMessage,
     dataKeys: retirementSavingsDataKeys,
   },
@@ -106,6 +119,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     fieldConfigs: socialSecurityFieldConfigs,
     useProjection: useSocialSecurityBenefitProjection,
     getColumns: getSocialSecurityProjectionColumns,
+    getScenarioColumns: getSocialSecurityScenarioColumns,
     dataKeys: socialSecurityDataKeys,
   },
 };

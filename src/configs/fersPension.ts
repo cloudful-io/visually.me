@@ -15,7 +15,7 @@ export const fersPensionConfig: CalculatorConfig<FersPensionInput> = {
   scenarioTitle: "Federal Employee Retirement System (FERS) Pension Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your Federal Employee Retirement System (FERS) pension based on type of retirement, years of service, high-3 salary, and retirement age.",
-  scenarioRoute: "/calculators/fers-pension/scenarios",
+  scenarioRoute: "/calculators/fers-pension/scenario",
   chartTitle: "Income and Pension Over Time",
   assumptions: [
     "Salary grows annually by a fixed percentage until retirement. The average of your highest 3 years of salary before retirement is used to calculate your pension.",
@@ -43,6 +43,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'startYear',
     label: 'Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying pension and final salary',
@@ -51,6 +52,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'birthYear',
     label: 'Birth Year',
+    type: "number",
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
@@ -71,6 +73,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'serviceStartYear',
     label: 'Service Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year you began federal service under FERS',
@@ -78,6 +81,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'serviceEndYear',
     label: 'Service End Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year you ended federal service under FERS',
@@ -86,6 +90,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'retirementAge',
     label: 'Retirement Age',
+    type: "number",
     min: 40,
     max: 80,
     step: 1,
@@ -104,6 +109,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'salaryGrowthRate',
     label: 'Salary Growth Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     step: 0.1,
@@ -122,6 +128,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'colaPercent',
     label: 'COLA Estimate (%)',
+    type: "number",
     min: 0,
     max: 10,
     step: 0.1,
@@ -141,6 +148,7 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
   {
     name: 'yearsToProject',
     label: 'Years to Project',
+    type: "number",
     min: 1,
     max: 80,
     step: 1,
@@ -161,7 +169,7 @@ export function getFersPensionProjectionColumns(editable: boolean = false): Colu
   ];
 }
 
-export function getFersPensionComparisonColumns(): ColumnDef<any>[] {
+export function getFersPensionScenarioColumns(): ColumnDef<any>[] {
   return [
     { key: "year", label: "Year" },
     { key: "age", label: "Age" },

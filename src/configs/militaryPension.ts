@@ -15,7 +15,7 @@ export const militaryPensionConfig: CalculatorConfig<MilitaryPensionInput> = {
   scenarioTitle: "Uniformed Service Pension Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your Uniformed Service (Military) pension based on retirement syste, years of service, and high-36 salary.",
-  scenarioRoute: "/calculators/military-pension/scenarios",
+  scenarioRoute: "/calculators/military-pension/scenario",
   chartTitle: "Pension Over Time",
   assumptions: [
     "Calculator currently does not support REDUX or Disability retirement plan.",
@@ -37,6 +37,7 @@ export const militaryPensionFieldConfigs: FormFieldConfig<MilitaryPensionInput, 
   {
     name: 'startYear',
     label: 'Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying projection data',
@@ -45,6 +46,7 @@ export const militaryPensionFieldConfigs: FormFieldConfig<MilitaryPensionInput, 
   {
     name: 'birthYear',
     label: 'Birth Year',
+    type: "number",
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
@@ -63,6 +65,7 @@ export const militaryPensionFieldConfigs: FormFieldConfig<MilitaryPensionInput, 
   {
     name: 'serviceStartYear',
     label: 'Service Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year you began military service',
@@ -70,6 +73,7 @@ export const militaryPensionFieldConfigs: FormFieldConfig<MilitaryPensionInput, 
   {
     name: 'serviceEndYear',
     label: 'Service End Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year you ended military service',
@@ -85,6 +89,7 @@ export const militaryPensionFieldConfigs: FormFieldConfig<MilitaryPensionInput, 
   {
     name: 'colaPercent',
     label: 'COLA Estimate (%)',
+    type: "number",
     min: 0,
     max: 10,
     step: 0.1,
@@ -93,6 +98,7 @@ export const militaryPensionFieldConfigs: FormFieldConfig<MilitaryPensionInput, 
   {
     name: 'yearsToProject',
     label: 'Years to Project',
+    type: "number",
     min: 1,
     max: 80,
     step: 1,
@@ -108,6 +114,16 @@ export function getMilitaryPensionProjectionColumns(editable: boolean = false): 
     { key: "colaApplied", label: "COLA Applied (%)", editable, min: 0, max: 100 },
     { key: "pension", label: "Annual Pension ($)", currency: true },
     { key: "monthlyPension", label: "Monthly Pension ($)", currency: true, hiddenOnMobile: true },
+  ];
+}
+
+export function getMilitaryPensionScenarioColumns(): ColumnDef<any>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "pension1", label: "Scenario 1 Pension ($)", currency: true },
+    { key: "pension2", label: "Scenario 2 Pension ($)", currency: true },
+    { key: "pensionDiff", label: "Pension Difference ($)", currency: true, isDifference: true },
   ];
 }
 

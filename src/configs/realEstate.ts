@@ -6,6 +6,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'startYear',
     label: 'Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying real estate income and expense',
@@ -14,6 +15,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'birthYear',
     label: 'Birth Year',
+    type: "number",
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
@@ -40,6 +42,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'mortgageEndYear',
     label: 'Last Year of Mortgage',
+    type: "number",
     min: 2000,
     step: 1,
     helperText: 'Year you will pay off your mortgage',
@@ -55,6 +58,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'propertyTaxIncreaseRate',
     label: 'Property Increase Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     step: 0.5,
@@ -71,6 +75,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'insuranceIncreaseRate',
     label: 'Insurance Increase Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     step: 0.5,
@@ -87,6 +92,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'hoaFeeIncreaseRate',
     label: 'Homeowner Association (HOA) Fee Increase Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     helperText: 'Estimated annual increase in homeowner association (HOA) fee',
@@ -102,6 +108,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'rentalIncomeIncreaseRate',
     label: 'Rental Income Increase Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     helperText: 'Estimated annual increase in rental income',
@@ -109,6 +116,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   {
     name: 'yearsToProject',
     label: 'Years to Project',
+    type: "number",
     min: 1,
     max: 80,
     step: 1,

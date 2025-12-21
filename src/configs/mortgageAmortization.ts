@@ -15,7 +15,7 @@ export const mortgageAmortizationConfig: CalculatorConfig<MortgageAmortizationIn
   scenarioTitle: "Mortgage Amortization Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your mortgage amortization based on loan amount, interest rate, loan term, and whether extra monthly payments are made.",
-  scenarioRoute: "/calculators/mortgage-amortization/scenarios",
+  scenarioRoute: "/calculators/mortgage-amortization/scenario",
   chartTitle: "Mortgage Amortization",
   assumptions: [
     "Mortgage has a fixed interest rate that never changes during the life of the loan.",
@@ -50,6 +50,7 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
   {
     name: 'annualRate',
     label: 'Annual Interest Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     step: 0.1,
@@ -58,6 +59,7 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
   {
     name: 'termYears',
     label: 'Loan Term (Years)',
+    type: "number",
     min: 0,
     max: 50,
     step: 1,
@@ -87,6 +89,15 @@ export function getMortgageAmortizationProjectionColumns(editable: boolean = fal
     { key: 'principal', label: 'Principal ($)', currency: true },
     { key: 'interest', label: 'Interest ($)', currency: true },
     { key: 'balance', label: 'Remaining Balance ($)', currency: true },
+  ];
+}
+
+export function getMortgageAmortizationScenarioColumns(): ColumnDef<any>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "balance1", label: "Scenario 1 Balance ($)", currency: true },
+    { key: "balance2", label: "Scenario 2 Balance ($)", currency: true },
+    { key: "balanceDiff", label: "Balance Difference ($)", currency: true, isDifference: true },
   ];
 }
 

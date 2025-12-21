@@ -5,7 +5,7 @@ import { FormFields } from '@/app/(DashboardLayout)/components/shared/FormFields
 import { ReadOnlyFields } from "@/app/(DashboardLayout)/components/shared/ReadOnlyFields";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { FersPensionInput } from 'financial-calcs';
-import { fersPensionConfig, fersPensionFieldConfigs, getFersPensionComparisonColumns } from '@/configs/fersPension';
+import { fersPensionConfig, fersPensionFieldConfigs, getFersPensionScenarioColumns } from '@/configs/fersPension';
 import { MUIBarChart } from '@/app/(DashboardLayout)/components/shared/MUIBarChart';
 import { ProjectionDataGrid } from "../../../components/shared/ProjectionDataGrid";
 import PageContainer from "../../../components/container/PageContainer";
@@ -133,6 +133,7 @@ const FersPensionProjection = () => {
       });
   }
 
+
   function buildComparisonRows(
     rows1: any[],
     rows2: any[]
@@ -167,6 +168,7 @@ const FersPensionProjection = () => {
     });
   }
 
+  console.log(buildCombinedChartData(rows1, rows2, metric));
 
   return (
     <>
@@ -335,7 +337,7 @@ const FersPensionProjection = () => {
             <ProjectionDataGrid
               rows={comparisonRows}
               highlightYear={new Date().getFullYear()}
-              columns={getFersPensionComparisonColumns()}
+              columns={getFersPensionScenarioColumns()}
             />
           </>
         )}

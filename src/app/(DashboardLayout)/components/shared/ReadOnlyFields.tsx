@@ -26,7 +26,10 @@ export function ReadOnlyFields<T, C = void>({
           if (field.type === "currency") {
             displayValue = currencyFormatter(rawValue as number);
           }
-          
+          else if (field.type === "number") {
+            displayValue = String(rawValue);
+          }
+
           else if (field.type === "select" && field.options) {
             const match = field.options.find(opt => opt.value === rawValue);
             displayValue = match ? match.label : String(rawValue ?? "");

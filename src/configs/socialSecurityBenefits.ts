@@ -15,7 +15,7 @@ export const socialSecurityConfig: CalculatorConfig<SocialSecurityBenefitInput> 
   scenarioTitle: "Social Security Benefit Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your Social Security monthly benefits based on earnings, retirement age, and Cost-of-Living Adjustment (COLA). ",
-  scenarioRoute: "/calculators/social-security/scenarios",
+  scenarioRoute: "/calculators/social-security/scenario",
   chartTitle: "Annual Social Security Benefit Over Time",
   assumptions: [
     "This calculator uses a simplified formula to estimate Social Security benefits. It assumes a linear relationship between income and the Primary Insurance Amount (PIA), and uses your claiming age to adjust the benefit according to Social Security Administration (SSA) rules.",
@@ -46,6 +46,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
   {
     name: 'startYear',
     label: 'Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying data',
@@ -55,6 +56,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
   {
     name: 'birthYear',
     label: 'Birth Year',
+    type: "number",
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
@@ -64,6 +66,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
   {
     name: 'claimingAge',
     label: 'Planned Claiming Age',
+    type: "number",
     min: 62,
     max: 70,
     step: 1,
@@ -82,6 +85,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
   {
     name: 'averageCOLA',
     label: 'Average COLA (%)',
+    type: "number",
     min: 0,
     max: 10,
     step: 0.1,
@@ -91,6 +95,7 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
   {
     name: 'yearsToProject',
     label: 'Years to Project',
+    type: "number",
     min: 1,
     max: 80,
     step: 1,
@@ -107,6 +112,16 @@ export function getSocialSecurityProjectionColumns(editable: boolean = false): C
     { key: "colaApplied", label: "COLA Applied (%)", editable, min: 0, max: 100 },
     { key: "monthlyBenefit", label: "Monthly Benefit ($)", currency: true, hiddenOnMobile: true },
     { key: "annualBenefit", label: "Annual Benefit ($)", currency: true },
+  ];
+}
+
+export function getSocialSecurityScenarioColumns(): ColumnDef<any>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "annualBenefit1", label: "Scenario 1 Annual Benefit ($)", currency: true },
+    { key: "annualBenefit2", label: "Scenario 2 Annual Benefit ($)", currency: true },
+    { key: "annualBenefitDiff", label: "Annual Benefit Difference ($)", currency: true, isDifference: true },
   ];
 }
 

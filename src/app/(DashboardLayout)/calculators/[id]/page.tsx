@@ -31,6 +31,7 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
+import ScenarioModeToggle from '@/app/(DashboardLayout)/components/shared/ScenarioModeToggle';
 
 export default function CalculatorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -42,11 +43,13 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
     fieldConfigs,
     useProjection,
     getColumns,
+    getScenarioColumns,
     dataKeys,
   } = entry;
 
   const {
     values,
+    setValues,
     handleChange,
     errors,
     hasErrors,
@@ -87,9 +90,27 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
         description={config.calculatorDescription}
         showTitle
         >
-        <Typography sx={{ mb: 3 }}>
-          {config.calculatorDescription}
-        </Typography>
+        <Box 
+          sx={{ 
+            display: 'flex',
+            alignItems: "center", 
+            justifyContent: 'space-between', 
+            flexDirection: { xs: 'column', md: 'row' },
+            mb: 3,
+            gap: 1
+          }}>
+          <Typography 
+            variant="body1" 
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+              {config.calculatorDescription}
+          </Typography>
+          { typeof getScenarioColumns === "function" && (
+            <ScenarioModeToggle 
+              calculatorRoute={config.calculatorRoute} 
+              scenarioRoute={config.scenarioRoute!} 
+            />
+          )}
+        </Box>
 
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -99,6 +120,9 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
               onChange={handleChange}
               errors={errors}
               context={{ isAuthenticated }}
+              onDateChange={(name, value) =>
+                setValues((prev: any) => ({ ...prev, [name]: value || undefined }))
+              }
             />
           </LocalizationProvider>
 
@@ -107,7 +131,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
               <Switch
                 checked={showChart}
                 onChange={(e) => setShowChart(e.target.checked)}
-                />
+              />
             }
             label="Show Chart"
           />

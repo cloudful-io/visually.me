@@ -34,7 +34,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
     const cols: GridColDef[] = columns.map((col) => ({
       field: col.key as string,
       headerName: col.label,
-      minWidth: (col.label.length < 5) ? 60 : (isMobile ? 100 : 120),
+      minWidth: (col.label.length <= 5) ? 60 : (isMobile ? 100 : 120),
       headerClassName: col.editable ? "editable-column-header" : "",
       description: col.description ?? col.label,
       editable: col.editable ?? false,
@@ -227,7 +227,14 @@ export function ProjectionDataGrid<T extends { year: number }>(
               maxHeight: "575px",     // roughly 10 rows of data
               overflow: "auto",
             },
-
+            "& .MuiDataGrid-columnHeaderTitle": {
+              whiteSpace: "normal",
+              lineHeight: "normal"
+            },
+            "& .MuiDataGrid-columnHeader": {
+              height: "unset !important",
+              maxHeight: "112px !important"
+            },
           }}
           rows={rows}
           columns={muiColumns}

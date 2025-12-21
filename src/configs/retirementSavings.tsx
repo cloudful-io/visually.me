@@ -15,7 +15,7 @@ export const retirementSavingsConfig: CalculatorConfig<RetirementSavingsInput> =
   scenarioTitle: "Retirement Savings and Withdrawal Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your retirement savings based on your initial investment balance, annual contribution, estimated yield and withdraw rates.",
-  scenarioRoute: "/calculators/retirement-savings/scenarios",
+  scenarioRoute: "/calculators/retirement-savings/scenario",
   chartTitle: "Retirement Savings and Withdrawal Over Time",
   assumptions: [
     <>
@@ -73,6 +73,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'startYear',
     label: 'Start Year',
+    type: "number",
     min: 1900,
     step: 1,
     helperText: 'Year to begin displaying retirement savings and withdraw',
@@ -81,6 +82,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'birthYear',  
     label: 'Birth Year',
+    type: "number",
     min: 1900,
     max: new Date().getFullYear(),
     step: 1,
@@ -105,12 +107,14 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'estimatedYield',
     label: 'Estimated Annual Yield (%)',
+    type: "number",
     min: 0,
     step: 0.1,
   },
   {
     name: 'estimatedWithdrawRate',
     label: 'Estimated Withdrawal Rate (%)',
+    type: "number",
     min: 0,
     max: 100,
     step: 0.1,
@@ -119,6 +123,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'contributionIncreaseRate',
     label: 'Contribution Increase Rate (%)',
+    type: "number",
     min: -99,
     max: 100,
     step: 0.1,
@@ -127,6 +132,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'withdrawStartAge',
     label: 'Withdrawal Start Age',
+    type: "number",
     min: 50,
     max: 73,
     step: 1,
@@ -136,6 +142,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
   {
     name: 'yearsToProject',
     label: 'Years to Project',
+    type: "number",
     min: 1,
     max: 80,
     step: 1,
@@ -155,6 +162,19 @@ export function getRetirementSavingsProjectionColumns(editable: boolean = false)
     { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true, hiddenOnMobile: true },
     { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable, min: 0 },
     { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable, min: 0 },
+  ];
+}
+
+export function getRetirementSavingsScenarioColumns(): ColumnDef<any>[] {
+  return [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Age" },
+    { key: "endingBalance1", label: "Scenario 1 Balance ($)", currency: true },
+    { key: "endingBalance2", label: "Scenario 2 Balance ($)", currency: true },
+    { key: "endingBalanceDiff", label: "Balance Difference ($)", currency: true, isDifference: true },
+    { key: "annualWithdraw1", label: "Scenario 1 Annual Withdrawal ($)", currency: true },
+    { key: "annualWithdraw2", label: "Scenario 2 Annual Withdrawal ($)", currency: true },
+    { key: "annualWithdrawDiff", label: "Annual Withdrawal Difference ($)", currency: true, isDifference: true },
   ];
 }
 
