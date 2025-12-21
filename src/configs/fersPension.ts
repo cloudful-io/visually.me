@@ -34,6 +34,7 @@ export const fersPensionConfig: CalculatorConfig<FersPensionInput> = {
     high3Salary: 100000,
     colaPercent: 2,
     pensionMultiplier: 1.1,
+    survivorBenefitReduction: 0,
     yearsToProject: 40,
     retirementType: 'regular',
   },
@@ -146,6 +147,17 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     helperText: 'Typically 1% or 1.1%, depending on age and service',
   },
   {
+    name: 'survivorBenefitReduction',
+    label: 'Survivor Benefit Option',
+    type: 'select',
+    options: [
+      { value: '0', label: 'No Survivor Benefit' },
+      { value: '0.05', label: '25% Survivor Benefit' },
+      { value: '0.1', label: '50% Survivor Benefit' },
+    ],
+    helperText: 'Whether survivor (i.e. your spouse) will continue to receive benefit after your death',
+  },
+  {
     name: 'yearsToProject',
     label: 'Years to Project',
     type: "number",
@@ -181,7 +193,6 @@ export function getFersPensionScenarioColumns(): ColumnDef<any>[] {
     { key: "pensionDiff", label: "Pension Difference ($)", currency: true, isDifference: true },
   ];
 }
-
 
 export const fersPensionDataKeys: DataKeyOption<any>[] = [
   { key: "pension", label: "Annual Pension ($)" },

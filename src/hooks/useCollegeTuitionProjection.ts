@@ -86,7 +86,7 @@ export function getSummaryMessage(
 
         if (additionalNeeded > 0) {
           message += ` To fully cover college tuition, consider increasing your annual contribution by approximately ` + currencyFormatter(additionalNeeded) +
-            ` bringing your total annual contribution to ` + currencyFormatter(requiredContribution) + `.`;
+            `, bringing your total annual contribution to ` + currencyFormatter(requiredContribution) + `.`;
         }
       }
       
