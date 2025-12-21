@@ -92,6 +92,7 @@ export default function EditIncomeSourceDialog({
     high3Salary: 100000,
     colaPercent: 2,
     pensionMultiplier: 1.1,
+    survivorBenefitReduction: 0,
     yearsToProject: userAttributes?.yearsToProject ?? 40,
     retirementType: 'regular',
   };
