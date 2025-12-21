@@ -54,6 +54,7 @@ export function useCombinedProjections(
         annualIncome: Math.round(annualIncome),
         monthlyExpense: Math.round(annualExpense/12),
         annualExpense: Math.round(annualExpense),
+        annualNetCashFlow: Math.round(annualIncome-annualExpense),
         properties,
       });
     }

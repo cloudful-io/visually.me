@@ -116,6 +116,7 @@ export default function RealEstateSummaryPage() {
                 { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
                 { key: "monthlyExpense", label: "Total Monthly Expense ($)", currency: true, hiddenOnMobile: true },
                 { key: "annualExpense", label: "Total Annual Expense ($)", currency: true },
+                { key: "annualNetCashFlow", label: "Annual Net Cash Flow ($)", currency: true, isDifference: true}
               ]}
               highlightYear={new Date().getFullYear()}
             />

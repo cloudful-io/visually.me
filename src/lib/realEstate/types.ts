@@ -7,6 +7,7 @@ export type CombinedRow = {
   annualIncome: number;
   monthlyExpense: number;
   annualExpense: number;
+  annualNetCashFlow: number;
   properties: Record<string, number>;
 };
 
