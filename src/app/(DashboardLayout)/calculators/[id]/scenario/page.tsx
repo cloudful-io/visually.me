@@ -311,7 +311,7 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
       )}
       
       {/* Chart */}
-      {showScenario2 && (rows1.length || rows2.length) > 0 && (
+      {showScenario2 && chartRows.length > 0 && (
         <MUIBarChart
           data={chartRows}
           xKey="year"
@@ -323,7 +323,7 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
       )}
 
       {/* Table */}
-      {comparisonRows.length > 0 && (
+      {showScenario2 && comparisonRows.length > 0 && (
         <ProjectionDataGrid
           rows={comparisonRows}
           highlightYear={new Date().getFullYear()}
