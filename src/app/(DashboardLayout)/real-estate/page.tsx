@@ -16,7 +16,7 @@ import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
 
 export default function RealEstateSummaryPage() {
-  const { loading, getCombinedProjection, getCombinedChartRows, computedProperties, save, remove, refresh } =
+  const { loading, getCombinedProjection, getCombinedChartRows, computedProperties, projectionTables, save, remove, refresh } =
     useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();  
 
@@ -52,6 +52,7 @@ export default function RealEstateSummaryPage() {
     );
   }
 
+  console.log(projectionTables);
   return (
     <>
       <div id="formSection"></div>
@@ -59,6 +60,7 @@ export default function RealEstateSummaryPage() {
         <RealEstateDetailedList
             userAttributes={attrs || {}}
             properties={computedProperties}
+            projectionTables={projectionTables}
             loading={loading}
             save={save}
             remove={remove}

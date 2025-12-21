@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
+import { RealEstatePropertyProjectionRow } from "financial-calcs";
 import { Box, Button, Stack, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
 import { IconDotsVertical, IconPencil, IconTrash, IconMapPin, IconFlagFilled, IconHome } from "@tabler/icons-react";
-import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
 import { currencyFormatter } from "@/lib/formatters/currency";
 
 interface RealEstate {
@@ -15,11 +15,12 @@ interface RealEstate {
 
 interface RealEstateProps {
   property: RealEstate;
+  projectionTable: RealEstatePropertyProjectionRow[];
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-export function RealEstateCard({ property, onEdit, onDelete }: RealEstateProps) {
+export function RealEstateCard({ property, projectionTable, onEdit, onDelete }: RealEstateProps) {
   const handleEdit = (id: string) => {
     setMenuAnchor(null);
     onEdit(id);
@@ -34,15 +35,32 @@ export function RealEstateCard({ property, onEdit, onDelete }: RealEstateProps) 
   let label = "";
   let address = "";
   let parsed: any = {};
+  let monthlyIncome = 0;
+  let monthlyExpense = 0;
+  let monthlyNetCashFlow = 0;
 
   try {
     parsed = JSON.parse(property.data);
     label = parsed.label ?? "(unknown)";
     address = parsed.address ?? "";
+    
+
+    const currentYear = new Date().getFullYear();
+    const currentRow = projectionTable.find(row => row.year === currentYear);
+
+    monthlyIncome = currentRow?.monthlyRentalIncome ?? 0;
+    const monthlyMortgage = currentRow?.monthlyMortgage ?? 0;
+    const monthlyHOA = currentRow?.monthlyHoaFee ?? 0;
+    const monthlyPropertyTax = (currentRow?.annualPropertyTax ?? 0) / 12;
+    const monthlyInsurance = (currentRow?.annualInsurance ?? 0) / 12;
+    monthlyExpense = monthlyMortgage + monthlyHOA + monthlyPropertyTax + monthlyInsurance;
+
+    monthlyNetCashFlow = monthlyIncome - monthlyExpense;
+
   } catch {
     label = "(unknown)";
   }  
-console.log(parsed.fields.propertyType);
+
   return (
     <DashboardCard 
       title={
@@ -106,6 +124,43 @@ console.log(parsed.fields.propertyType);
               </Typography>
             </Box>
           )}
+            <Box mt={1}>
+              <Stack direction="row" spacing={2} alignItems="center">
+                {/* Net Cash Flow */}
+                <Box flex={1} textAlign="center">
+                  <Typography variant="caption" color="text.secondary">
+                    Monthly Cash Flow
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    fontWeight={600}
+                    color={monthlyNetCashFlow >= 0 ? "success.main" : "error.main"}
+                  >
+                    {currencyFormatter(monthlyNetCashFlow)}
+                  </Typography>
+                </Box>
+                {/* Income */}
+                <Box flex={1} textAlign="center">
+                  <Typography variant="caption" color="text.secondary">
+                    Income
+                  </Typography>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {currencyFormatter(monthlyIncome)}
+                  </Typography>
+                </Box>
+
+                {/* Expenses */}
+                <Box flex={1} textAlign="center">
+                  <Typography variant="caption" color="text.secondary">
+                    Expenses
+                  </Typography>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {currencyFormatter(monthlyExpense)}
+                  </Typography>
+                </Box>
+              </Stack>
+            </Box>
+
             <Box>
               <Button
                 component={Link}

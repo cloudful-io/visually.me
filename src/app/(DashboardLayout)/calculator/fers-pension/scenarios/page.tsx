@@ -167,9 +167,7 @@ const FersPensionProjection = () => {
       };
     });
   }
-
-  console.log(buildCombinedChartData(rows1, rows2, metric));
-
+  
   return (
     <>
       <div id="formSection"></div>

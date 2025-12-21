@@ -5,11 +5,12 @@ import EditRealEstateDialog from "./EditDialogs/EditRealEstateDialog";
 import { RealEstateCard } from "./RealEstateCard";
 import { AddRealEstateCard } from "./AddRealEstateCard";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { Edit } from "@mui/icons-material";
+import { RealEstatePropertyProjectionRow } from "financial-calcs";
 
 interface RealEstateProps {
   userAttributes: Record<string, any>;
   properties: any[] | null;
+  projectionTables: Record<string, RealEstatePropertyProjectionRow[]>;
   loading: boolean;
   save: (input: { data: string; id?: string }) => Promise<void>;
   remove: (id: string) => Promise<void>;
@@ -19,6 +20,7 @@ interface RealEstateProps {
 const RealEstateDetailedList = ({
   userAttributes,
   properties,
+  projectionTables,
   loading,
   save,
   remove,
@@ -86,6 +88,7 @@ const RealEstateDetailedList = ({
                 <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={property.id}>
                   <RealEstateCard
                     property={property}
+                    projectionTable={projectionTables[property.id]}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                   />

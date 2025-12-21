@@ -48,17 +48,6 @@ const Dashboard = () => {
               <Grid size={12}>
                 <FinancialTimeline incomeSources={computedSources!} realEstateProperties={computedProperties} currentYear={new Date().getFullYear()} birthYear={attrs?.birthYear!} retirementAge={attrs?.targetRetirementAge!}/>
               </Grid>
-              {/*}
-              <Grid size={12}>
-                <IncomeSourceList
-                  userAttributes={attrs || {}}
-                  sources={computedSources}
-                  loading={loading}
-                  save={save}
-                  remove={remove}
-                  refresh={refresh}
-                />
-              </Grid>*/}
             </Grid>
           </Grid>
           {/* Spanning Grid for Income and Investment (4 + 4 = 8) */}
