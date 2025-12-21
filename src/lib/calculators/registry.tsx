@@ -67,7 +67,7 @@ export interface CalculatorEntry<FormValues = any, Row = any, Context = any> {
   useProjection: (values: FormValues) => ProjectionResult<Row> | YearlyProjectionResult<Row>;
   getColumns: (editable?: boolean, isYearly?: boolean) => any;
   getScenarioColumns?: () => any;
-  getSummary?: (rows: Row[], error?: string[] | null) => any;
+  getSummary?: (rows: Row[], error?: string[] | null, input?: any) => any;
   dataKeys: DataKeyOption<any>[];
 }
 

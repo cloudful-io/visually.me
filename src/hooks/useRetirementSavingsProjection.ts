@@ -7,6 +7,7 @@ import {
   calculateRetirementSavingsProjection,
   calculateRetirementSavingsProjectionWithOverrides,
 } from 'financial-calcs';
+import { currencyFormatter } from '@/lib/formatters/currency';
 
 export function useRetirementSavingsProjection(formValues: RetirementSavingsInput) {
   const [rows, setRows] = useState<RetirementSavingsProjectionRow[]>([]);
@@ -85,15 +86,7 @@ export function getSummaryMessage(
       const last = rows[rows.length - 1];
       return {
         type: 'success',
-        message: [`Your annual withdrawals never decrease. By age ${last.age} (year ${last.year}), you are still withdrawing ${last.annualWithdraw.toLocaleString(undefined, { 
-          style: 'currency', 
-          currency: 'USD', 
-          maximumFractionDigits: 0 
-        })} annually, with a balance of ${last.endingBalance.toLocaleString(undefined, { 
-          style: 'currency', 
-          currency: 'USD', 
-          maximumFractionDigits: 0 
-        })}`]
+        message: [`Your annual withdrawals never decrease. By age ${last.age} (year ${last.year}), you are still withdrawing ` + currencyFormatter(last.annualWithdraw) + ` annually, with a balance of ` + currencyFormatter(last.endingBalance) + `.`]
       };
     } else {
       // Compare to previous year
@@ -102,7 +95,7 @@ export function getSummaryMessage(
 
       return {
         type: 'warning',
-        message: [`Your annual withdrawal decreases in year ${dropRow.year} at age ${dropRow.age}. It drops from ${prevRow.annualWithdraw.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })} to ${dropRow.annualWithdraw.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}, a reduction of ${shortfall.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}.`]
+        message: [`Your annual withdrawal decreases in year ${dropRow.year} at age ${dropRow.age}. It drops from ` + currencyFormatter(prevRow.annualWithdraw) + ` to ` + currencyFormatter(dropRow.annualWithdraw) + `, a reduction of ` + currencyFormatter(shortfall) + `.`]
       };
     }
   }

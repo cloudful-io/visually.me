@@ -6,6 +6,7 @@ import {
   CollegeTuitionProjectionRow,
   calculateCollegeTuitionProjection,
 } from 'financial-calcs';
+import { currencyFormatter } from '@/lib/formatters/currency';
 
 export function useCollegeTuitionProjection(formValues: CollegeTuitionInput) {
   const [rows, setRows] = useState<CollegeTuitionProjectionRow[]>([]);
@@ -40,7 +41,9 @@ export function useCollegeTuitionProjection(formValues: CollegeTuitionInput) {
 }
 
 export function getSummaryMessage(
-    rows: CollegeTuitionProjectionRow[], error?: string[] | null
+    rows: CollegeTuitionProjectionRow[], 
+    error?: string[] | null,
+    input?: CollegeTuitionInput
   ): { type: 'success' | 'warning' | 'error'; message: string[] } {
     // All deficit rows
     const deficitRows = rows.filter(r => r.annualWithdraw < r.tuitionAmount);
@@ -55,12 +58,7 @@ export function getSummaryMessage(
       const last = rows[rows.length - 1];
       return {
         type: 'success',
-        message: [`You will not run out of money. In year ${last.year}, you will still have ${last.endingBalance.toLocaleString(undefined, { 
-          style: 'currency', 
-          currency: 'USD', 
-          maximumFractionDigits: 0 
-        })}.`]
-      };
+        message: [`You will not run out of money. In year ${last.year}, you will still have ` + currencyFormatter(last.endingBalance) + `.`]};
     } else {
       const firstDeficit = deficitRows[0];
 
@@ -73,13 +71,28 @@ export function getSummaryMessage(
         0
       );
 
+      let message = 
+        `You will run out of money in ${firstDeficit.year} (${collegeYear}${ordinalSuffix(
+          collegeYear
+        )} year of college). Across all deficit years, you will fall short by ` + currencyFormatter(totalShortfall) + `.`;
+      ;
+
+      if (input) {
+        const requiredContribution = calculateRequiredAnnualContribution(input);
+        const additionalNeeded = Math.max(
+          0,
+          requiredContribution - input.annualContribution
+        );
+
+        if (additionalNeeded > 0) {
+          message += ` To fully cover college tuition, consider increasing your annual contribution by approximately ` + currencyFormatter(additionalNeeded) +
+            ` bringing your total annual contribution to ` + currencyFormatter(requiredContribution) + `.`;
+        }
+      }
+      
       return {
         type: 'warning',
-        message: [`You will run out of money in year ${firstDeficit.year} (${collegeYear}${ordinalSuffix(collegeYear)} year of college). Across all deficit years, you will fall short by ${totalShortfall.toLocaleString(undefined, { 
-          style: 'currency', 
-          currency: 'USD', 
-          maximumFractionDigits: 0 
-        })}.`]
+        message: [message],
       };
     }
   }
@@ -91,4 +104,37 @@ export function getSummaryMessage(
     if (j === 2 && k !== 12) return "nd";
     if (j === 3 && k !== 13) return "rd";
     return "th";
+  }
+
+  function calculateRequiredAnnualContribution(
+    input: CollegeTuitionInput,
+    maxContribution = 100_000,
+    tolerance = 1
+  ): number {
+    let low = 0;
+    let high = maxContribution;
+    let result = maxContribution;
+
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+
+      const projection = calculateCollegeTuitionProjection({
+        ...input,
+        annualContribution: mid,
+      });
+
+      if (hasTuitionDeficit(projection)) {
+        low = mid + tolerance;
+      } else {
+        result = mid;
+        high = mid - tolerance;
+      }
+    }
+    return result;
+  }
+
+  function hasTuitionDeficit(rows: CollegeTuitionProjectionRow[]): boolean {
+    return rows.some(
+      r => r.tuitionAmount > 0 && r.annualWithdraw < r.tuitionAmount
+    );
   }

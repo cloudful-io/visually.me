@@ -71,7 +71,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
 
   const summary =
     entry.getSummary && (rows.length > 0 || error)
-      ? entry.getSummary(rows, error)
+      ? entry.getSummary(rows, error, values)
       : null;
   
   const handleCalculate = async () => {

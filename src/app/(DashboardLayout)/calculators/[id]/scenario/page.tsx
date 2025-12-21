@@ -172,184 +172,193 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
   }, [rows1, rows2, metric]);
 
   return (
-    <PageContainer 
-      title={config.scenarioTitle}
-      description={config.scenarioDescription} 
-      showTitle>
-      <Box 
-        sx={{ 
-          display: 'flex',
-          alignItems: "center", 
-          justifyContent: 'space-between', 
-          flexDirection: { xs: 'column', md: 'row' },
-          mb: 3,
-          gap: 1
-        }}>
-        <Typography 
-          variant="body1" 
-          sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-          {config.scenarioDescription}
-        </Typography>
-        <ScenarioModeToggle 
-          calculatorRoute={config.calculatorRoute} 
-          scenarioRoute={config.scenarioRoute!} 
-        />
-      </Box>
+    <>
+      <div id="formSection"></div>
+      <PageContainer 
+        title={config.scenarioTitle}
+        description={config.scenarioDescription} 
+        showTitle>
+        <Box 
+          sx={{ 
+            display: 'flex',
+            alignItems: "center", 
+            justifyContent: 'space-between', 
+            flexDirection: { xs: 'column', md: 'row' },
+            mb: 3,
+            gap: 1
+          }}>
+          <Typography 
+            variant="body1" 
+            sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+            {config.scenarioDescription}
+          </Typography>
+          <ScenarioModeToggle 
+            calculatorRoute={config.calculatorRoute} 
+            scenarioRoute={config.scenarioRoute!} 
+          />
+        </Box>
 
-      <Grid container direction="column" spacing={2}>
-        {/* Scenario 1 Accordion */}
-        <Accordion defaultExpanded disableGutters>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: 'action.hover' }}>
-            <Typography variant="h6">Scenario 1</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Grid container spacing={2} sx={{ mt: 2 }}>
-              {showScenario2 ? (
-                <ReadOnlyFields
-                  fields={fieldConfigs}
-                  values={formValues1}
-                  context={{ isAuthenticated }}
-                />
-              ) : (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <FormFields
-                    fields={fieldConfigs}
-                    values={formValues1}
-                    onChange={handleChange1}
-                    context={{ isAuthenticated }}
-                    errors={errors1}
-                    onDateChange={(name, value) =>
-                      setValues1((prev: any) => ({ ...prev, [name]: value || undefined }))
-                    }
-                  />
-                </LocalizationProvider>
-              )}
-            </Grid>
-          </AccordionDetails>
-          {!showScenario2 && (
-            <AccordionActions>
-              <Button startIcon={<ContentCopyIcon />} onClick={handleCopyScenario} variant="contained">
-                Copy Scenario
-              </Button>
-            </AccordionActions>
-          )}
-        </Accordion>
-
-        {/* Scenario 2 Accordion */}
-        {showScenario2 && (
+        <Grid container direction="column" spacing={2}>
+          {/* Scenario 1 Accordion */}
           <Accordion defaultExpanded disableGutters>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: 'action.hover' }}>
-              <Typography variant="h6">Scenario 2</Typography>
+              <Typography variant="h6">Scenario 1</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid container spacing={2} sx={{ mt: 2 }}>
-                {comparisonMode ? (
-                  <ReadOnlyFields 
-                    fields={fieldConfigs} 
-                    values={formValues2} 
-                    context={{ isAuthenticated }} 
+                {showScenario2 ? (
+                  <ReadOnlyFields
+                    fields={fieldConfigs}
+                    values={formValues1}
+                    context={{ isAuthenticated }}
                   />
                 ) : (
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <FormFields 
-                    fields={fieldConfigs} 
-                    values={formValues2} 
-                    onChange={handleChange2} 
-                    context={{ isAuthenticated }} errors={errors2} 
-                    onDateChange={(name, value) =>
-                      setValues2((prev: any) => ({ ...prev, [name]: value || undefined }))
-                    }
-                  />
+                    <FormFields
+                      fields={fieldConfigs}
+                      values={formValues1}
+                      onChange={handleChange1}
+                      context={{ isAuthenticated }}
+                      errors={errors1}
+                      onDateChange={(name, value) =>
+                        setValues1((prev: any) => ({ ...prev, [name]: value || undefined }))
+                      }
+                    />
                   </LocalizationProvider>
                 )}
               </Grid>
             </AccordionDetails>
+            {!showScenario2 && (
+              <AccordionActions>
+                <Button startIcon={<ContentCopyIcon />} onClick={handleCopyScenario} variant="contained">
+                  Copy Scenario
+                </Button>
+              </AccordionActions>
+            )}
           </Accordion>
+
+          {/* Scenario 2 Accordion */}
+          {showScenario2 && (
+            <Accordion defaultExpanded disableGutters>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: 'action.hover' }}>
+                <Typography variant="h6">Scenario 2</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={2} sx={{ mt: 2 }}>
+                  {comparisonMode ? (
+                    <ReadOnlyFields 
+                      fields={fieldConfigs} 
+                      values={formValues2} 
+                      context={{ isAuthenticated }} 
+                    />
+                  ) : (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <FormFields 
+                      fields={fieldConfigs} 
+                      values={formValues2} 
+                      onChange={handleChange2} 
+                      context={{ isAuthenticated }} errors={errors2} 
+                      onDateChange={(name, value) =>
+                        setValues2((prev: any) => ({ ...prev, [name]: value || undefined }))
+                      }
+                    />
+                    </LocalizationProvider>
+                  )}
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          )}
+        </Grid>
+
+        {/* Action Buttons */}
+        <Box sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<CompareIcon />}
+            onClick={handleCalculate}
+            disabled={!showScenario2 || comparisonMode || hasErrors1 || hasErrors2}
+          >
+            Compare Scenarios
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            sx={{ ml: 2 }}
+            startIcon={<RestartAltIcon />}
+            onClick={handleReset}
+            disabled={!rows1.length && !rows2.length}
+          >
+            Reset
+          </Button>
+        </Box>
+
+        {/* Errors */}
+        {errors.length > 0 && <FormSummary type="error" message={errors} />}
+
+        {metricKeys.length > 1 && rows1.length > 0 && rows2.length > 0 && (
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', my: 2 }}>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={metric}
+              onChange={(_, value) => value && setMetric(value)}
+              >
+              {metricKeys.map(({ key, label }) => (
+                <ToggleButton key={String(key)} value={key}>
+                  {label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Box>
         )}
-      </Grid>
+        
+        {/* Chart */}
+        {showScenario2 && chartRows.length > 0 && (
+          <>
+            <div id="chartSection"></div>  
+            <MUIBarChart
+              data={chartRows}
+              xKey="year"
+              dataKeys={chartDataKeys}
+              stacked={false}
+              disableMetricToggle
+              title="Scenario Comparison"
+            />
+          </>
+        )}
 
-      {/* Action Buttons */}
-      <Box sx={{ mt: 2 }}>
-        <Button
-          variant="contained"
-          startIcon={<CompareIcon />}
-          onClick={handleCalculate}
-          disabled={!showScenario2 || comparisonMode || hasErrors1 || hasErrors2}
-        >
-          Compare Scenarios
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          sx={{ ml: 2 }}
-          startIcon={<RestartAltIcon />}
-          onClick={handleReset}
-          disabled={!rows1.length && !rows2.length}
-        >
-          Reset
-        </Button>
-      </Box>
+        {/* Table */}
+        {showScenario2 && comparisonRows.length > 0 && (
+          <>
+            <div id="tableSection"></div>
+            <ProjectionDataGrid
+              rows={comparisonRows}
+              highlightYear={new Date().getFullYear()}
+              columns={getScenarioColumns!()}
+            />
+          </>
+        )}
 
-      {/* Errors */}
-      {errors.length > 0 && <FormSummary type="error" message={errors} />}
+        {/* Assumptions */}
+        {config.assumptions && (
+          <Box sx={{ mt: 4 }}>
+            <Assumptions items={config.assumptions} />
+          </Box>
+        )}
 
-      {metricKeys.length > 1 && rows1.length > 0 && rows2.length > 0 && (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', my: 2 }}>
-          <ToggleButtonGroup
-            size="small"
-            exclusive
-            value={metric}
-            onChange={(_, value) => value && setMetric(value)}
-            >
-            {metricKeys.map(({ key, label }) => (
-              <ToggleButton key={String(key)} value={key}>
-                {label}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-        </Box>
-      )}
-      
-      {/* Chart */}
-      {showScenario2 && chartRows.length > 0 && (
-        <MUIBarChart
-          data={chartRows}
-          xKey="year"
-          dataKeys={chartDataKeys}
-          stacked={false}
-          disableMetricToggle
-          title="Scenario Comparison"
-        />
-      )}
-
-      {/* Table */}
-      {showScenario2 && comparisonRows.length > 0 && (
-        <ProjectionDataGrid
-          rows={comparisonRows}
-          highlightYear={new Date().getFullYear()}
-          columns={getScenarioColumns!()}
-        />
-      )}
-
-      {/* Assumptions */}
-      {config.assumptions && (
-        <Box sx={{ mt: 4 }}>
-          <Assumptions items={config.assumptions} />
-        </Box>
-      )}
-
-      {/* SpeedDial */}
-      {(rows1.length > 0 || rows2.length > 0) && (
-        <SectionSpeedDial
-          icon={<NavigationIcon />}
-          tooltip="Navigate To"
-          actions={[
-            { id: 'tableSection', label: 'Table', icon: <TableChartIcon /> },
-            { id: 'chartSection', label: 'Chart', icon: <BarChartIcon /> },
-            { id: 'formSection', label: 'Form', icon: <ListIcon /> },
-          ]}
-        />
-      )}
-    </PageContainer>
+        {/* SpeedDial */}
+        {(rows1.length > 0 || rows2.length > 0) && (
+          <SectionSpeedDial
+            icon={<NavigationIcon />}
+            tooltip="Navigate To"
+            actions={[
+              { id: 'tableSection', label: 'Table', icon: <TableChartIcon /> },
+              { id: 'chartSection', label: 'Chart', icon: <BarChartIcon /> },
+              { id: 'formSection', label: 'Form', icon: <ListIcon /> },
+            ]}
+          />
+        )}
+      </PageContainer>
+    </>
   );
 }
