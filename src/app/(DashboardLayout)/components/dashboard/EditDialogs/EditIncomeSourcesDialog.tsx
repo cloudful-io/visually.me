@@ -61,50 +61,32 @@ export default function EditIncomeSourceDialog({
   // Child form state
   // ----------------------------
   const initialRetirementSavingsValues: RetirementSavingsInput = {
+    ...retirementSavingsConfig.initialFormValues!,
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
-    initialBalance: 100000,
-    initialContribution: 10000,
-    estimatedYield: 6,
-    estimatedWithdrawRate: 5,
-    contributionIncreaseRate: 2,
     withdrawStartAge: userAttributes?.targetRetirementAge ?? 60,
     yearsToProject: userAttributes?.yearsToProject ?? 40,
   };
 
   const initialSocialSecurityValues: SocialSecurityBenefitInput = {
+    ...socialSecurityConfig.initialFormValues!,
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
-    claimingAge: 67,
-    averageIncome: 100000,
-    averageCOLA: 2.5,
     yearsToProject: userAttributes?.yearsToProject ?? 40,
   };
 
   const initialFersPensionValues: FersPensionInput = {
+    ...fersPensionConfig.initialFormValues!,
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
-    serviceStartYear: 1990,
-    serviceEndYear: 2010,
     retirementAge: userAttributes?.targetRetirementAge ?? 62,
-    currentSalary: 85000,
-    salaryGrowthRate: 3,
-    high3Salary: 100000,
-    colaPercent: 2,
-    pensionMultiplier: 1.1,
-    survivorBenefitReduction: 0,
     yearsToProject: userAttributes?.yearsToProject ?? 40,
-    retirementType: 'regular',
   };
 
   const initialMilitaryPensionValues: MilitaryPensionInput = {
+    ...militaryPensionConfig.initialFormValues!,
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
-    retirementType: 'brs',
-    serviceStartYear: 2010,
-    serviceEndYear: 2030,
-    high3Salary: 5000,
-    colaPercent: 2,
     yearsToProject: userAttributes?.yearsToProject ?? 40,
   };
 
