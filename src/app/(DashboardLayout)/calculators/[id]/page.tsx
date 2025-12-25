@@ -100,7 +100,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
             gap: 1
           }}>
           <Typography 
-            variant="body1" 
+            variant="subtitle1" 
             sx={{ textAlign: { xs: 'center', md: 'left' } }}>
               {config.calculatorDescription}
           </Typography>
@@ -187,6 +187,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
               dataKeys={dataKeys}
               xKey="year"
               title={config.chartTitle!}
+              showFutureYearOnly={false}
             />
           </>
         )}

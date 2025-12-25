@@ -61,15 +61,18 @@ export default function IncomeSummaryPage() {
         {computedSources.length > 0 && (
         <>
           <div id="chartSection"></div>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
+          <Box sx={{ my: 2, display: 'flex', justifyContent: { xs: "stretch", md: "flex-end" }, width: '100%' }}>
             <ToggleButtonGroup
               exclusive
               size="small"
+              sx={{
+                width: { xs: "100%", md: "auto" },
+              }}
               value={mode}
               onChange={(e, v) => v && setMode(v)}
             >
-              <ToggleButton value="income">Annual Retirement Income</ToggleButton>
-              <ToggleButton value="balance">Retirement Savings Balance</ToggleButton>
+              <ToggleButton value="income" sx={{ flex: { xs: 1, md: "initial" } }}>Annual Retirement Income</ToggleButton>
+              <ToggleButton value="balance" sx={{ flex: { xs: 1, md: "initial" } }}>Retirement Savings Balance</ToggleButton>
             </ToggleButtonGroup>
           </Box>
           

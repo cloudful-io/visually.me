@@ -57,7 +57,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   },
   {
     name: 'propertyTaxIncreaseRate',
-    label: 'Property Increase Rate (%)',
+    label: 'Property Tax Increase Rate (%)',
     type: "number",
     min: 0,
     max: 100,
@@ -66,7 +66,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   },
   {
     name: 'annualInsurance',
-    label: 'Annual Homeowner and Private Mortgage Insurace ($)',
+    label: 'Annual Homeowner and Private Mortgage Insurance ($)',
     type: 'currency',
     min: 0,
     step: 10,
@@ -83,7 +83,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
   },
   {
     name: 'monthlyHoaFee',
-    label: 'Monthly Homewwner Association (HOA) Fee ($)',
+    label: 'Monthly Homeowner Association (HOA) Fee ($)',
     type: 'currency',
     min: 0,
     step: 10,
@@ -134,6 +134,8 @@ export function getRealEstateProjectionColumns(editable: boolean = false, summar
       { key: "annualIncome", label: "Annual Income ($)", currency: true, hiddenOnMobile: true },
       { key: "monthlyExpense", label: "Monthly Expense ($)", currency: true, },
       { key: "annualExpense", label: "Annual Expense ($)", currency: true, hiddenOnMobile: true },
+      { key: "netCashFlow", label: "Net Monthly Cash Flow($)", currency: true, editable, min: 0 },
+
     ];
   }
   else {

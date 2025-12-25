@@ -69,15 +69,18 @@ export default function RealEstateSummaryPage() {
           <>
             <div id="chartSection"></div>
             {/* ---- Chart Mode Toggle ---- */}
-            <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
+            <Box sx={{ my: 2, display: 'flex', justifyContent: { xs: "stretch", md: "flex-end" }, width: '100%' }}>
               <ToggleButtonGroup
                 size="small"
                 exclusive
+                sx={{
+                  width: { xs: "100%", md: "auto" },
+                }}
                 value={mode}
                 onChange={(_, v) => v && setMode(v)}
               >
-                <ToggleButton value="net">Net Cash Flow</ToggleButton>
-                <ToggleButton value="income">Income and Expense</ToggleButton>
+                <ToggleButton value="net" sx={{ flex: { xs: 1, md: "initial" } }}>Net Cash Flow</ToggleButton>
+                <ToggleButton value="income" sx={{ flex: { xs: 1, md: "initial" } }}>Income and Expense</ToggleButton>
               </ToggleButtonGroup>
             </Box>
             {mode === "net" && (

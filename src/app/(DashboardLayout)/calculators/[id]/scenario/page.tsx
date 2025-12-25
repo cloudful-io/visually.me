@@ -63,7 +63,7 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
 
   const [showScenario2, setShowScenario2] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
-  const metricKeys = entry.dataKeys//.map(f => f.key);
+  const metricKeys = entry.dataKeys;
   const [metric, setMetric] = useState(metricKeys[0].key);
 
   const projection1 = useProjection(formValues1);
@@ -188,7 +188,7 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
             gap: 1
           }}>
           <Typography 
-            variant="body1" 
+            variant="subtitle1" 
             sx={{ textAlign: { xs: 'center', md: 'left' } }}>
             {config.scenarioDescription}
           </Typography>
@@ -295,16 +295,19 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
         {/* Errors */}
         {errors.length > 0 && <FormSummary type="error" message={errors} />}
 
-        {metricKeys.length > 1 && rows1.length > 0 && rows2.length > 0 && (
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', my: 2 }}>
+        {metricKeys.length > 1 && comparisonMode && rows1.length > 0 && rows2.length > 0 && (
+          <Box sx={{ my: 2, display: 'flex', justifyContent: { xs: "stretch", md: "flex-end" }, width: '100%' }}>
             <ToggleButtonGroup
               size="small"
               exclusive
+              sx={{
+                width: { xs: "100%", md: "auto" },
+              }}
               value={metric}
               onChange={(_, value) => value && setMetric(value)}
               >
               {metricKeys.map(({ key, label }) => (
-                <ToggleButton key={String(key)} value={key}>
+                <ToggleButton key={String(key)} value={key} sx={{ flex: { xs: 1, md: "initial" } }}>
                   {label}
                 </ToggleButton>
               ))}
@@ -322,6 +325,7 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
               dataKeys={chartDataKeys}
               stacked={false}
               disableMetricToggle
+              showFutureYearOnly={false}
               title="Scenario Comparison"
             />
           </>

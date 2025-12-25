@@ -10,7 +10,7 @@ import {
   ListItemText,
   Typography
 } from "@mui/material";
-import { IconUser, IconLayoutDashboard } from "@tabler/icons-react";
+import { IconUser, IconFriends, IconLayoutDashboard } from "@tabler/icons-react";
 import { supabase } from '@/utils/supabase/client';
 import { User } from "@supabase/supabase-js";
 import { useRouter } from 'next/navigation';
@@ -85,7 +85,7 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         sx={{
-          "& .MuiMenu-paper": { width: "200px" },
+          "& .MuiMenu-paper": { width: "240px" },
         }}
       >
         <Box
@@ -127,6 +127,14 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
           </ListItemIcon>
           <ListItemText>My Profile</ListItemText>
         </MenuItem>
+        {/*}
+        <MenuItem component={Link} href="/partner" onClick={handleClose}>
+          <ListItemIcon>
+            <IconFriends width={20} />
+          </ListItemIcon>
+          <ListItemText>Linked Partner Account</ListItemText>
+        </MenuItem>
+        */}
       </Menu>
     </Box>
   );

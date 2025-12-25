@@ -24,6 +24,7 @@ type Props<T extends Record<string, any>> = {
   enableRangeFilter?: boolean;
   defaultRange?: YearRange;
   disableMetricToggle?: boolean;
+  showFutureYearOnly?: boolean;
 };
 
 export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
@@ -37,10 +38,12 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
     yLabel,
     enableRangeFilter = false,
     defaultRange,
-    disableMetricToggle = false
+    disableMetricToggle = false,
+    showFutureYearOnly = true,
   } = props;
 
   const theme = useTheme();
+  const currentYear = new Date().getFullYear();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [selectedKey, setSelectedKey] = useState(dataKeys[0]);
@@ -50,13 +53,21 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
     return isMobile ? 10 : 'all';
   });
 
+  const baseData =
+    xKey === "year" && showFutureYearOnly
+      ? data.filter((row) => {
+          const year = Number(row[xKey]);
+          return !Number.isNaN(year) && year >= currentYear;
+        })
+      : data;
+
   /* -------------------------
      Filter data by range
   -------------------------- */
   const filteredData =
     range === 'all'
-      ? data
-      : data.slice(0, range);
+      ? baseData
+      : baseData.slice(0, range);
 
   const xAxisData = filteredData.map((item) =>
     String(item[xKey] ?? '')
@@ -107,6 +118,31 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
             flexWrap: 'wrap',
           }}
         >
+          {/* Metric selector */}
+          {!stacked && dataKeys.length > 1 && !disableMetricToggle && (
+            <Box sx={{ display: 'flex', justifyContent: { xs: "stretch", md: "flex-end" }, width: '100%' }}>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={selectedKey.key}
+              sx={{
+                width: { xs: "100%", md: "auto" },
+              }}
+              onChange={(_, value) => {
+                if (!value) return;
+                const found = dataKeys.find((k) => k.key === value);
+                if (found) setSelectedKey(found);
+              }}
+            >
+              {dataKeys.map((opt) => (
+                <ToggleButton key={String(opt.key)} value={opt.key} sx={{ px: 1.5, flex: { xs: 1, md: "initial" } }}>
+                  {opt.label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+            </Box>
+          )}
+
           {/* Range selector */}
           {enableRangeFilter && (
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
@@ -122,28 +158,6 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
-            </Box>
-          )}
-
-          {/* Metric selector */}
-          {!stacked && dataKeys.length > 1 && !disableMetricToggle && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-            <ToggleButtonGroup
-              size="small"
-              exclusive
-              value={selectedKey.key}
-              onChange={(_, value) => {
-                if (!value) return;
-                const found = dataKeys.find((k) => k.key === value);
-                if (found) setSelectedKey(found);
-              }}
-            >
-              {dataKeys.map((opt) => (
-                <ToggleButton key={String(opt.key)} value={opt.key}>
-                  {opt.label}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
             </Box>
           )}
         </Box>

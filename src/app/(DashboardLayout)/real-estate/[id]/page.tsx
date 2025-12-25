@@ -203,22 +203,24 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
           Delete
         </Button>
 
-        <Box sx={{ mt: 3 }}>
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: { xs: "stretch", md: "flex-end" }, width: '100%' }}>
           <ToggleButtonGroup
             value={viewMode}
             exclusive
             size="small"
-            sx={{ mb: 2 }}
+            sx={{
+              width: { xs: "100%", md: "auto" },
+            }}
             onChange={(_, next) => {
               if (next !== null) setViewMode(next);
             }}
           >
-            <ToggleButton value="summary">
+            <ToggleButton value="summary" sx={{ flex: { xs: 1, md: "initial" } }}>
               <SummarizeIcon fontSize="small" sx={{ mr: 1 }} />
               Summary
             </ToggleButton>
 
-            <ToggleButton value="detail">
+            <ToggleButton value="detail" sx={{ flex: { xs: 1, md: "initial" } }}>
               <TocIcon fontSize="small" sx={{ mr: 1 }} />
               Detail
             </ToggleButton>

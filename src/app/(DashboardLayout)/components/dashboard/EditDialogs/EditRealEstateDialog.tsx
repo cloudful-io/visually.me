@@ -240,7 +240,6 @@ export default function EditRealEstateDialog({
                   const val = e.target.value;
                   setAddress(val);
                 }}
-                required
                 helperText="Example: 1234 McLean Way"
               />
             </Grid>

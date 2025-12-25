@@ -28,9 +28,9 @@ type Props<T extends Record<string, any>> = {
   height?: number;
   yLabel?: string;
 
-  /** NEW */
   enableRangeFilter?: boolean;
   defaultRange?: YearRange;
+  showFutureYearOnly?: boolean;
 };
 
 export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
@@ -43,9 +43,11 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
     yLabel,
     enableRangeFilter = false,
     defaultRange,
+    showFutureYearOnly = true,
   } = props;
 
   const theme = useTheme();
+  const currentYear = new Date().getFullYear();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // default to first dataKey
@@ -57,9 +59,17 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
     return isMobile ? 10 : "all";
   });
 
+  const baseData =
+    xKey === "year" && showFutureYearOnly
+      ? data.filter((row) => {
+          const year = Number(row[xKey]);
+          return !Number.isNaN(year) && year >= currentYear;
+        })
+      : data;
+      
   // Filter data by range
   const filteredData =
-    range === "all" ? data : data.slice(0, range);
+    range === "all" ? baseData : baseData.slice(0, range);
 
   const xAxisData = filteredData.map((item) => Number(item[xKey] ?? 0));
 
@@ -95,6 +105,30 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
             flexWrap: "wrap",
           }}
         >
+          {/* Metric selector */}
+          {dataKeys.length > 1 && (
+            <Box sx={{ display: 'flex', justifyContent: { xs: "stretch", md: "flex-end" }, width: '100%' }}>
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={selectedKey.key}
+                sx={{
+                  width: { xs: "100%", md: "auto" },
+                }}
+                onChange={(_, value) => {
+                  if (!value) return;
+                  const found = dataKeys.find((k) => k.key === value);
+                  if (found) setSelectedKey(found);
+                }}
+              >
+                {dataKeys.map((opt) => (
+                  <ToggleButton key={String(opt.key)} value={opt.key} sx={{ px: 1.5, flex: { xs: 1, md: "initial" } }}>
+                    {opt.label}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            </Box>
+          )}
           {/* Range selector */}
           {enableRangeFilter && (
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
@@ -108,28 +142,6 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
                 {ranges.map((r) => (
                   <ToggleButton key={r} value={r} sx={{ px: 1.5 }}>
                     {typeof r === "number" ? `${r}Y` : "All"}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-            </Box>
-          )}
-
-          {/* Metric selector */}
-          {dataKeys.length > 1 && (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-              <ToggleButtonGroup
-                size="small"
-                exclusive
-                value={selectedKey.key}
-                onChange={(_, value) => {
-                  if (!value) return;
-                  const found = dataKeys.find((k) => k.key === value);
-                  if (found) setSelectedKey(found);
-                }}
-              >
-                {dataKeys.map((opt) => (
-                  <ToggleButton key={String(opt.key)} value={opt.key} sx={{ px: 1.5 }}>
-                    {opt.label}
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>

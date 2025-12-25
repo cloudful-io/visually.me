@@ -53,9 +53,10 @@ const UserAttributes = () => {
     const currentMonth = now.getMonth();
 
     const retirementYear = attrs.birthYear + attrs.targetRetirementAge;
+    const retirementMonth = 11
 
     const totalMonthsNow = currentYear * 12 + currentMonth;
-    const totalMonthsRetirement = retirementYear * 12;
+    const totalMonthsRetirement = retirementYear * 12 + retirementMonth;
 
     const diffMonths = totalMonthsRetirement - totalMonthsNow;
 
