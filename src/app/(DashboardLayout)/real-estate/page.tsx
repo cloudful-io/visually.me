@@ -51,6 +51,12 @@ export default function RealEstateSummaryPage() {
     );
   }
 
+  const retirementX =
+    attrs?.birthYear !== undefined &&
+    attrs?.targetRetirementAge !== undefined
+      ? attrs.birthYear! + attrs.targetRetirementAge!
+      : undefined;
+
   return (
     <>
       <div id="formSection"></div>
@@ -92,6 +98,7 @@ export default function RealEstateSummaryPage() {
                 ]}
                 title="Annual Net Cash Flow"
                 enableRangeFilter
+                retirementX={retirementX}
               />
             )}
 
@@ -106,6 +113,7 @@ export default function RealEstateSummaryPage() {
                 ]}
                 title="Income vs Expense"
                 enableRangeFilter
+                retirementX={retirementX}
               />
             )}
 

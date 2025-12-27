@@ -6,6 +6,7 @@ import {
   GridColDef,
   GridRowModel,
   GridRowClassNameParams,
+  useGridApiRef
 } from "@mui/x-data-grid";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -29,6 +30,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const hasAnyOverride = rows.some((row) => "hasOverride" in row && row.hasOverride);
+  const apiRef = useGridApiRef();
 
   const muiColumns = React.useMemo<GridColDef[]>(() => {
     const cols: GridColDef[] = columns.map((col) => ({
@@ -165,6 +167,23 @@ export function ProjectionDataGrid<T extends { year: number }>(
       return row.year;
   }
 
+  // Scroll data grid to the highlight year
+  React.useEffect(() => {
+    if (!rows.length || !apiRef.current) return;
+
+    const index = rows.findIndex(r => r.year === highlightYear);
+
+    if (index >= 0) {
+      apiRef.current.scrollToIndexes({ rowIndex: index });
+
+      requestAnimationFrame(() => {
+        apiRef.current!.scrollToIndexes({
+          rowIndex: Math.max(0, index - 1),
+        });
+      });
+    }
+  }, [rows]);
+
   return (
     <Box sx={{ width: '100%' }}>
       {hasAnyOverride && (
@@ -237,6 +256,7 @@ export function ProjectionDataGrid<T extends { year: number }>(
             },
           }}
           rows={rows}
+          apiRef={apiRef}
           columns={muiColumns}
           columnVisibilityModel={columnVisibilityModel}
           onColumnVisibilityModelChange={() => {}}

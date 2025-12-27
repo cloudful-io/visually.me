@@ -169,6 +169,13 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
       await refresh();
     }
   };
+
+  const retirementX =
+    userAttributes?.birthYear !== undefined &&
+    userAttributes?.targetRetirementAge !== undefined
+      ? userAttributes.birthYear! + userAttributes.targetRetirementAge!
+      : undefined;
+
   return (
     <>
       <div id="formSection"></div>
@@ -236,6 +243,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
             ]}
             title="Net Monthly Cash Flow by Year"
             enableRangeFilter
+            retirementX={retirementX}
           />
         )}
         {viewMode === "detail" && (
@@ -253,6 +261,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
             title="Monthly Income and Expense Breakdown"
             stacked
             enableRangeFilter
+            retirementX={retirementX}
           />
         )}
 

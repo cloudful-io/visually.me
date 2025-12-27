@@ -14,6 +14,7 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
+import UserAttributes from "../components/dashboard/UserAttributes";
 
 export default function IncomeSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedSources, save, remove, refresh } =
@@ -46,6 +47,12 @@ export default function IncomeSummaryPage() {
             label: `${src.label} Balance`,
           }));
 
+  const retirementX =
+    attrs?.birthYear !== undefined &&
+    attrs?.targetRetirementAge !== undefined
+      ? attrs.birthYear! + attrs.targetRetirementAge!
+      : undefined;
+      
   return (
     <>
       <div id="formSection"></div>
@@ -92,6 +99,7 @@ export default function IncomeSummaryPage() {
                 : "Investment Balance by Account"
             }
             enableRangeFilter
+            retirementX={retirementX}
           />
 
           <div id="tableSection"></div>   

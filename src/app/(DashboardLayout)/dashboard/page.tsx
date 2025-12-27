@@ -123,6 +123,7 @@ const Dashboard = () => {
                       { key: 'netCashFlow', label: 'Net Cash Flow' },
                     ]}
                     enableRangeFilter
+                    retirementX={attrs?.targetRetirementAge!}
                   />
                 </DashboardCard>
               </Grid>

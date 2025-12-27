@@ -182,6 +182,11 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       await refresh();
     }
   };
+  const retirementX =
+    userAttributes?.birthYear !== undefined &&
+    userAttributes?.targetRetirementAge !== undefined
+      ? userAttributes.birthYear! + userAttributes.targetRetirementAge!
+      : undefined;
 
   return (
     <>
@@ -223,6 +228,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           dataKeys={dataKeys}
           title={`${source.label} Over Time`}
           enableRangeFilter
+          retirementX={retirementX}
         />
 
         <div id="tableSection" />

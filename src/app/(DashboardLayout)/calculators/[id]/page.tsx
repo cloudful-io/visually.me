@@ -81,7 +81,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
       CalculatorStatsService.incrementCalculationCount().catch(console.error);
     }
   };
-
+  
   return (
     <>
       <div id="formSection"></div>
@@ -187,7 +187,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
               dataKeys={dataKeys}
               xKey="year"
               title={config.chartTitle!}
-              showFutureYearOnly={false}
+              showFutureYearOnly={false}    
             />
           </>
         )}

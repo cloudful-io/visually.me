@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PageContainer from "../components/container/PageContainer";
-import { Box, TextField, Button, Typography, Checkbox, FormControlLabel, Grid, Alert, CircularProgress } from "@mui/material";
+import { Box, Typography, Alert, CircularProgress } from "@mui/material";
 import { PartnerLinkService } from "@/services/partner_link_service";
 import { supabase } from '@/utils/supabase/client';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
@@ -10,6 +10,7 @@ import { UserProfileService } from "supabase-auth-lib";
 import { IncomingInviteCard } from "../components/dashboard/IncomingInviteCard";
 import { OutgoingInviteCard } from "../components/dashboard/OutgoingInviteCard";
 import { LinkedPartnerCard } from "../components/dashboard/LinkedPartnerCard";
+import { InvitePartnerCard } from "../components/dashboard/InvitePartnerCard";
 
 type Permissions = {
   incomes: boolean;
@@ -33,9 +34,9 @@ export default function LinkedPartnerAccountPage() {
   const [loadingLinks, setLoadingLinks] = useState(true);
 
   type PartnerProfile = {
-  display_name: string;
-  avatar_url: string | null;
-};
+    display_name: string;
+    avatar_url: string | null;
+  };
 
 const [partnerProfiles, setPartnerProfiles] = useState<Record<string, PartnerProfile>>({});
 
@@ -190,8 +191,8 @@ const [partnerProfiles, setPartnerProfiles] = useState<Record<string, PartnerPro
         </Box>
       ) : (
         <>
-          {successMsg && <Alert severity="success" sx={{ mb: 2 }}>{successMsg}</Alert>}
-          {errorMsg && <Alert severity="error" sx={{ mb: 2 }}>{errorMsg}</Alert>}
+          {successMsg && <Alert severity="success" sx={{ my: 2 }}>{successMsg}</Alert>}
+          {errorMsg && <Alert severity="error" sx={{ my: 2 }}>{errorMsg}</Alert>}
           
           {/* Check existing links */}
           {activeLinks.length > 0 ? (
@@ -222,7 +223,6 @@ const [partnerProfiles, setPartnerProfiles] = useState<Record<string, PartnerPro
                 return (
                   <IncomingInviteCard
                     key={link.id}
-                    link={link}
                     inviter={inviter}
                     onAccept={() => handleAccept(link.id)}
                     onDeny={() => handleDeny(link.id)}
@@ -232,38 +232,37 @@ const [partnerProfiles, setPartnerProfiles] = useState<Record<string, PartnerPro
             })
           ) : (
             // No existing links → show invite form
-            <form onSubmit={handleInviteSubmit}>
-              <TextField
-                label="Partner Email"
-                type="email"
-                value={partnerEmail}
-                onChange={(e) => setPartnerEmail(e.target.value)}
-                fullWidth
-                required
-                sx={{ mb: 3 }}
-              />
+            <InvitePartnerCard
+              loading={loading}
+              onSubmit={async (email, permissions) => {
+                setLoading(true);
+                setErrorMsg("");
+                setSuccessMsg("");
 
-              <Typography variant="subtitle1" mb={1}>Permissions:</Typography>
-              <Grid container spacing={1} mb={3}>
-                {Object.keys(permissions).map((key) => (
-                  <Grid size={{xs: 12, sm: 6}} key={key}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={permissions[key as keyof Permissions]}
-                          onChange={() => handlePermissionChange(key as keyof Permissions)}
-                        />
-                      }
-                      label={key.charAt(0).toUpperCase() + key.slice(1)}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+                try {
+                  const permissionPayload = Object.fromEntries(
+                    Object.entries(permissions).map(([k, v]) => [
+                      k,
+                      v ? "view" : "none",
+                    ])
+                  );
 
-              <Button type="submit" variant="contained" color="primary" disabled={loading} fullWidth>
-                {loading ? "Sending..." : "Send Invite"}
-              </Button>
-            </form>
+                  await PartnerLinkService.invitePartner(
+                    user!.id,
+                    email,
+                    permissionPayload
+                  );
+
+                  setSuccessMsg("Invitation sent successfully!");
+                  await fetchLinks();
+                } catch (error: any) {
+                  setErrorMsg(error.message || "Failed to send invite");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+            />
+
           )}
         </>
       )}

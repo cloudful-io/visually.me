@@ -24,7 +24,7 @@ export const collegeTuitionConfig: CalculatorConfig<CollegeTuitionInput> = {
   ],
   initialFormValues: {
     startYear: new Date().getFullYear(),
-    birthYear: 1990,
+    //birthYear: 1990,
     childBirthYear: 2010,
     childCollegeFirstYear: 2028,
     childCollegeLastYear: 2031,
@@ -46,7 +46,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     helperText: 'Year to begin displaying college savings and tuition',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
-  {
+  /*{
     name: 'birthYear',
     label: 'Birth Year',
     type: "number",
@@ -54,7 +54,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     max: new Date().getFullYear(),
     step: 1,
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
-  },  
+  }, */ 
   {
     name: 'childBirthYear',
     label: "Child's Birth Year",
@@ -133,8 +133,8 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
 export function getCollegeTuitionProjectionColumns(editable: boolean = false): ColumnDef<CollegeTuitionProjectionRow>[] {
   return [
     { key: 'year', label: 'Year' },
-    { key: 'age', label: 'Your Age' },
-    { key: 'childAge', label: 'Child\'s Age' },
+    { key: 'age', label: 'Child\'s Age' },
+    //{ key: 'childAge', label: 'Child\'s Age' },
     { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
     { key: 'contribution', label: 'Contribution ($)', currency: true },
     { key: 'yieldPercent', label: 'Yield %' },
@@ -147,7 +147,7 @@ export function getCollegeTuitionProjectionColumns(editable: boolean = false): C
 export function getCollegeTuitionScenarioColumns(): ColumnDef<any>[] {
   return [
     { key: "year", label: "Year" },
-    { key: "age", label: "Age" },
+    { key: "age", label: 'Child\'s Age' },
     { key: "endingBalance1", label: "Scenario 1 Balance ($)", currency: true },
     { key: "endingBalance2", label: "Scenario 2 Balance ($)", currency: true },
     { key: "endingBalanceDiff", label: "Balance Difference ($)", currency: true, isDifference: true },

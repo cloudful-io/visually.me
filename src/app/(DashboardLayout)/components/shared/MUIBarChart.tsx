@@ -6,7 +6,8 @@ import {
   ToggleButtonGroup,
   useMediaQuery,
 } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart  } from '@mui/x-charts/BarChart';
+import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 import { useTheme } from '@mui/material/styles';
 import { currencyFormatter } from "@/lib/formatters/currency";
 import { DataKeyOption } from '@/types/forms';
@@ -25,6 +26,7 @@ type Props<T extends Record<string, any>> = {
   defaultRange?: YearRange;
   disableMetricToggle?: boolean;
   showFutureYearOnly?: boolean;
+  retirementX?: number;
 };
 
 export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
@@ -40,6 +42,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
     defaultRange,
     disableMetricToggle = false,
     showFutureYearOnly = true,
+    retirementX,
   } = props;
 
   const theme = useTheme();
@@ -185,7 +188,21 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
             ? undefined
             : [theme.palette.primary.light]
         }
-      />
+      >
+        {retirementX !== undefined && filteredData.some(row => String(row[xKey]) === String(retirementX)) && (
+          <ChartsReferenceLine
+            x={String(retirementX)}
+            label="Target Retirement"
+            labelAlign="start"
+            labelStyle={{ fontWeight: 600 }}
+            lineStyle={{
+              stroke: theme.palette.secondary.main,
+              strokeWidth: 2,          
+              strokeDasharray: '6 4',
+            }}
+          />
+        )}
+      </BarChart>
     </Box>
   );
 }

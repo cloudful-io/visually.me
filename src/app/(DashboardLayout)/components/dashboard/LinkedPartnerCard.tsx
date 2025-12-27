@@ -32,11 +32,16 @@ export function LinkedPartnerCard({
             {partner.display_name}
           </Typography>
         }
-        subheader="date"
       />
       <CardContent>
-        <Typography variant="caption" color="success.main" mt={1} display="block">
-          Account linked
+        <Typography variant="body1" mt={1} display="block" component="div">
+          You currently have a linked account with <strong>{partner.display_name}</strong> on Visually.Me.  You are sharing a combined view of:
+          <ul>
+            <li>Retirement income and pensions</li>
+            <li>Investment accounts</li>
+            <li>Real estate properties</li>
+          </ul>
+          You can revoke this connection at any time.
         </Typography>
       </CardContent>
 

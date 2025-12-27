@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Avatar,
+  Badge,
   Box,
   Menu,
   IconButton,
@@ -16,6 +17,8 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from 'next/navigation';
 import {AuthLogout} from "supabase-auth-lib";
 import {UserProfileService} from "supabase-auth-lib"
+import { PartnerLinkService } from "@/services/partner_link_service";
+
 type ProfileProps = {
   user: User;
   showDashboardLink?: boolean;
@@ -25,6 +28,7 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [displayName, setDisplayName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
+  const [hasPendingInvite, setHasPendingInvite] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -50,6 +54,22 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
     loadProfile();
   }, [user]);
 
+  useEffect(() => {
+    const loadPendingInvite = async () => {
+      try {
+        if (user?.id) {
+          const pending = await PartnerLinkService.hasPendingLink(user.id);
+          setHasPendingInvite(pending);
+        }
+      } catch (err) {
+        console.error("Failed to check pending partner link:", err);
+      }
+    };
+
+    loadPendingInvite();
+  }, [user?.id]);
+
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -65,18 +85,28 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
         color="inherit"
         onClick={handleClick}
       >
-        <Avatar
-          src={avatarUrl || undefined} 
-          alt={user.email || "User"}
-          sx={{ width: 32, height: 32 }}
+        <Badge
+          color="secondary"
+          variant="dot"
+          invisible={!hasPendingInvite}
+          //overlap="circular"
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
         >
-          {/* fallback initials if no image */}
-          {!avatarUrl && displayName
-            ? displayName.charAt(0).toUpperCase()
-            : null}
-        </Avatar>
+          <Avatar
+            src={avatarUrl || undefined} 
+            alt={user.email || "User"}
+            sx={{ width: 32, height: 32 }}
+          >
+            {/* fallback initials if no image */}
+            {!avatarUrl && displayName
+              ? displayName.charAt(0).toUpperCase()
+              : null}
+          </Avatar>
+        </Badge>
       </IconButton>
-
       <Menu
         anchorEl={anchorEl}
         keepMounted
@@ -127,14 +157,22 @@ const Profile: React.FC<ProfileProps> = ({ user, showDashboardLink = true }) => 
           </ListItemIcon>
           <ListItemText>My Profile</ListItemText>
         </MenuItem>
-        {/*}
-        <MenuItem component={Link} href="/partner" onClick={handleClose}>
+        <MenuItem component={Link} href="/partner" sx={{display: 'none'}} onClick={handleClose}>
           <ListItemIcon>
-            <IconFriends width={20} />
+            <Badge
+              color="secondary"
+              variant="dot"
+              invisible={!hasPendingInvite}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <IconFriends width={20} />
+            </Badge>
           </ListItemIcon>
           <ListItemText>Linked Partner Account</ListItemText>
         </MenuItem>
-        */}
       </Menu>
     </Box>
   );

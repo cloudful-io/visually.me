@@ -29,7 +29,7 @@ export const PartnerLinkService = {
       // Returns the invite token
       return data as string;
     } catch (error) {
-      throw wrapError("PartnerLinkService.invitePartner failed", error);
+      throw wrapError("Unable to send invitation to a user that has previously been revoked/denied.", error);
     }
   },
 
@@ -109,6 +109,19 @@ export const PartnerLinkService = {
 
       if (error) throw error;
       return data;
+    } catch (error) {
+      throw wrapError("PartnerLinkService.getForUser failed", error);
+    }
+  },
+
+  /**
+   * Get all partner links for a user (either as inviter or partner)
+   */
+  async hasPendingLink(userId: string): Promise<boolean> {
+    try {
+      const links = await this.getForUser(userId);
+
+      return links.some(link => (link.status === "pending") || link.status === "pending_signup");
     } catch (error) {
       throw wrapError("PartnerLinkService.getForUser failed", error);
     }

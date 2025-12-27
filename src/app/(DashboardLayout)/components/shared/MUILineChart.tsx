@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { LineSeries } from "@mui/x-charts/LineChart";
+import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 import { useTheme } from "@mui/material/styles";
 import { currencyFormatter } from "@/lib/formatters/currency";
 
@@ -31,6 +32,7 @@ type Props<T extends Record<string, any>> = {
   enableRangeFilter?: boolean;
   defaultRange?: YearRange;
   showFutureYearOnly?: boolean;
+  retirementX?: number;
 };
 
 export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
@@ -44,6 +46,7 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
     enableRangeFilter = false,
     defaultRange,
     showFutureYearOnly = true,
+    retirementX,
   } = props;
 
   const theme = useTheme();
@@ -162,7 +165,21 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
           },
         ]}
         colors={[theme.palette.primary.main]}
-      />
+      >
+        {retirementX !== undefined && filteredData.some(row => String(row[xKey]) === String(retirementX)) && (
+          <ChartsReferenceLine
+            x={String(retirementX)}
+            label="Target Retirement"
+            labelAlign="start"
+            labelStyle={{ fontWeight: 600 }}
+            lineStyle={{
+              stroke: theme.palette.secondary.main,
+              strokeWidth: 2,          
+              strokeDasharray: '6 4',
+            }}
+          />
+        )}
+      </LineChart>
     </Box>
   );
 }
