@@ -15,7 +15,15 @@ export function FormSummary({ showTitle = true, type, message }: Props) {
           <Typography variant="h6" gutterBottom>Summary</Typography>
         }
         {messages.map((msg, idx) => (
-          <Alert key={idx} severity={type}>{msg}</Alert>
+          <Alert 
+            variant='outlined'
+            key={idx} 
+            severity={type} 
+            sx={{
+              borderWidth: 3,
+            }}>
+            {msg}
+          </Alert>
         ))}
       </Box>
   );
