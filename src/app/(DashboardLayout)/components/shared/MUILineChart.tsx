@@ -72,7 +72,7 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
       
   // Filter data by range
   const filteredData =
-    range === "all" ? baseData : baseData.slice(0, range);
+    range === "all" || !enableRangeFilter ? baseData : baseData.slice(0, range);
 
   const xAxisData = filteredData.map((item) => Number(item[xKey] ?? 0));
 

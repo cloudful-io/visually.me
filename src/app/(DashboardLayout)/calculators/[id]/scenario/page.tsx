@@ -325,6 +325,7 @@ export default function ScenarioPage({ params }: { params: Promise<{ id: string 
               dataKeys={chartDataKeys}
               stacked={false}
               disableMetricToggle
+              enableRangeFilter
               showFutureYearOnly={false}
               title="Scenario Comparison"
             />

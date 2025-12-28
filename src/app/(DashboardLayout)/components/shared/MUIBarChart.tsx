@@ -68,7 +68,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
      Filter data by range
   -------------------------- */
   const filteredData =
-    range === 'all'
+    range === 'all' || !enableRangeFilter
       ? baseData
       : baseData.slice(0, range);
 

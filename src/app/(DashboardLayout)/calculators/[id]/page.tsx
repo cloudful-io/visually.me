@@ -187,6 +187,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
               dataKeys={dataKeys}
               xKey="year"
               title={config.chartTitle!}
+              enableRangeFilter
               showFutureYearOnly={false}    
             />
           </>
