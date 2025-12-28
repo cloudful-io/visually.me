@@ -46,7 +46,7 @@ import { useFersPensionProjection } from "@/hooks/useFersPensionProjection";
 import { useMilitaryPensionProjection } from "@/hooks/useMilitaryPensionProjection";
 import { useMortgageAmortization } from "@/hooks/useMortgageAmortization";
 import { getSummaryMessage as getRetirementSavingsSummaryMessage, useRetirementSavingsProjection } from "@/hooks/useRetirementSavingsProjection";
-import { useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
+import { getSummaryMessage as getSocialSecuritySummaryMessage, useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
 import { CalculatorConfig } from "@/configs/calculatorConfig"
 import { DataKeyOption } from "@/types/forms"
 import { FormFieldConfig } from "@/types/forms"
@@ -120,6 +120,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     useProjection: useSocialSecurityBenefitProjection,
     getColumns: getSocialSecurityProjectionColumns,
     getScenarioColumns: getSocialSecurityScenarioColumns,
+    getSummary: getSocialSecuritySummaryMessage,
     dataKeys: socialSecurityDataKeys,
   },
 };
