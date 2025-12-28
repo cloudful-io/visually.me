@@ -42,8 +42,8 @@ import {
 } from "@/configs/socialSecurityBenefits"
 
 import { getSummaryMessage as getCollegeTuitionSummaryMessage, useCollegeTuitionProjection } from "@/hooks/useCollegeTuitionProjection";
-import { useFersPensionProjection } from "@/hooks/useFersPensionProjection";
-import { useMilitaryPensionProjection } from "@/hooks/useMilitaryPensionProjection";
+import { getSummaryMessage as getFersPensionSummaryMessage, useFersPensionProjection } from "@/hooks/useFersPensionProjection";
+import { getSummaryMessage as getMilitaryPensionSummaryMessage, useMilitaryPensionProjection } from "@/hooks/useMilitaryPensionProjection";
 import { useMortgageAmortization } from "@/hooks/useMortgageAmortization";
 import { getSummaryMessage as getRetirementSavingsSummaryMessage, useRetirementSavingsProjection } from "@/hooks/useRetirementSavingsProjection";
 import { getSummaryMessage as getSocialSecuritySummaryMessage, useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
@@ -87,6 +87,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     useProjection: useFersPensionProjection,
     getColumns: getFersPensionProjectionColumns,
     getScenarioColumns: getFersPensionScenarioColumns,
+    getSummary: getFersPensionSummaryMessage,
     dataKeys: fersPensionDataKeys,
   },
   "military-pension": {
@@ -95,6 +96,7 @@ export const calculatorRegistry: Record<string, CalculatorEntry<any>> = {
     useProjection: useMilitaryPensionProjection,
     getColumns: getMilitaryPensionProjectionColumns,
     getScenarioColumns: getMilitaryPensionScenarioColumns,
+    getSummary: getMilitaryPensionSummaryMessage,
     dataKeys: militaryPensionDataKeys,
   },
   "mortgage-amortization": {

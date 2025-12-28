@@ -5,13 +5,17 @@ import { useRouter } from "next/navigation";
 import PageContainer from "../components/container/PageContainer";
 import { calculatorRegistry } from "@/lib/calculators/registry";
 
-const calculators = Object.values(calculatorRegistry).map((entry) => ({
-  id: entry.config.id,
-  title: entry.config.shortTitle,
-  description: entry.config.calculatorDescription,
-  route: entry.config.calculatorRoute,
-  icon: entry.config.icon,
-}));
+const calculators = Object.values(calculatorRegistry)
+  .map((entry) => ({
+    id: entry.config.id,
+    title: entry.config.shortTitle,
+    description: entry.config.calculatorDescription,
+    route: entry.config.calculatorRoute,
+    icon: entry.config.icon,
+  }))
+  .sort((a, b) =>
+    a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+  );
 
 export default function CalculatorsPage() {
   const router = useRouter();
@@ -45,7 +49,12 @@ export default function CalculatorsPage() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" variant="contained" onClick={() => router.push(calc.route)}>
+                  <Button 
+                    size="small" 
+                    variant="contained" 
+                    onClick={() => router.push(calc.route)} 
+                    sx={{width: { xs: '100%', sm: 'auto' }}}
+                  >
                     Open
                   </Button>
                 </CardActions>

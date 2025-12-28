@@ -6,13 +6,17 @@ import {
 import { uniqueId } from "lodash";
 import { calculatorRegistry } from "@/lib/calculators/registry";
 
-const calculatorMenuItems = Object.values(calculatorRegistry).map((entry) => ({
-  id: uniqueId(),
-  title: entry.config.shortTitle,
-  icon: entry.config.icon,
-  href: entry.config.calculatorRoute,
-  authRequired: false,
-}));
+const calculatorMenuItems = Object.values(calculatorRegistry)
+  .map((entry) => ({
+    id: uniqueId(),
+    title: entry.config.shortTitle,
+    icon: entry.config.icon,
+    href: entry.config.calculatorRoute,
+    authRequired: false,
+  }))
+  .sort((a, b) =>
+    a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+  );
 
 const Menuitems = [
   {
