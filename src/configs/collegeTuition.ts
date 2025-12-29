@@ -68,6 +68,14 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     type: "number",
     min: 2000,
     step: 1,
+    derive: ({ values, prevValues, set }) => {
+      if (
+        values.childBirthYear &&
+        values.childBirthYear !== prevValues.childBirthYear
+      ) {
+        set('childCollegeFirstYear', values.childBirthYear + 18);
+      }
+    },
   },  
   {
     name: 'childCollegeLastYear',
@@ -75,6 +83,14 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     type: "number",
     min: 2000,
     step: 1,
+    derive: ({ values, prevValues, set }) => {
+      if (
+        values.childCollegeFirstYear &&
+        values.childCollegeFirstYear !== prevValues.childCollegeFirstYear
+      ) {
+        set('childCollegeLastYear', values.childCollegeFirstYear + 3);
+      }
+    },
   },  
   {
     name: 'initialBalance',
@@ -127,6 +143,15 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     step: 1,
     helperText: 'Number of years to show savings and withdraw projections',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+    derive: ({ values, prevValues, set }) => {
+      if (
+        values.startYear && values.childCollegeLastYear &&
+        (values.startYear !== prevValues.startYear ||
+        values.childCollegeLastYear !== prevValues.childCollegeLastYear)
+      ) {
+        set('yearsToProject', values.childCollegeLastYear - values.startYear + 2);
+      }
+    },
   },
 ];
 

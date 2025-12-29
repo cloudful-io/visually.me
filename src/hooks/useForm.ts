@@ -16,16 +16,31 @@ export function useForm<T extends Record<string, any>, C = void>(
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
+    const fieldName = name as keyof T;
     let parsedValue: any = value;
 
     if (type === 'number') {
       parsedValue = value === '' ? '' : parseFloat(value);
     }
 
-    setValues((prev) => ({
-      ...prev,
-      [name]: parsedValue,
-    }));
+    setValues((prev) => {
+      const next = {
+        ...prev,
+        [fieldName]: parsedValue,
+      };
+
+      fieldConfigs.forEach((config) => {
+        config.derive?.({
+          values: next,
+          prevValues: prev,
+          set: (key, val) => {
+            next[key] = val;
+          },
+        });
+      });
+
+      return next;
+    });
 
     // Validation
     const fieldConfig = fieldConfigs.find((f) => f.name === name);

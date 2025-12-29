@@ -9,6 +9,12 @@ export type FormFieldGroup = {
   description?: string;
 };
 
+export type DeriveContext<T> = {
+  values: T;
+  prevValues: T;
+  set: <K extends keyof T>(key: K, value: T[K]) => void;
+};
+
 export type FormFieldConfig<T, C = void> = {
   name: keyof T;
   label: string;
@@ -19,6 +25,7 @@ export type FormFieldConfig<T, C = void> = {
   helperText?: string;
   options?: FormFieldOption[]; // Only used if type === 'select'
   shouldDisplay?: (values: T, context: C extends void ? undefined : C) => boolean;
+  derive?: (ctx: DeriveContext<T>) => void;
   group?: FormFieldGroup;
 };
 
