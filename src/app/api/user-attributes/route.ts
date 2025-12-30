@@ -22,7 +22,6 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body: UserAttributesInput = await req.json();
-  
   await upsertUserAttributes(user.id, body);
 
   return NextResponse.json({ success: true });

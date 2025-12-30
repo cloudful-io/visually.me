@@ -114,14 +114,13 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
     helperText: 'Estimated annual increase in rental income',
   },
   {
-    name: 'yearsToProject',
-    label: 'Years to Project',
+    name: 'lifeExpectancyAge',
+    label: 'Life Expectancy Age',
     type: "number",
     min: 1,
-    max: 80,
+    max: 150,
     step: 1,
-    helperText: 'Number of years to show pension income',
-    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+    helperText: 'Your estimated life expectancy',
   },
 ];
 

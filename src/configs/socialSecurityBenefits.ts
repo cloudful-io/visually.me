@@ -28,7 +28,7 @@ export const socialSecurityConfig: CalculatorConfig<SocialSecurityBenefitInput> 
     claimingAge: 67,
     averageIncome: 100000,
     averageCOLA: 2.5,
-    yearsToProject: 45,
+    lifeExpectancyAge: 85,
   },
 };
 
@@ -93,15 +93,14 @@ export const socialSecurityFieldConfigs: FormFieldConfig<SocialSecurityBenefitIn
     group: SALARY_INFO,
   },
   {
-    name: 'yearsToProject',
-    label: 'Years to Project',
+    name: 'lifeExpectancyAge',
+    label: 'Life Expectancy Age',
     type: "number",
     min: 1,
-    max: 80,
+    max: 150,
     step: 1,
-    helperText: 'Number of years to show benefit projections',
+    helperText: 'Your estimated life expectancy',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
-    group: PERSONAL_INFO,
   },
 ];
 

@@ -65,7 +65,7 @@ export const retirementSavingsConfig: CalculatorConfig<RetirementSavingsInput> =
     estimatedWithdrawRate: 5,
     contributionIncreaseRate: 2,
     withdrawStartAge: 60,
-    yearsToProject: 40,
+    lifeExpectancyAge: 85,
   },
 };
 
@@ -137,16 +137,15 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
     max: 73,
     step: 1,
     helperText: 'Age to start withdrawing retirement savings',
-    //shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
-    name: 'yearsToProject',
-    label: 'Years to Project',
+    name: 'lifeExpectancyAge',
+    label: 'Life Expectancy Age',
     type: "number",
     min: 1,
-    max: 80,
+    max: 150,
     step: 1,
-    helperText: 'Number of years to show benefit projections after claiming',
+    helperText: 'Your estimated life expectancy',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];

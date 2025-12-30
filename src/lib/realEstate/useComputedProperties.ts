@@ -24,7 +24,7 @@ export function useComputedProperties(
         const base = {
           birthYear: userAttributes?.birthYear,
           startYear: userAttributes?.startYear,
-          yearsToProject: userAttributes?.yearsToProject,
+          lifeExpectancyAge: userAttributes?.lifeExpectancyAge,
         };
 
         mergedFields = { ...parsed.fields, ...base };

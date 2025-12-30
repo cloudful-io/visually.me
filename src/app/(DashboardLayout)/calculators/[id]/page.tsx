@@ -74,6 +74,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
       ? entry.getSummary(rows, error, values)
       : null;
   
+      console.log(summary);
   const handleCalculate = async () => {
     projection.generateTable();
 
@@ -170,7 +171,7 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
           Export CSV
         </Button>
    
-        {summary && rows.length > 0 && (
+        {summary && (error || rows.length > 0) && (
           <Box mt={2}>
             <FormSummary
               type={summary.type}

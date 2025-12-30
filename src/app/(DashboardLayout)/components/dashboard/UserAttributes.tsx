@@ -113,6 +113,9 @@ const UserAttributes = () => {
                 <Typography variant="subtitle1">
                   <strong>Target Retirement Age:</strong> {attrs.targetRetirementAge ?? "—"}
                 </Typography>
+                <Typography variant="subtitle1">
+                  <strong>Life Expectancy Age:</strong> {attrs.lifeExpectancyAge ?? "—"}
+                </Typography>
                 <Box width="100%">
                   <LinearProgressWithLabel
                     value={progressPct}
@@ -123,9 +126,6 @@ const UserAttributes = () => {
                     }
                   />
                 </Box>
-                <Typography variant="subtitle1">
-                  <strong>Years to Project Data:</strong> {(attrs.startYear && attrs.yearsToProject) ? `${attrs.startYear} to ${attrs.startYear+attrs.yearsToProject-1}`  : "—"}
-                </Typography>
               </Stack>
             )}
           </Box>

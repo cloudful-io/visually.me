@@ -65,14 +65,14 @@ export default function EditIncomeSourceDialog({
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
     withdrawStartAge: userAttributes?.targetRetirementAge ?? 60,
-    yearsToProject: userAttributes?.yearsToProject ?? 40,
+    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
   };
 
   const initialSocialSecurityValues: SocialSecurityBenefitInput = {
     ...socialSecurityConfig.initialFormValues!,
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
-    yearsToProject: userAttributes?.yearsToProject ?? 40,
+    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
   };
 
   const initialFersPensionValues: FersPensionInput = {
@@ -80,14 +80,14 @@ export default function EditIncomeSourceDialog({
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
     retirementAge: userAttributes?.targetRetirementAge ?? 62,
-    yearsToProject: userAttributes?.yearsToProject ?? 40,
+    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
   };
 
   const initialMilitaryPensionValues: MilitaryPensionInput = {
     ...militaryPensionConfig.initialFormValues!,
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
-    yearsToProject: userAttributes?.yearsToProject ?? 40,
+    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
   };
 
   const typeConfig: Record<IncomeSourceType, {

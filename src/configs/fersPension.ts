@@ -35,7 +35,7 @@ export const fersPensionConfig: CalculatorConfig<FersPensionInput> = {
     colaPercent: 2,
     pensionMultiplier: 1.1,
     survivorBenefitReduction: 0,
-    yearsToProject: 40,
+    lifeExpectancyAge: 85,
     retirementType: 'regular',
   },
 };
@@ -158,13 +158,13 @@ export const fersPensionFieldConfigs: FormFieldConfig<FersPensionInput, { isAuth
     helperText: 'Whether survivor (i.e. your spouse) will continue to receive benefit after your death',
   },
   {
-    name: 'yearsToProject',
-    label: 'Years to Project',
+    name: 'lifeExpectancyAge',
+    label: 'Life Expectancy Age',
     type: "number",
     min: 1,
-    max: 80,
+    max: 150,
     step: 1,
-    helperText: 'Number of years to show pension income',
+    helperText: 'Your estimated life expectancy',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];

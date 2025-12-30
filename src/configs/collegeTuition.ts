@@ -24,7 +24,6 @@ export const collegeTuitionConfig: CalculatorConfig<CollegeTuitionInput> = {
   ],
   initialFormValues: {
     startYear: new Date().getFullYear(),
-    //birthYear: 1990,
     childBirthYear: 2010,
     childCollegeFirstYear: 2028,
     childCollegeLastYear: 2031,
@@ -33,7 +32,6 @@ export const collegeTuitionConfig: CalculatorConfig<CollegeTuitionInput> = {
     estimatedYield: 5,
     estimatedFirstYearTuition: 50000,
     estimatedInflationRate: 3,
-    yearsToProject: 20,
   },
 };
 export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { isAuthenticated: boolean }>[] = [
@@ -46,15 +44,6 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     helperText: 'Year to begin displaying college savings and tuition',
     shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
-  /*{
-    name: 'birthYear',
-    label: 'Birth Year',
-    type: "number",
-    min: 1900,
-    max: new Date().getFullYear(),
-    step: 1,
-    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
-  }, */ 
   {
     name: 'childBirthYear',
     label: "Child's Birth Year",
@@ -133,25 +122,6 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     max: 100,
     step: 0.1,
     helperText: 'Estimated inflation rate to calculate rising college tuition',
-  },
-  {
-    name: 'yearsToProject',
-    label: 'Years to Project',
-    type: "number",
-    min: 1,
-    max: 40,
-    step: 1,
-    helperText: 'Number of years to show savings and withdraw projections',
-    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
-    derive: ({ values, prevValues, set }) => {
-      if (
-        values.startYear && values.childCollegeLastYear &&
-        (values.startYear !== prevValues.startYear ||
-        values.childCollegeLastYear !== prevValues.childCollegeLastYear)
-      ) {
-        set('yearsToProject', values.childCollegeLastYear - values.startYear + 2);
-      }
-    },
   },
 ];
 

@@ -29,7 +29,7 @@ export function useComputedSources(
         const base = {
           birthYear: userAttributes?.birthYear,
           startYear: userAttributes?.startYear,
-          yearsToProject: userAttributes?.yearsToProject,
+          lifeExpectancyAge: userAttributes?.lifeExpectancyAge,
         };
 
         const getRowByYear = (year: number) =>

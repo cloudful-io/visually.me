@@ -30,7 +30,7 @@ export default function EditUserAttributesDialog({
   const [birthYear, setBirthYear] = useState(1970);
   const [startYear, setStartYear] = useState(currentYear);
   const [targetRetirementAge, setTargetRetirementAge] = useState(62);
-  const [yearsToProject, setYearsToProject] = useState(40);
+  const [lifeExpectancyAge, setLifeExpectancyAge] = useState(85);
   
   const [errorMsg, setErrorMsg] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -42,15 +42,15 @@ export default function EditUserAttributesDialog({
     setBirthYear(attrs.birthYear!);
     setStartYear(attrs.startYear!);
     setTargetRetirementAge(attrs.targetRetirementAge!);
-    setYearsToProject(attrs.yearsToProject!);
+    setLifeExpectancyAge(attrs.lifeExpectancyAge!);
   }, [attrs]);
 
-  const canSave = birthYear && targetRetirementAge && startYear && yearsToProject;
+  const canSave = birthYear && targetRetirementAge && startYear && lifeExpectancyAge;
   const validate = {
     birthYear: birthYear && (birthYear < 1900 || birthYear > currentYear),
     targetRetirementAge: targetRetirementAge && (targetRetirementAge < 40 || targetRetirementAge > 80),
     startYear: startYear && (startYear < 1900 || startYear > currentYear),
-    yearsToProject: yearsToProject && (yearsToProject < 1 || yearsToProject > 80),
+    lifeExpectancyAge: lifeExpectancyAge && (lifeExpectancyAge <= 0 || lifeExpectancyAge > 150),
   };
 
   const handleSave = async () => {
@@ -66,8 +66,8 @@ export default function EditUserAttributesDialog({
       setErrorMsg("Please provide the year to start projecting data");
       return;
     }
-    else if (!yearsToProject) {
-      setErrorMsg("Please provide the number of years to project data");
+    else if (!lifeExpectancyAge) {
+      setErrorMsg("Please provide your life expectancy age");
       return;
     }
 
@@ -76,7 +76,7 @@ export default function EditUserAttributesDialog({
         birthYear: Number(birthYear),
         startYear: Number(startYear),
         targetRetirementAge: Number(targetRetirementAge),
-        yearsToProject: Number(yearsToProject),
+        lifeExpectancyAge: Number(lifeExpectancyAge),
       });
 
       onSaved();     
@@ -148,16 +148,16 @@ export default function EditUserAttributesDialog({
               <TextField
                 type="number"
                 fullWidth
-                label="Number of Years to Show Projection"
-                value={yearsToProject}
+                label="Life Expectancy Age"
+                value={lifeExpectancyAge}
                 disabled={isSaving}
-                onChange={(e) => setYearsToProject(Number(e.target.value))}
-                error={!!validate.yearsToProject}
-                helperText={validate.yearsToProject ? "Enter a number between 1 and 80" : ""}
+                onChange={(e) => setLifeExpectancyAge(Number(e.target.value))}
+                error={!!validate.lifeExpectancyAge}
+                helperText={validate.lifeExpectancyAge ? "Enter a number between 1 and 150" : ""}
                 slotProps={{
                   htmlInput: {
                     min: 1,
-                    max: 80,
+                    max: 150,
                   },
                 }}
               />
@@ -182,7 +182,7 @@ export default function EditUserAttributesDialog({
         <Button
           variant="contained"
           onClick={handleSave}
-          disabled={!canSave || validate.birthYear || validate.targetRetirementAge || validate.startYear || validate.yearsToProject || isSaving}
+          disabled={!canSave || validate.birthYear || validate.targetRetirementAge || validate.startYear || validate.lifeExpectancyAge || isSaving}
         >
           {loading ? <CircularProgress size={20} /> : "Save"}
         </Button>

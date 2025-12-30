@@ -54,7 +54,7 @@ export default function EditRealEstateDialog({
     hoaFeeIncreaseRate: 2,
     monthlyRentalIncome: 0,
     rentalIncomeIncreaseRate: 2,
-    yearsToProject: userAttributes?.yearsToProject ?? 40,
+    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
   };
 
   const {
