@@ -104,6 +104,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     min: 0,
     max: 100,
     step: 0.1,
+    helperText: 'Expected average yearly investment return (Example: S&P 500 annual average from 2000-2024: 9.3%)',
   },
   {
     name: 'estimatedFirstYearTuition',

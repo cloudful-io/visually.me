@@ -22,7 +22,7 @@ export type FormFieldConfig<T, C = void> = {
   min?: number;
   max?: number;
   step?: number;
-  helperText?: string;
+  helperText?: React.ReactNode;
   options?: FormFieldOption[]; // Only used if type === 'select'
   shouldDisplay?: (values: T, context: C extends void ? undefined : C) => boolean;
   derive?: (ctx: DeriveContext<T>) => void;

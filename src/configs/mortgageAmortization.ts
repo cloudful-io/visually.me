@@ -54,7 +54,7 @@ export const mortgageAmortizationFieldConfigs: FormFieldConfig<MortgageAmortizat
     min: 0,
     max: 100,
     step: 0.1,
-    helperText: 'Interest rate per year as a percentage.',
+    helperText: 'Interest rate per year as a percentage (Example: Average 30-year fixed mortgage rate in 2024: 6.8%)',
   },
   {
     name: 'termYears',

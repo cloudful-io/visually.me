@@ -19,26 +19,6 @@ export type Props<T, C = void> =
     ? BaseFormProps<T>
     : BaseFormProps<T> & { context: C };
 
-/*export type Props<T, C = void> = C extends void
-  ? {
-      fields: FormFieldConfig<T, C>[];
-      values: T;
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-      onDateChange?: (name: keyof T, value: Date | null) => void;
-      errors?: Partial<Record<keyof T, string>>;
-      dialog?: boolean;
-    }
-  : {
-      fields: FormFieldConfig<T, C>[];
-      values: T;
-      context: C; // required only when C is not void
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-      onDateChange?: (name: keyof T, value: Date | null) => void;
-      errors?: Partial<Record<keyof T, string>>;
-      dialog?: boolean;
-    };
-*/
-
 export function FormFields<T, C = void>(props: Props<T, C>) {
   const { fields, values, onChange, onDateChange, errors, dialog = false } = props;
 

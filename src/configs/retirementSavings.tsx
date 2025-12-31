@@ -110,6 +110,7 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
     type: "number",
     min: 0,
     step: 0.1,
+    helperText: 'Expected average yearly investment return (Example: S&P 500 annual average from 2000-2024: 9.3%)',
   },
   {
     name: 'estimatedWithdrawRate',
