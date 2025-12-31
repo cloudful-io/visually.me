@@ -56,7 +56,12 @@ const Dashboard = () => {
                 <UserAttributes />
               </Grid>
               <Grid size={12}>
-                <FinancialTimeline incomeSources={computedSources!} realEstateProperties={computedProperties} currentYear={new Date().getFullYear()} birthYear={attrs?.birthYear!} retirementAge={attrs?.targetRetirementAge!}/>
+                <FinancialTimeline 
+                  incomeSources={computedSources!} 
+                  realEstateProperties={computedProperties} 
+                  currentYear={new Date().getFullYear()} birthYear={attrs?.birthYear!} 
+                  retirementAge={attrs?.targetRetirementAge!}
+                  lifeExpectancyAge={attrs?.lifeExpectancyAge!}/>
               </Grid>
             </Grid>
           </Grid>

@@ -21,6 +21,7 @@ import {
   IconUserPlus,
   IconList,
   IconHome,
+  IconHeart,
 } from "@tabler/icons-react";
 import DashboardCard from "../shared/DashboardCard";
 
@@ -34,6 +35,7 @@ export type TimelineItemType =
   | "mortgage-end"
   | "current"
   | "retirement"
+  | "life-expectancy"
   | "summary";
 
 export type IncomeSourceTimelineItem = {
@@ -66,6 +68,7 @@ type Props = {
   currentYear: number;
   retirementAge?: number;
   birthYear?: number;
+  lifeExpectancyAge?: number;
 };
 
 export function FinancialTimeline({
@@ -74,6 +77,7 @@ export function FinancialTimeline({
   currentYear,
   retirementAge,
   birthYear,
+  lifeExpectancyAge,
 }: Props) {
   const yearMap = new Map<number, TimelineEvent[]>();
 
@@ -84,6 +88,12 @@ export function FinancialTimeline({
   if (birthYear != null && retirementAge != null) {
     const retirementYear = birthYear + retirementAge;
     yearMap.set(retirementYear, [{ label: "Target Retirement Age", type: "retirement" }]);
+  }
+
+  // Add life expectancy age if it is provided
+  if (birthYear != null && lifeExpectancyAge != null) {
+    const lifeExpectancyYear = birthYear + lifeExpectancyAge;
+    yearMap.set(lifeExpectancyYear, [{ label: "Life Expectancy Age", type: "life-expectancy" }]);
   }
 
   // Add income sources
@@ -127,6 +137,7 @@ export function FinancialTimeline({
     "summary": IconList,
     "real-estate": IconHome,
     "mortgage-end": IconHome,
+    "life-expectancy": IconHeart,
     "income": IconCoin,
   };
 
@@ -168,6 +179,8 @@ export function FinancialTimeline({
                   color={
                     item.events.some((e) => ["retirement"].includes(e.type))
                       ? "info"
+                      : item.events.some((e) => ["life-expectancy"].includes(e.type))
+                      ? "error"
                       : item.events.some((e) => ["mortgage-end"].includes(e.type)) ? "success" : 
                       "grey"
                   }
