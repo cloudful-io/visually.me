@@ -61,9 +61,9 @@ export function deriveUserKey(
 }
 
 // -------------------------------
-// 3. Encrypt (always using ACTIVE_KEY_VERSION)
+// 3. Encrypt / Decrypt per-user field
 // -------------------------------
-export function encryptForUser(userId: string, plaintext: string) {
+export function encryptForUser(userId: string, plaintext: string | Buffer) {
   const keyVersion = ACTIVE_KEY_VERSION;
   const key = deriveUserKey(userId, keyVersion);
 
@@ -71,8 +71,10 @@ export function encryptForUser(userId: string, plaintext: string) {
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
   cipher.setAAD(Buffer.from(userId, "utf8"));
 
+  const input = typeof plaintext === "string" ? Buffer.from(plaintext, "utf8") : plaintext;
+
   const encrypted = Buffer.concat([
-    cipher.update(plaintext, "utf8"),
+    cipher.update(input),
     cipher.final(),
   ]);
 
@@ -86,9 +88,6 @@ export function encryptForUser(userId: string, plaintext: string) {
   };
 }
 
-// -------------------------------
-// 4. Decrypt (automatically selects correct key version)
-// -------------------------------
 export function decryptForUser(
   userId: string,
   payload: {
@@ -112,6 +111,51 @@ export function decryptForUser(
 
   const decrypted = Buffer.concat([
     decipher.update(Buffer.from(ciphertext, "base64")),
+    decipher.final(),
+  ]);
+
+  return decrypted.toString("utf8");
+}
+
+// -------------------------------
+// 4. Content key generation & wrapping
+// -------------------------------
+export function wrapContentKeyForUser(userId: string, contentKey: Buffer): EncryptedField {
+  // Encrypt the raw content key using user's per-user key
+  return encryptForUser(userId, contentKey.toString("base64"));
+}
+
+export function unwrapContentKeyForUser(userId: string, wrappedKey: EncryptedField): Buffer {
+  const base64Key = decryptForUser(userId, wrappedKey);
+  return Buffer.from(base64Key, "base64");
+}
+
+// -------------------------------
+// 5. Encrypt / Decrypt using raw content key
+// -------------------------------
+export function encryptWithKey(key: Buffer, plaintext: string | Buffer): EncryptedField {
+  const keyVersion = ACTIVE_KEY_VERSION;
+  const iv = crypto.randomBytes(IV_LENGTH);
+  const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
+
+  const input = typeof plaintext === "string" ? Buffer.from(plaintext, "utf8") : plaintext;
+  const encrypted = Buffer.concat([cipher.update(input), cipher.final()]);
+  const tag = cipher.getAuthTag();
+
+  return {
+    key_version: keyVersion,
+    iv: iv.toString("base64"),
+    tag: tag.toString("base64"),
+    ciphertext: encrypted.toString("base64"),
+  };
+}
+
+export function decryptWithKey(key: Buffer, payload: EncryptedField): string {
+  const decipher = crypto.createDecipheriv(ALGORITHM, key, Buffer.from(payload.iv, "base64"));
+  decipher.setAuthTag(Buffer.from(payload.tag, "base64"));
+
+  const decrypted = Buffer.concat([
+    decipher.update(Buffer.from(payload.ciphertext, "base64")),
     decipher.final(),
   ]);
 

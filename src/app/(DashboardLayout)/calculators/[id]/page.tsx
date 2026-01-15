@@ -74,7 +74,6 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
       ? entry.getSummary(rows, error, values)
       : null;
   
-      console.log(summary);
   const handleCalculate = async () => {
     projection.generateTable();
 
@@ -149,7 +148,6 @@ export default function CalculatorPage({ params }: { params: Promise<{ id: strin
               sx={{ alignSelf: 'center', ml: 2 }}
             />
           )}
-          
         </Grid>
 
         <Button

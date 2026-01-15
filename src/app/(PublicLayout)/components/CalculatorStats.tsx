@@ -10,7 +10,7 @@ export default function CalculatorStatsCounter() {
   const [total, setTotal] = useState<number | null>(null);
   const [animatedValue, setAnimatedValue] = useState(0);
 
-  const NUM_CALCULATORS = 5; // hard-coded number of calculators
+  const NUM_CALCULATORS = 6; // hard-coded number of calculators
 
   /** Fetch total calculations */
   const fetchStats = async () => {

@@ -121,6 +121,7 @@ export const realEstateFieldConfigs: FormFieldConfig<RealEstatePropertyInput, { 
     max: 150,
     step: 1,
     helperText: 'Your estimated life expectancy',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];
 

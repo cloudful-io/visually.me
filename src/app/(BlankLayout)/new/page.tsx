@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
@@ -7,8 +6,10 @@ import { supabase } from '@/utils/supabase/client';
 import { UserService } from 'supabase-auth-lib';
 import { UserProfileService } from 'supabase-auth-lib';
 import Loading from "@/app/loading";
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import {OnboardingAgreementStep} from "supabase-auth-lib";
-import { Box, Button, Paper, Step, StepLabel, Stepper, Typography, CircularProgress, TextField, Snackbar, Alert } from "@mui/material";
+import { OnboardingProfileStep } from "../components/OnboardingProfileStep";
+import { Box, Paper, Step, StepLabel, Stepper, Typography, Snackbar, Alert } from "@mui/material";
 import TermsOfUse from "@/app/components/TermsOfUse";
 import PrivacyPolicy from "@/app/components/PrivacyPolicy";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
@@ -37,13 +38,18 @@ export default function OnboardingPage() {
   // Step navigation
   const [activeStep, setActiveStep] = useState(0);
 
-  const canContinueStep2 = displayName && birthYear && targetRetirementAge && startYear && lifeExpectancyAge;
+  const canContinueStep2 = 
+    !!displayName &&
+    !!birthYear &&
+    !!startYear &&
+    !!targetRetirementAge &&
+    !!lifeExpectancyAge;
 
   const validate = {
-    birthYear: birthYear && (birthYear < minYear || birthYear > maxYear),
-    targetRetirementAge: targetRetirementAge && (targetRetirementAge < 40 || targetRetirementAge > 80),
-    startYear: startYear && (startYear < minYear || startYear > currentYear),
-    lifeExpectancyAge: lifeExpectancyAge && (lifeExpectancyAge <= 0 || lifeExpectancyAge > 150),
+    birthYear: !!birthYear && (birthYear < minYear || birthYear > maxYear),
+    startYear: !!startYear && (startYear < minYear || startYear > currentYear),
+    targetRetirementAge: !!targetRetirementAge && (targetRetirementAge < 40 || targetRetirementAge > 80),
+    lifeExpectancyAge: !!lifeExpectancyAge && (lifeExpectancyAge <= 0 || lifeExpectancyAge > 150),
   };
 
   const handleNext = () => setActiveStep((prev) => prev + 1);
@@ -66,12 +72,12 @@ export default function OnboardingPage() {
       setErrorMsg("Please provide your year of birth.");
       return;
     }
-    else if (!targetRetirementAge) {
-      setErrorMsg("Please provide your target retirement age.");
-      return;
-    }
     else if (!startYear) {
       setErrorMsg("Please provide the year to start projecting data");
+      return;
+    }
+    else if (!targetRetirementAge) {
+      setErrorMsg("Please provide your target retirement age.");
       return;
     }
     else if (!lifeExpectancyAge) {
@@ -137,137 +143,72 @@ export default function OnboardingPage() {
   }
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100vh"
-      px={2}
-    >
-      <Paper elevation={3} sx={{ p: 4, maxWidth: 600, width: "100%", position: "relative", top: "-10%" }}>
-        {/* Stepper */}
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <Typography align="center" sx={{ mb: 2 }}>
-            Step {activeStep + 1} of {steps.length}
-        </Typography>
-        {/* Step Content */}
-        {activeStep === 0 && (
-          <>
-            <OnboardingAgreementStep
-              title="Visually.Me"
-              onContinue={handleNext}
-              TermsComponent={TermsOfUse}
-              PrivacyComponent={PrivacyPolicy}
+    <PageContainer
+      title="New User Onboarding"
+      description="Page to onboard new users to Visually.Me">
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minHeight="100vh"
+        px={2}
+      >
+        <Paper elevation={3} sx={{ p: 4, maxWidth: 600, width: "100%", position: "relative", top: "-10%" }}>
+          {/* Stepper */}
+          <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <Typography align="center" sx={{ mb: 2 }}>
+              Step {activeStep + 1} of {steps.length}
+          </Typography>
+          {/* Step Content */}
+          {activeStep === 0 && (
+            <>
+              <OnboardingAgreementStep
+                title="Visually.Me"
+                onContinue={handleNext}
+                TermsComponent={TermsOfUse}
+                PrivacyComponent={PrivacyPolicy}
+              />
+            </>
+          )}
+          {activeStep === 1 && (
+            <OnboardingProfileStep
+              displayName={displayName}
+              setDisplayName={setDisplayName}
+              birthYear={birthYear}
+              setBirthYear={setBirthYear}
+              startYear={startYear}
+              setStartYear={setStartYear}
+              targetRetirementAge={targetRetirementAge}
+              setTargetRetirementAge={setTargetRetirementAge}
+              lifeExpectancyAge={lifeExpectancyAge}
+              setLifeExpectancyAge={setLifeExpectancyAge}
+              isSaving={isSaving}
+              handleBack={handleBack}
+              handleSave={handleSave}
+              validate={validate}
+              canContinue={canContinueStep2}
+              minYear={minYear}
+              maxYear={maxYear}
+              currentYear={currentYear}
             />
-          </>
-        )}
-
-        {activeStep === 1 && (
-          <>
-            <Box display="flex" flexDirection="column" gap={2} mt={2}>
-              <TextField
-                label="Display Name"
-                value={displayName}
-                disabled={isSaving}
-                onChange={(e) => setDisplayName(e.target.value)}
-                fullWidth
-              />
-              <TextField
-                label="Year of Birth"
-                type="number"
-                value={birthYear}
-                disabled={isSaving}
-                onChange={(e) => setBirthYear(Number(e.target.value))}
-                error={!!validate.birthYear}
-                helperText={validate.birthYear ? `Enter a year between ${minYear} and ${maxYear}.  You must be at least ${MINIMUM_AGE} years old.` : ""}
-                slotProps={{
-                  htmlInput: {
-                    min: minYear,
-                    max: maxYear,
-                  },
-                }}
-                fullWidth
-              />
-              <TextField
-                label="Target Retirement Age"
-                type="number"
-                value={targetRetirementAge}
-                disabled={isSaving}
-                onChange={(e) => setTargetRetirementAge(Number(e.target.value))}
-                error={!!validate.targetRetirementAge}
-                helperText={validate.targetRetirementAge ? "Target Retirement Age must be between 40 and 80" : ""}
-                slotProps={{
-                  htmlInput: {
-                    min: 40,
-                    max: 80,
-                  },
-                }}
-                fullWidth
-              />
-              <TextField
-                label="Year to Start Projecting Data"
-                type="number"
-                value={startYear}
-                disabled={isSaving}
-                onChange={(e) => setStartYear(Number(e.target.value))}
-                error={!!validate.startYear}
-                helperText={validate.startYear ? `Enter a year between 1900 and ${currentYear}` : ""}
-                slotProps={{
-                  htmlInput: {
-                    min: 1900,
-                    max: currentYear,
-                  },
-                }}
-                fullWidth
-              />
-              <TextField
-                label="Life Expectancy Age"
-                type="number"
-                value={lifeExpectancyAge}
-                disabled={isSaving}
-                onChange={(e) => setLifeExpectancyAge(Number(e.target.value))}
-                error={!!validate.lifeExpectancyAge}
-                helperText={validate.lifeExpectancyAge ? "Enter a number between 1 and 150" : ""}
-                slotProps={{
-                  htmlInput: {
-                    min: 1,
-                    max: 150,
-                  },
-                }}
-                fullWidth
-              />
-            </Box>
-            <Box mt={3} display="flex" justifyContent="space-between" gap={2}>
-              <Button variant="outlined" disabled={isSaving} onClick={handleBack}>
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!canContinueStep2 || validate.birthYear || validate.targetRetirementAge || validate.startYear || validate.lifeExpectancyAge || isSaving}
-                onClick={handleSave}
-                >
-                {isSaving ? <CircularProgress size={20} color="inherit" /> : "Save Profile"}
-              </Button>
-            </Box>
-          </>
-        )}
-      </Paper>
-      <Snackbar
-        open={!!errorMsg}
-        autoHideDuration={4000}
-        onClose={() => setErrorMsg("")}
-        >
-        <Alert severity="error" onClose={() => setErrorMsg("")}>
+          )}
+        </Paper>
+        <Snackbar
+          open={!!errorMsg}
+          autoHideDuration={4000}
+          onClose={() => setErrorMsg("")}
+          >
+          <Alert severity="error" onClose={() => setErrorMsg("")}>
             {errorMsg}
-        </Alert>
-      </Snackbar>
-    </Box>
+          </Alert>
+        </Snackbar>
+      </Box>
+    </PageContainer>
   );
 }

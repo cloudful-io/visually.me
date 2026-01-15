@@ -1,7 +1,7 @@
 "use client";
 import { use, useState } from "react";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
-import { useRealEstate } from "@/lib/realEstate/useRealEstate";
+import { useRealEstate } from "@/lib/assets/useRealEstate";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
@@ -27,7 +27,7 @@ import type { RealEstatePropertyProjectionRow } from "financial-calcs";
 
 export default function RealEstatePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { loading, computedProperties, projectionTables, save, remove, refresh } = useRealEstate();
+  const { loading, computedAssets: computedProperties, projectionTables, save, remove, refresh } = useRealEstate();
   const { data: userAttributes } = useUserAttributes();
   const router = useRouter();
 
@@ -35,7 +35,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
 
   const property = computedProperties?.find(s => s.id === id);
-  const tableRows: RealEstatePropertyProjectionRow[] = projectionTables?.[id] ?? [];
+  const tableRows: RealEstatePropertyProjectionRow[] = projectionTables?.[id] as RealEstatePropertyProjectionRow[] ?? [];
 
   const chartRows = tableRows.map((row) => ({
     ...row,
@@ -80,6 +80,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
 
     await save({
       id: property.id!,
+      asset_type: "real-estate",
       data: JSON.stringify(merged),
     });
 
@@ -132,6 +133,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
       existingInput.yearOverrides = yearOverrides;
       await save({
         id: property.id!,
+        asset_type: "real-estate",
         data: JSON.stringify(existingInput),
       });
 
@@ -160,6 +162,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
 
       await save({
         id: property.id!,
+        asset_type: "real-estate",
         data: JSON.stringify(existingInput),
       });
 

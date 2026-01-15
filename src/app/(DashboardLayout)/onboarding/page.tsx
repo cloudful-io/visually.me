@@ -5,15 +5,16 @@ import { useRouter } from "next/navigation";
 import { Box, Typography, Button, Card, CardContent, Grid } from "@mui/material";
 import { IconChecklist, IconCircleCheck, IconCircleX } from "@tabler/icons-react";
 import EditIncomeSourceDialog from "../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
-import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
+import { useIncomeSources } from "@/lib/assets/useIncomeSources";
 import { useUserAttributes } from '@/lib/userAttributes/hook';
+import { AssetInput } from "@/lib/assets/schema";
 
 export default function IncomeSourceOnboarding() {
 
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
   const requiredTypes = ["fers-pension", "military-pension", "retirement-savings", "social-security"];
   const [typeStatus, setTypeStatus] = useState<{type: string; exists: boolean}[]>([]);
-  const { computedSources: sources, loading, save, remove, refresh } = useIncomeSources();
+  const { computedAssets: sources, loading, save, remove, refresh } = useIncomeSources();
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
   const [newSourceType, setNewSourceType] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export default function IncomeSourceOnboarding() {
     setTypeStatus(
         requiredTypes.map(t => ({
         type: t,
-        exists: (sources ?? []).some(s => s.type === t)
+        exists: (sources ?? []).some(s => s.asset_type === t)
         }))
     );
   }, [sources]);
@@ -41,7 +42,7 @@ export default function IncomeSourceOnboarding() {
     setOpenEditDialog(false);
   };
 
-  const handleSave = async (input: { type: string; data: string; id?: string }) => {
+  const handleSave = async (input: AssetInput & { id?: string }) => {
     await save(input);
     await refresh();
     handleCloseDialog();

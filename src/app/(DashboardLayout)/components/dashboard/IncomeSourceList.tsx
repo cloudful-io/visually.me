@@ -6,14 +6,14 @@ import {  Grid, Stack, Typography, Box, IconButton, Menu, MenuItem } from "@mui/
 import { IconFilePlus, IconCash, IconEdit, IconTrash, IconHelp} from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { IncomeSourcesIcon } from "./IncomeSourcesIcon";
-
+import { AssetInput } from "@/lib/assets/schema";
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 
 interface IncomeSourcesProps {
   userAttributes: Record<string, any>;
   sources: any[] | null;
   loading: boolean;
-  save: (input: { type: string; data: string; id?: string }) => Promise<void>;
+  save: (input: AssetInput & { id?: string }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -52,7 +52,7 @@ const IncomeSourceList = ({
     setOpenEditDialog(false);
   };
 
-  const handleSave = async (input: { type: string; data: string; id?: string }) => {
+  const handleSave = async (input: AssetInput & { id?: string }) => {
     await save(input);
     await refresh();
     handleCloseDialog();

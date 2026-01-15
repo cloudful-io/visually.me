@@ -1,7 +1,7 @@
 "use client";
 import { use, useState } from "react";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
-import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
+import { useIncomeSources } from "@/lib/assets/useIncomeSources";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
@@ -22,6 +22,8 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 import { ColumnDef, DataKeyOption, FormFieldConfig } from '@/types/forms';
+import { AssetInput } from "@/lib/assets/schema";
+import { AnyProjectionRow } from "@/lib/assets/types";
 
 // Projection row union
 import type {
@@ -39,7 +41,7 @@ type ProjectionRow =
 
 export default function IncomePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { loading, computedSources, projectionTables, save, remove, refresh } = useIncomeSources();
+  const { loading, computedAssets: computedSources, projectionTables, save, remove, refresh } = useIncomeSources();
   const { data: userAttributes } = useUserAttributes();
   const router = useRouter();
 
@@ -48,7 +50,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   const [newSourceType, setNewSourceType] = useState<string | null>(null);
 
   const source = computedSources?.find(s => s.id === id);
-  const tableRows: ProjectionRow[] = projectionTables?.[id] ?? [];
+  const tableRows: AnyProjectionRow[] = projectionTables?.[id] ?? [];
 
   const handleEditDialogOpen = (id: string) => {
     setEditingSourceId(id);
@@ -60,7 +62,8 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     setNewSourceType(null);
     setOpenEditDialog(false);
   };
-  const handleEditDialogSave = async (input: { type: string; data: string; id?: string }) => {
+
+  const handleEditDialogSave = async (input: AssetInput & { id?: string }) => {
     if (!source) return;
 
     const newBase = JSON.parse(input.data);
@@ -77,7 +80,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
     await save({
       id: source.id!,
-      type: input.type,
+      asset_type: input.asset_type,
       data: JSON.stringify(merged),
     });
 
@@ -106,15 +109,15 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   let columns: ColumnDef<any>[] = [];
   let dataKeys: DataKeyOption<any>[] = [];
 
-  if (source.type === "fers-pension") {
+  if (source.asset_type === "fers-pension") {
     fields = fersPensionFieldConfigs;
     columns = getFersPensionProjectionColumns(true);
     dataKeys = fersPensionDataKeys
-  } else if (source.type === "military-pension") {
+  } else if (source.asset_type === "military-pension") {
     fields = militaryPensionFieldConfigs;
     columns = getMilitaryPensionProjectionColumns(true);
     dataKeys = militaryPensionDataKeys;
-  } else if (source.type === "retirement-savings") {
+  } else if (source.asset_type === "retirement-savings") {
     fields = retirementSavingsFieldConfigs;
     columns = getRetirementSavingsProjectionColumns(true);
     dataKeys = retirementSavingsDataKeys;
@@ -125,7 +128,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
   }
 
   // --- Row edit handlers ---
-  const handleRowEditSave = async (year: number, patch: Partial<ProjectionRow>) => {
+  const handleRowEditSave = async (year: number, patch: Partial<AnyProjectionRow>) => {
     if (!source) return;
 
     try {
@@ -140,10 +143,10 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       yearOverrides[String(year)] = newOverride;
 
       existingInput.yearOverrides = yearOverrides;
-
+      
       await save({
         id: source.id!,
-        type: source.type,
+        asset_type: source.asset_type,
         data: JSON.stringify(existingInput),
       });
 
@@ -172,7 +175,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
       await save({
         id: source.id!,
-        type: source.type,
+        asset_type: source.asset_type,
         data: JSON.stringify(existingInput),
       });
 

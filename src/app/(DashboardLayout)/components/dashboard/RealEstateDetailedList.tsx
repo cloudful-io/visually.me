@@ -1,18 +1,21 @@
 "use client";
 import { useState } from "react";
-import { Grid, Typography, Box } from "@mui/material";
+import { Grid, Typography, Box, Button } from "@mui/material";
 import EditRealEstateDialog from "./EditDialogs/EditRealEstateDialog";
 import { RealEstateCard } from "./RealEstateCard";
 import { AddRealEstateCard } from "./AddRealEstateCard";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { RealEstatePropertyProjectionRow } from "financial-calcs";
+import { AnyProjectionRow } from "@/lib/assets/types";
+import { AssetInput } from "@/lib/assets/schema";
+import { migrate } from "@/scripts/migration-real-estate";
 
 interface RealEstateProps {
   userAttributes: Record<string, any>;
   properties: any[] | null;
-  projectionTables: Record<string, RealEstatePropertyProjectionRow[]>;
+  projectionTables: Record<string, AnyProjectionRow[]>;
   loading: boolean;
-  save: (input: { data: string; id?: string }) => Promise<void>;
+  save: (input: AssetInput & { id?: string }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -51,7 +54,7 @@ const RealEstateDetailedList = ({
     setOpenEditDialog(false);
   };
 
-  const handleSave = async (input: { data: string; id?: string }) => {
+  const handleSave = async (input: AssetInput & { id?: string }) => {
     await save(input);
     await refresh();
     handleCloseDialog();
@@ -62,6 +65,10 @@ const RealEstateDetailedList = ({
       await remove(id);
     }
   };
+
+  const handleMigrate = async () => {
+  await migrate();
+};
 
   return (
     <>
@@ -88,12 +95,13 @@ const RealEstateDetailedList = ({
                 <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={property.id}>
                   <RealEstateCard
                     property={property}
-                    projectionTable={projectionTables[property.id]}
+                    projectionTable={projectionTables[property.id] as RealEstatePropertyProjectionRow[]}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                   />
                 </Grid>
               ))}
+              <Button variant="outlined" onClick={handleMigrate}>Migrate</Button>
           </Grid>
         )}
       </Box>

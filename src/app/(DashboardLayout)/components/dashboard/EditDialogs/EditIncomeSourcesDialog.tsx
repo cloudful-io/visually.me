@@ -12,7 +12,7 @@ import { socialSecurityConfig, socialSecurityFieldConfigs } from "@/configs/soci
 import { fersPensionConfig, fersPensionFieldConfigs } from "@/configs/fersPension";
 import { militaryPensionConfig, militaryPensionFieldConfigs } from "@/configs/militaryPension";
 import { RetirementSavingsInput, SocialSecurityBenefitInput, FersPensionInput, MilitaryPensionInput } from "financial-calcs";
-import { IncomeSourcesInput } from "@/lib/incomeSources/schema";
+import { AssetInput } from "@/lib/assets/schema";
 import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
 import { useMilitaryPensionProjection } from '@/hooks/useMilitaryPensionProjection';
 import { useRetirementSavingsProjection } from "@/hooks/useRetirementSavingsProjection";
@@ -38,11 +38,11 @@ export default function EditIncomeSourceDialog({
 }: {
   userAttributes: Record<string, any>;
   open: boolean;
-  sources: IncomeSourcesInput[] | null;
+  sources: AssetInput[] | null;
   sourceId: string | null;
   defaultType?: string | null;
   onClose: () => void;
-  onSave: (input: { type: string; data: string; label: string; id?: string }) => Promise<void>;
+  onSave: (input: AssetInput & { id?: string }) => Promise<void>;
 }) {
   const loading = false;
   const isEditing = !!sourceId;
@@ -52,7 +52,7 @@ export default function EditIncomeSourceDialog({
   // Root-level fields
   // ----------------------------
   type IncomeSourceType = "retirement-savings" | "social-security" | "fers-pension" | "military-pension";
-  const [type, setType] = useState<IncomeSourceType>("retirement-savings");
+  const [asset_type, setAsset_Type] = useState<IncomeSourceType>("retirement-savings");
   const [label, setLabel] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
   const [childValidationMessages, setChildValidationMessages] = useState<string[]>([]);
@@ -127,7 +127,7 @@ export default function EditIncomeSourceDialog({
     },
   };
 
-  const currentType = typeConfig[type] ?? typeConfig["retirement-savings"];
+  const currentType = typeConfig[asset_type] ?? typeConfig["retirement-savings"];
   const ChildComponent = currentType.Component;
 
   const {
@@ -143,19 +143,19 @@ export default function EditIncomeSourceDialog({
 
   const isSaveDisabled =
     showLoading ||
-    !type.trim() ||
+    !asset_type.trim() ||
     !label.trim() ||
     childHasErrors ||
     childValidationMessages.length > 0;
 
-  const friendlyType = typeConfig[type].title ?? "Income / Investment";
+  const friendlyType = typeConfig[asset_type].title ?? "Income / Investment";
 
   const dialogTitle = isEditing
     ? `Edit: ${friendlyType}`
     : `Add: ${friendlyType}`;
 
   const childHook = (() => {
-    switch (type) {
+    switch (asset_type) {
       case "fers-pension":
         return useFersPensionProjection(childValues as FersPensionInput);
       case "military-pension":
@@ -177,13 +177,13 @@ export default function EditIncomeSourceDialog({
     if (isEditing && sources) {
       const src = sources.find((s) => s.id === sourceId);
       if (src) {
-        if (src.type === "retirement-savings" ||
-          src.type === "social-security" ||
-          src.type === "fers-pension" ||
-          src.type === "military-pension") {
-        setType(src.type);
+        if (src.asset_type === "retirement-savings" ||
+          src.asset_type === "social-security" ||
+          src.asset_type === "fers-pension" ||
+          src.asset_type === "military-pension") {
+        setAsset_Type(src.asset_type);
         } else {
-          setType("retirement-savings");
+          setAsset_Type("retirement-savings");
         }
 
         if (src.data) {
@@ -213,9 +213,9 @@ export default function EditIncomeSourceDialog({
       defaultType === "fers-pension" ||
       defaultType === "military-pension"
     ) {
-      setType(defaultType);
+      setAsset_Type(defaultType);
     } else {
-      setType("retirement-savings");  // fallback
+      setAsset_Type("retirement-savings");  // fallback
     }
     setLabel("");
     if (defaultType === "retirement-savings") reset(initialRetirementSavingsValues);
@@ -229,14 +229,14 @@ export default function EditIncomeSourceDialog({
     if (!isEditing) {
       reset(currentType.initial);
     }
-  }, [type, isEditing]);
+  }, [asset_type, isEditing]);
 
   // ----------------------------
   // Validation
   // ----------------------------
   const validateRoot = () => {
     const newErrors: { type?: string; label?: string } = {};
-    if (!type.trim()) newErrors.type = "Type is required.";
+    if (!asset_type.trim()) newErrors.type = "Type is required.";
     if (!label.trim()) newErrors.label = "Account Name / Label is required.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -286,8 +286,8 @@ export default function EditIncomeSourceDialog({
 
     await onSave({
       id: sourceId ?? undefined,
-      type,
-      label: label.trim(),
+      asset_type,
+      //label: label.trim(),
 
       data: 
         JSON.stringify({
@@ -310,7 +310,7 @@ export default function EditIncomeSourceDialog({
         ) : (
           <Grid container spacing={2}>
             <Typography variant="body1">
-              {typeConfig[type].description}
+              {typeConfig[asset_type].description}
             </Typography>
             {/* Account Label */}
             <Grid size={{ xs: 12 }}>

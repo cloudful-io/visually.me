@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { NormalizedSource } from "@/lib/incomeSources/types";
+import { NormalizedAsset } from "@/lib/assets/types";
 import { NormalizedProperty } from "@/lib/realEstate/types";
 import {
   Timeline,
@@ -63,8 +63,8 @@ type TimelineYear = {
 };
 
 type Props = {
-  incomeSources?: NormalizedSource[] | null;
-  realEstateProperties?: NormalizedProperty[] | null;
+  incomeSources?: any[] | null;
+  realEstateProperties?: any[] | null;
   currentYear: number;
   retirementAge?: number;
   birthYear?: number;

@@ -1,27 +1,30 @@
 'use client'
 import React, { useState, useEffect, useMemo } from 'react';
-import { Grid, Box } from '@mui/material';
+import { Grid, Box, Typography } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
-import { IncomeAtAge } from '../components/dashboard/IncomeAtAge';
-import { InvestmentBalanceAtAge } from '../components/dashboard/InvestmentBalanceAtAge';
 import { IncomeBreakdown } from '../components/dashboard/IncomeBreakdown';
 import { InvestmentBreakdown } from '../components/dashboard/InvestmentBreakdown';
 import DashboardCard from '../components/shared/DashboardCard';
 import { MUILineChart } from '../components/shared/MUILineChart';
-import { MUIBarChart } from '../components/shared/MUIBarChart';
 import UserAttributes from '../components/dashboard/UserAttributes';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
-import { useIncomeSources } from '@/lib/incomeSources/useIncomeSources';
-import { useRealEstate } from '@/lib/realEstate/useRealEstate';
+import { useIncomeSources } from '@/lib/assets/useIncomeSources';
+import { useRealEstate } from '@/lib/assets/useRealEstate';
 import { FinancialTimeline } from '../components/dashboard/FinancialTimeline';
 import { buildCashFlowTable, CashFlowSourceRow } from '@/lib/dashboard/util';
+import { supabase } from "@/utils/supabase/client";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { UserProfileService } from "supabase-auth-lib";
+
 
 const Dashboard = () => {
 
-  const { computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources();
-  const { computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
+  const { computedAssets: computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources();
+  const { computedAssets: computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
+  const { user } = useSupabaseAuth();
+  const [displayName, setDisplayName] = useState<string>("");
 
   const combined = getCombinedProjection() ?? [];
   const incomeChartRows = getCombinedIncomeChartRows;
@@ -37,6 +40,21 @@ const Dashboard = () => {
     [incomeChartRows, propertiesChartRows]
   );
 
+  // Load display name and avatar
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchProfile = async () => {
+      const userProfileService = new UserProfileService(supabase);
+      const profile = await userProfileService.getById(user.id);
+
+      if (profile) {
+        setDisplayName(profile.display_name || "");
+      }
+    };
+    fetchProfile();
+  }, [user]);
+
   useEffect(() => {
     if (attrs?.targetRetirementAge != null) {
       setSelectedAge(attrs.targetRetirementAge);
@@ -47,11 +65,19 @@ const Dashboard = () => {
   return (
     <PageContainer title="Visually Me: Dashboard" description="Dashboard displaying financial projections and breakdowns.">
       <Box>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
+          <Grid size={12}>
+            <Box sx={{ px: 1, py: 0.5 }}>
+              <Typography variant="h4" fontWeight={600}>
+                Welcome, {displayName ?? 'there'}!
+              </Typography>
+            </Box>
+          </Grid>
+
           <Grid
             size={{sm: 12, lg: 4}}
           >
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid size={12}>
                 <UserAttributes />
               </Grid>
@@ -69,49 +95,37 @@ const Dashboard = () => {
           <Grid
            size={{sm: 12, lg: 8}}
           >
-            <Grid container spacing={3}>
-              <Grid size={{sm: 6}}>
-                <Grid container spacing={3}>
-                  <Grid size={12}>
-                    <IncomeAtAge
-                      combined={combined}
-                      targetAge={selectedAge}
-                      targetRetirementAge={targetRetirementAge}
-                      onAgeChange={setSelectedAge}
-                    />
-                  </Grid>
+            <Grid container spacing={2}>
+              <Grid size={{xs: 12, sm: 6}}>
+                <Grid container spacing={2}>
                   <Grid size={12}>
                     <IncomeBreakdown
                       combined={combined}
                       computedSources={(computedSources ?? []).map(s => ({
                         id: s.id ?? "unknown",   
                         label: s.label,
-                        type: s.type,
+                        type: s.asset_type,
                       }))}
-                      targetAge={selectedAge}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid size={{sm: 6}}>
-                <Grid container spacing={3}>
-                  <Grid size={12}>
-                    <InvestmentBalanceAtAge
-                      combined={combined}
                       targetAge={selectedAge}
                       targetRetirementAge={targetRetirementAge}
                       onAgeChange={setSelectedAge}
                     />
+                  </Grid>
                 </Grid>
-                <Grid size={12}>
+              </Grid>
+              <Grid size={{xs: 12, sm: 6}}>
+                <Grid container spacing={2}>
+                  <Grid size={12}>
                     <InvestmentBreakdown
                       combined={combined}
                       computedSources={(computedSources ?? []).map(s => ({
                         id: s.id ?? "unknown",   
                         label: s.label,
-                        type: s.type,
+                        type: s.asset_type,
                       }))}
                       targetAge={selectedAge}
+                      targetRetirementAge={targetRetirementAge}
+                      onAgeChange={setSelectedAge}
                     />
                   </Grid>
                 </Grid>

@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
-import { useRealEstate } from "@/lib/realEstate/useRealEstate";
+import { useRealEstate } from "@/lib/assets/useRealEstate";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 import { ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
@@ -16,7 +16,7 @@ import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
 
 export default function RealEstateSummaryPage() {
-  const { loading, getCombinedProjection, getCombinedChartRows, computedProperties, projectionTables, save, remove, refresh } =
+  const { loading, getCombinedProjection, getCombinedChartRows, computedAssets: computedProperties, projectionTables, save, remove, refresh } =
     useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();  
 

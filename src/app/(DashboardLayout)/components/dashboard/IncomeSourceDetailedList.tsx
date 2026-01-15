@@ -1,16 +1,17 @@
 "use client";
 import { useState } from "react";
-import { Grid, Typography, Box } from "@mui/material";
+import { Grid, Typography, Box, Button } from "@mui/material";
 import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 import { IncomeCard } from "./IncomeCard";
 import { AddIncomeCard } from "./AddIncomeCard";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { AssetInput } from "@/lib/assets/schema";
+import { migrate } from "@/scripts/migration-income-sources";
 
 interface IncomeSourcesProps {
   userAttributes: Record<string, any>;
   sources: any[] | null;
   loading: boolean;
-  save: (input: { type: string; data: string; id?: string }) => Promise<void>;
+  save: (input: AssetInput & { id?: string }) => Promise<void>;
   remove: (id: string) => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -27,8 +28,6 @@ const IncomeSourceDetailedList = ({
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
 
   const [newSourceType, setNewSourceType] = useState<string | null>(null);
-
-  const theme = useTheme();
 
   // Edit handlers
   const handleEdit = (id: string) => {
@@ -49,7 +48,11 @@ const IncomeSourceDetailedList = ({
     setOpenEditDialog(false);
   };
 
-  const handleSave = async (input: { type: string; data: string; id?: string }) => {
+  const handleMigrate = () => {
+    migrate();
+  }
+
+  const handleSave = async (input: AssetInput & { id?: string }) => {
     await save(input);
     await refresh();
     handleCloseDialog();
@@ -60,7 +63,6 @@ const IncomeSourceDetailedList = ({
       await remove(id);
     }
   };
-
   return (
     <>
       <EditIncomeSourceDialog
@@ -93,6 +95,7 @@ const IncomeSourceDetailedList = ({
                   />
                 </Grid>
               ))}
+              <Button variant="outlined" onClick={handleMigrate}>Migrate</Button>
           </Grid>
         )}
       </Box>

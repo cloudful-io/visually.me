@@ -11,7 +11,7 @@ import { currencyFormatter } from "@/lib/formatters/currency";
 
 interface IncomeSource {
   id: string;
-  type: string;
+  asset_type: string;
   data: string;      
   firstYear?: number;
   firstAmount?: number;
@@ -66,7 +66,7 @@ export function IncomeCard({ src, birthYear, onEdit, onDelete }: IncomeCardProps
 
       progressPct = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
 
-            // Remaining years until withdraw
+      // Remaining years until withdraw
       yearsLeft = Math.max(0, withdrawYear - currentYear);
     } else {
       progressPct = 100;
@@ -79,7 +79,7 @@ export function IncomeCard({ src, birthYear, onEdit, onDelete }: IncomeCardProps
       title={
         <Box display="flex" alignItems="center" gap={1}>
           {/* Icon for the income type */}
-          {IncomeSourcesIcon[src.type] ?? <IconUser size={20} />}
+          {IncomeSourcesIcon[src.asset_type] ?? <IconUser size={20} />}
 
           {/* Label */}
           <Typography variant="h6" fontWeight={600} noWrap>

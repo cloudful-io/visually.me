@@ -7,12 +7,12 @@ import { IconMilitaryRank } from "@tabler/icons-react";
 export const militaryPensionConfig: CalculatorConfig<MilitaryPensionInput> = {
   id: "military-pension",
   icon: IconMilitaryRank,
-  shortTitle: "Uniformed Service Pension",
+  shortTitle: "Uniformed Service (Military) Pension",
   calculatorTitle: "Uniformed Service (Military) Pension Projection",
   calculatorDescription:
     "Calculate your Uniformed Service (Military) pension based on retirement system, years of service, high-36 salary.",
   calculatorRoute: "/calculators/military-pension",
-  scenarioTitle: "Uniformed Service Pension Scenario Comparison",
+  scenarioTitle: "Uniformed Service (Military) Pension Scenario Comparison",
   scenarioDescription:
     "Build scenarios to compare your Uniformed Service (Military) pension based on retirement syste, years of service, and high-36 salary.",
   scenarioRoute: "/calculators/military-pension/scenario",

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
-import { useIncomeSources } from "@/lib/incomeSources/useIncomeSources";
+import { useIncomeSources } from "@/lib/assets/useIncomeSources";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 import { ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
@@ -14,10 +14,9 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
-import UserAttributes from "../components/dashboard/UserAttributes";
 
 export default function IncomeSummaryPage() {
-  const { loading, getCombinedProjection, getCombinedChartRows, computedSources, save, remove, refresh } =
+  const { loading, getCombinedProjection, getCombinedChartRows, computedAssets: computedSources, save, remove, refresh } =
     useIncomeSources();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();  
 
@@ -41,7 +40,7 @@ export default function IncomeSummaryPage() {
           label: src.label,
         }))
       : computedSources
-          .filter((src) => src.type === "retirement-savings")
+          .filter((src) => src.asset_type === "retirement-savings")
           .map((src) => ({
             key: `balance_${src.id}` as keyof (typeof chartRows)[number],
             label: `${src.label} Balance`,

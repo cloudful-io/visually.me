@@ -9,6 +9,7 @@ import { RealEstatePropertyInput } from "financial-calcs";
 import { RealEstateInput } from "@/lib/realEstate/schema";
 import { useRealEstateProjection } from "@/hooks/useRealEstateProjection";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
+import { AssetInput } from "@/lib/assets/schema";
 
 export default function EditRealEstateDialog({
   userAttributes,
@@ -23,7 +24,8 @@ export default function EditRealEstateDialog({
   properties: RealEstateInput[] | null;
   propertyId: string | null;
   onClose: () => void;
-  onSave: (input: { data: string; label: string; address?: string; id?: string }) => Promise<void>;
+  //onSave: (input: { data: string; label: string; address?: string; id?: string }) => Promise<void>;
+  onSave: (input: AssetInput & { id?: string }) => Promise<void>;
 }) {
   const loading = false;
   const isEditing = !!propertyId;
@@ -184,8 +186,9 @@ export default function EditRealEstateDialog({
 
     await onSave({
       id: propertyId ?? undefined,
-      label: label.trim(),
-      address: address.trim(),
+      asset_type: "real-estate",
+      //label: label.trim(),
+      //address: address.trim(),
 
       data: 
         JSON.stringify({
