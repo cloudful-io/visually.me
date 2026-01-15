@@ -212,7 +212,7 @@ export default function EditRealEstateDialog({
         ) : (
           <Grid container spacing={2}>
             <Typography variant="body1">
-              Real Estate Description Here
+              Estimate your future income (if any) and cost of homeownership based on mortgage, property tax, homeowner and/or private mortgage insurance, and HOA fee. 
             </Typography>
             {/* Account Label */}
             <Grid size={{ xs: 12 }}>
