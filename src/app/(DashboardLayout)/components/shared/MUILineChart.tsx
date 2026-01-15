@@ -12,7 +12,7 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { LineSeries } from "@mui/x-charts/LineChart";
 import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 import { useTheme } from "@mui/material/styles";
-import { currencyFormatter } from "@/lib/formatters/currency";
+import { currencyFormatter, shortCurrencyFormatter } from "@/lib/formatters/currency";
 
 export type DataKeyOption<T> = {
   key: T extends any ? keyof T : never;
@@ -159,9 +159,9 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
         xAxis={[{ data: xAxisData }]}
         yAxis={[
           {
-            width: 120,
+            width: 80,
             label: yLabel ?? selectedKey.label ?? undefined,
-            valueFormatter: currencyFormatter,
+            valueFormatter: shortCurrencyFormatter,
           },
         ]}
         colors={[theme.palette.primary.main]}

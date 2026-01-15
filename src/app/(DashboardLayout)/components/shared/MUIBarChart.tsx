@@ -9,7 +9,7 @@ import {
 import { BarChart  } from '@mui/x-charts/BarChart';
 import { ChartsReferenceLine } from '@mui/x-charts/ChartsReferenceLine';
 import { useTheme } from '@mui/material/styles';
-import { currencyFormatter } from "@/lib/formatters/currency";
+import { currencyFormatter, shortCurrencyFormatter } from "@/lib/formatters/currency";
 import { DataKeyOption } from '@/types/forms';
 
 type YearRange = 5 | 10 | 25 | 'all';
@@ -176,9 +176,9 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
         ]}
         yAxis={[
           {
-            width: 120,
+            width: 80,
             label: yLabel ?? selectedKey?.label ?? undefined,
-            valueFormatter: currencyFormatter,
+            valueFormatter: shortCurrencyFormatter,
           },
         ]}
         series={series}
