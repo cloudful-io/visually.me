@@ -8,8 +8,6 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import { RealEstatePropertyProjectionRow } from "financial-calcs";
 import { AnyProjectionRow } from "@/lib/assets/types";
 import { AssetInput } from "@/lib/assets/schema";
-//import { migrate } from "@/scripts/migration-real-estate";
-import { migrateRealEstates } from "@/scripts/migration-real-estate-action";
 
 interface RealEstateProps {
   userAttributes: Record<string, any>;
@@ -67,10 +65,6 @@ const RealEstateDetailedList = ({
     }
   };
 
-  const handleMigrate = async () => {
-  await migrateRealEstates();
-};
-
   return (
     <>
       <EditRealEstateDialog
@@ -102,7 +96,6 @@ const RealEstateDetailedList = ({
                   />
                 </Grid>
               ))}
-              <Button variant="outlined" onClick={handleMigrate}>Migrate</Button>
           </Grid>
         )}
       </Box>
