@@ -54,8 +54,13 @@ export function useCombinedProjections(
           let income = 0;
           let balance = 0;
 
-          if (incomeKey && incomeKey in row) income = (row as any)[incomeKey] ?? 0;
-
+          if (incomeKey) {
+            if (Array.isArray(incomeKey)) {
+              income = incomeKey.reduce((sum, key) => sum + ((row as any)[key] ?? 0), 0);
+            } else {
+              income = (row as any)[incomeKey] ?? 0;
+            }
+          }
           if (balanceKey && balanceKey in row) balance = (row as any)[balanceKey] ?? 0;
 
           annualIncome += income;

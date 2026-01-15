@@ -99,7 +99,7 @@ export interface AssetDefinition<FormValues = any, Row = any, Context = any> {
     currentAmount: number | null;
     rows?: AnyProjectionRow[];
   };
-  incomeKey?: string;
+  incomeKey?: string | string[];
   balanceKey?: string;
 }
 
@@ -116,7 +116,7 @@ export const assetRegistry: Record<string, AssetDefinition> = {
         additionalMergedFields: ua => ({ retirementAge: ua?.targetRetirementAge }),
       }
     ),
-    incomeKey: "pension",
+    incomeKey: ["pension", "salary"],
   },
 
   "military-pension": {
