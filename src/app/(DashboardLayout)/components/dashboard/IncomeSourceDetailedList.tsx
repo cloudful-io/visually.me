@@ -5,7 +5,8 @@ import EditIncomeSourceDialog from "./EditDialogs/EditIncomeSourcesDialog";
 import { IncomeCard } from "./IncomeCard";
 import { AddIncomeCard } from "./AddIncomeCard";
 import { AssetInput } from "@/lib/assets/schema";
-import { migrate } from "@/scripts/migration-income-sources";
+//import { migrate } from "@/scripts/migration-income-sources";
+import { migrateIncomeSources } from "@/scripts/migration-income-action";
 
 interface IncomeSourcesProps {
   userAttributes: Record<string, any>;
@@ -48,9 +49,9 @@ const IncomeSourceDetailedList = ({
     setOpenEditDialog(false);
   };
 
-  const handleMigrate = () => {
-    migrate();
-  }
+  const handleMigrate = async () => {
+    await migrateIncomeSources();
+  };
 
   const handleSave = async (input: AssetInput & { id?: string }) => {
     await save(input);
