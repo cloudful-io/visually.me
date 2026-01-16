@@ -32,28 +32,42 @@ export function computeIncomeAsset(
 ) {
   return ({ asset, userAttributes, currentYear }: ComputeArgs) => {
     const parsed = asset.parsedData ?? {};
-
+    const baseMergedFields = getBaseMergedFields(userAttributes);
     const mergedFields = {
       ...parsed.fields,
-      ...getBaseMergedFields(userAttributes),
+      ...baseMergedFields,
       ...(options?.additionalMergedFields?.(userAttributes) ?? {}),
     };
 
-    const rows = projectionFn({
-      ...mergedFields,
-      yearOverrides: asset.parsedData.yearOverrides ?? {},
-    });
+    const baseFieldsReady = Object.values(baseMergedFields).every(
+      v => v !== undefined
+    );
+    try {
+      if (baseFieldsReady) {
+        const rows = projectionFn({
+          ...mergedFields,
+          yearOverrides: asset.parsedData.yearOverrides ?? {},
+        });
 
-    const firstRow = rows.find(r => (r[amountKey] ?? 0) > 0);
-    const firstYear = firstRow?.year ?? null;
-    const firstAmount = firstRow?.[amountKey] ?? null;
+        const firstRow = rows.find(r => (r[amountKey] ?? 0) > 0);
+        const firstYear = firstRow?.year ?? null;
+        const firstAmount = firstRow?.[amountKey] ?? null;
 
-    const currentAmount =
-      firstYear && currentYear >= firstYear
-        ? rows.find(r => r.year === currentYear)?.[amountKey] ?? firstAmount
-        : null;
+        const currentAmount =
+          firstYear && currentYear >= firstYear
+            ? rows.find(r => r.year === currentYear)?.[amountKey] ?? firstAmount
+            : null;
 
-    return { mergedFields, firstYear, firstAmount, currentAmount, rows };
+        return { mergedFields, firstYear, firstAmount, currentAmount, rows };
+      }
+      else {
+        return { mergedFields, firstYear: null, firstAmount: null, currentAmount: null, rows: [] };
+      }
+    } 
+    catch (err) {
+      console.error("Projection failed for", asset.id, err);
+      return { mergedFields, firstYear: null, firstAmount: null, currentAmount: null, rows: [] };
+    }
   };
 }
 
