@@ -18,14 +18,8 @@ import { useMilitaryPensionProjection } from '@/hooks/useMilitaryPensionProjecti
 import { useRetirementSavingsProjection } from "@/hooks/useRetirementSavingsProjection";
 import { useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-
-interface ChildFormHook<T> {
-  values: T;
-  handleChange: (field: keyof T, value: any) => void;
-  errors: Record<string, string>;
-  hasErrors: boolean;
-  validateInput?: () => { field: string; message: string }[];
-}
+import { calculatorRegistry, CalculatorId } from "@/lib/calculators/registry";
+import { assetRegistry } from "@/lib/assets/registry";
 
 export default function EditIncomeSourceDialog({
   userAttributes,
@@ -51,16 +45,19 @@ export default function EditIncomeSourceDialog({
   // ----------------------------
   // Root-level fields
   // ----------------------------
-  type IncomeSourceType = "retirement-savings" | "social-security" | "fers-pension" | "military-pension";
-  const [asset_type, setAsset_Type] = useState<IncomeSourceType>("retirement-savings");
+  //type IncomeSourceType = "retirement-savings" | "social-security" | "fers-pension" | "military-pension";
+  const [asset_type, setAsset_Type] = useState<AssetInput["asset_type"]>("retirement-savings");
   const [label, setLabel] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
   const [childValidationMessages, setChildValidationMessages] = useState<string[]>([]);
 
+  const assetDef = assetRegistry[asset_type];
+  const calculator = calculatorRegistry[assetDef.calculatorId!];
+
   // ----------------------------
   // Child form state
   // ----------------------------
-  const initialRetirementSavingsValues: RetirementSavingsInput = {
+  /*const initialRetirementSavingsValues: RetirementSavingsInput = {
     ...retirementSavingsConfig.initialFormValues!,
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
@@ -89,8 +86,28 @@ export default function EditIncomeSourceDialog({
     birthYear: userAttributes?.birthYear ?? 1970,
     lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
   };
+  */
+  const buildInitialValues = () => ({
+    ...calculator.config.initialFormValues,
+    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
+    birthYear: userAttributes?.birthYear ?? 1970,
+    retirementAge: userAttributes?.targetRetirementAge,
+    withdrawStartAge: userAttributes?.targetRetirementAge,
+    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
+  });
 
-  const typeConfig: Record<IncomeSourceType, {
+  const {
+    values: childValues,
+    handleChange: handleChildChange,
+    errors: childErrors,
+    hasErrors: childHasErrors,
+    reset
+  } = useForm(
+    buildInitialValues(),
+    calculator.fieldConfigs
+  );
+
+  /*const typeConfig: Record<IncomeSourceType, {
     title: string;
     description: string;
     initial: any;
@@ -125,12 +142,12 @@ export default function EditIncomeSourceDialog({
       Component: EditMilitaryPension, 
       fieldConfigs: militaryPensionFieldConfigs 
     },
-  };
+  };*/
 
-  const currentType = typeConfig[asset_type] ?? typeConfig["retirement-savings"];
+  //const currentType = typeConfig[asset_type] ?? typeConfig["retirement-savings"];
   const ChildComponent = currentType.Component;
 
-  const {
+  /*const {
     values: childValues,
     handleChange: handleChildChange,
     errors: childErrors,
@@ -139,7 +156,7 @@ export default function EditIncomeSourceDialog({
   } = useForm<typeof currentType.initial, { isAuthenticated: boolean }>(
     currentType.initial,
     currentType.fieldConfigs
-  );
+  );*/
 
   const isSaveDisabled =
     showLoading ||
@@ -148,13 +165,13 @@ export default function EditIncomeSourceDialog({
     childHasErrors ||
     childValidationMessages.length > 0;
 
-  const friendlyType = typeConfig[asset_type].title ?? "Income / Investment";
+  const friendlyType = calculator.config.shortTitle;
 
   const dialogTitle = isEditing
     ? `Edit: ${friendlyType}`
     : `Add: ${friendlyType}`;
 
-  const childHook = (() => {
+  /*const childHook = (() => {
     switch (asset_type) {
       case "fers-pension":
         return useFersPensionProjection(childValues as FersPensionInput);
@@ -167,7 +184,9 @@ export default function EditIncomeSourceDialog({
       default:
         return null;
     }
-  })();
+  })();*/
+  const childHook = calculator.useProjection(childValues);
+
   // ----------------------------
   // Load existing source if editing or defaultType if adding
   // ----------------------------
@@ -218,16 +237,18 @@ export default function EditIncomeSourceDialog({
       setAsset_Type("retirement-savings");  // fallback
     }
     setLabel("");
+    reset(buildInitialValues());
+    /*
     if (defaultType === "retirement-savings") reset(initialRetirementSavingsValues);
     else if (defaultType === "social-security") reset(initialSocialSecurityValues);
     else if (defaultType === "fers-pension") reset(initialFersPensionValues);
-    else if (defaultType === "military-pension") reset(initialMilitaryPensionValues);
+    else if (defaultType === "military-pension") reset(initialMilitaryPensionValues);*/
     setErrors({});
   }, [open, sourceId, sources, isEditing, defaultType]);
 
   useEffect(() => {
     if (!isEditing) {
-      reset(currentType.initial);
+      reset(buildInitialValues());
     }
   }, [asset_type, isEditing]);
 
@@ -287,7 +308,6 @@ export default function EditIncomeSourceDialog({
     await onSave({
       id: sourceId ?? undefined,
       asset_type,
-      //label: label.trim(),
 
       data: 
         JSON.stringify({
@@ -310,7 +330,7 @@ export default function EditIncomeSourceDialog({
         ) : (
           <Grid container spacing={2}>
             <Typography variant="body1">
-              {typeConfig[asset_type].description}
+              {calculator.config.calculatorDescription}
             </Typography>
             {/* Account Label */}
             <Grid size={{ xs: 12 }}>
