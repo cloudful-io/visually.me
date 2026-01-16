@@ -154,6 +154,7 @@ export function MUILineChart<T extends Record<string, any>>(props: Props<T>) {
       )}
 
       <LineChart
+        grid={{ horizontal: true }}
         height={height}
         series={series}
         xAxis={[{ data: xAxisData }]}

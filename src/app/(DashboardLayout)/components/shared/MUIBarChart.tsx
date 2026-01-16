@@ -167,6 +167,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
       )}
 
       <BarChart
+        grid={{ horizontal: true }}
         borderRadius={8}
         xAxis={[
           {
