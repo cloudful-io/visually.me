@@ -7,6 +7,7 @@ import {
 } from "financial-calcs";
 import { AssetCategory, NormalizedAsset } from "./types";
 import { AnyProjectionRow } from "./types";
+import type { CalculatorId } from "../calculators/registry";
 import { FormFieldConfig } from "@/types/forms"
 import { CalculatorConfig } from "@/configs/calculatorConfig";
 import { fersPensionFieldConfigs, fersPensionConfig } from "@/configs/fersPension";
@@ -101,10 +102,11 @@ function getBaseMergedFields(userAttributes: any) {
 
 export interface AssetDefinition<FormValues = any, Row = any, Context = any> {
   category: AssetCategory;
-  fieldConfigs: FormFieldConfig<FormValues, Context>[];
+  calculatorId?: CalculatorId;
+  //fieldConfigs: FormFieldConfig<FormValues, Context>[];
 
   // Optional capabilities
-  calculatorConfig?: CalculatorConfig<FormValues>;
+  //calculatorConfig?: CalculatorConfig<FormValues>;
   projection?: ProjectionFn;
   compute?: (args: ComputeArgs) => {
     mergedFields: any;
@@ -120,8 +122,9 @@ export interface AssetDefinition<FormValues = any, Row = any, Context = any> {
 export const assetRegistry: Record<string, AssetDefinition> = {
   "fers-pension": {
     category: "income-source",
-    fieldConfigs: fersPensionFieldConfigs,
-    calculatorConfig: fersPensionConfig,
+    calculatorId: "fers-pension",
+    //fieldConfigs: fersPensionFieldConfigs,
+    //calculatorConfig: fersPensionConfig,
     projection: calculateFersPensionProjectionWithOverrides,
     compute: computeIncomeAsset(
       calculateFersPensionProjectionWithOverrides,
@@ -135,8 +138,9 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "military-pension": {
     category: "income-source",
-    fieldConfigs: militaryPensionFieldConfigs,
-    calculatorConfig: militaryPensionConfig,
+    calculatorId: "military-pension",
+    //fieldConfigs: militaryPensionFieldConfigs,
+    //calculatorConfig: militaryPensionConfig,
     projection: calculateMilitaryPensionProjectionWithOverrides,
     compute: computeIncomeAsset(
       calculateMilitaryPensionProjectionWithOverrides,
@@ -147,8 +151,9 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "retirement-savings": {
     category: "income-source",
-    fieldConfigs: retirementSavingsFieldConfigs,
-    calculatorConfig: retirementSavingsConfig,
+    calculatorId: "retirement-savings",
+    //ieldConfigs: retirementSavingsFieldConfigs,
+    //calculatorConfig: retirementSavingsConfig,
     projection: calculateRetirementSavingsProjectionWithOverrides,
     compute: computeIncomeAsset(
       calculateRetirementSavingsProjectionWithOverrides,
@@ -160,8 +165,9 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "social-security": {
     category: "income-source",
-    fieldConfigs: socialSecurityFieldConfigs,
-    calculatorConfig: socialSecurityConfig,
+    calculatorId: "social-security",
+    //fieldConfigs: socialSecurityFieldConfigs,
+    //calculatorConfig: socialSecurityConfig,
     projection: calculateSocialSecurityBenefitProjectionWithOverrides,
     compute: computeIncomeAsset(
       calculateSocialSecurityBenefitProjectionWithOverrides,
@@ -172,7 +178,7 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "real-estate": {
     category: "property",
-    fieldConfigs: realEstateFieldConfigs,
+    //fieldConfigs: realEstateFieldConfigs,
     projection: calculateRealEstatePropertyProjectionWithOverrides,
     compute: computeRealEstateAsset(
       calculateRealEstatePropertyProjectionWithOverrides

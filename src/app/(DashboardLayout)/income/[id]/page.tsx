@@ -7,10 +7,6 @@ import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarCha
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { CircularProgress, Button, Typography } from "@mui/material";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
-import { fersPensionFieldConfigs, getFersPensionProjectionColumns, fersPensionDataKeys } from "@/configs/fersPension";
-import { militaryPensionFieldConfigs, getMilitaryPensionProjectionColumns, militaryPensionDataKeys } from "@/configs/militaryPension";
-import { retirementSavingsFieldConfigs, getRetirementSavingsProjectionColumns, retirementSavingsDataKeys } from "@/configs/retirementSavings";
-import { socialSecurityFieldConfigs, getSocialSecurityProjectionColumns, socialSecurityDataKeys } from "@/configs/socialSecurityBenefits";
 import BackToList from "../../components/shared/BackToList";
 import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
 import EditIcon from '@mui/icons-material/Edit';
@@ -21,23 +17,10 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
-import { ColumnDef, DataKeyOption, FormFieldConfig } from '@/types/forms';
 import { AssetInput } from "@/lib/assets/schema";
 import { AnyProjectionRow } from "@/lib/assets/types";
-
-// Projection row union
-import type {
-  FersPensionProjectionRow,
-  MilitaryPensionProjectionRow,
-  RetirementSavingsProjectionRow,
-  SocialSecurityBenefitProjectionRow,
-} from "financial-calcs";
-
-type ProjectionRow =
-  | FersPensionProjectionRow
-  | MilitaryPensionProjectionRow
-  | RetirementSavingsProjectionRow
-  | SocialSecurityBenefitProjectionRow;
+import { assetRegistry } from "@/lib/assets/registry";
+import { calculatorRegistry } from "@/lib/calculators/registry";
 
 export default function IncomePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -104,28 +87,33 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     );
   }
 
-  // --- Dynamic columns and dataKeys ---
-  let fields: FormFieldConfig<any, any>[] = [];
-  let columns: ColumnDef<any>[] = [];
-  let dataKeys: DataKeyOption<any>[] = [];
+  const assetDef = assetRegistry[source.asset_type];
 
-  if (source.asset_type === "fers-pension") {
-    fields = fersPensionFieldConfigs;
-    columns = getFersPensionProjectionColumns(true);
-    dataKeys = fersPensionDataKeys
-  } else if (source.asset_type === "military-pension") {
-    fields = militaryPensionFieldConfigs;
-    columns = getMilitaryPensionProjectionColumns(true);
-    dataKeys = militaryPensionDataKeys;
-  } else if (source.asset_type === "retirement-savings") {
-    fields = retirementSavingsFieldConfigs;
-    columns = getRetirementSavingsProjectionColumns(true);
-    dataKeys = retirementSavingsDataKeys;
-  } else {
-    fields = socialSecurityFieldConfigs;
-    columns = getSocialSecurityProjectionColumns(true);
-    dataKeys = socialSecurityDataKeys;
+  if (!assetDef) {
+    return (
+      <PageContainer title="Income Projection">
+        <Typography color="error">
+          Error: Unknown asset type "{source.asset_type}".
+        </Typography>
+      </PageContainer>
+    );
   }
+
+  const calculator = calculatorRegistry[assetDef.calculatorId!];
+
+  if (!calculator) {
+    return (
+      <PageContainer title="Income Projection">
+        <Typography color="error">
+          Error: No calculator found for asset type "{source.asset_type}".
+        </Typography>
+      </PageContainer>
+    );
+  }
+
+  const fields = calculator.fieldConfigs;
+  const columns = calculator.getColumns(true);
+  const dataKeys = calculator.dataKeys;
 
   // --- Row edit handlers ---
   const handleRowEditSave = async (year: number, patch: Partial<AnyProjectionRow>) => {
