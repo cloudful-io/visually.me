@@ -6,9 +6,9 @@ import { useForm } from "@/hooks/useForm";
 import { FormFields } from "../../shared/FormFields";
 import { realEstateFieldConfigs } from "@/configs/realEstate";
 import { RealEstatePropertyInput } from "financial-calcs";
-import { RealEstateInput } from "@/lib/realEstate/schema";
 import { useRealEstateProjection } from "@/hooks/useRealEstateProjection";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
+import { assetRegistry } from "@/lib/assets/registry";
 import { AssetInput } from "@/lib/assets/schema";
 
 export default function EditRealEstateDialog({
@@ -21,10 +21,9 @@ export default function EditRealEstateDialog({
 }: {
   userAttributes: Record<string, any>;
   open: boolean;
-  properties: RealEstateInput[] | null;
+  properties: AssetInput[] | null;
   propertyId: string | null;
   onClose: () => void;
-  //onSave: (input: { data: string; label: string; address?: string; id?: string }) => Promise<void>;
   onSave: (input: AssetInput & { id?: string }) => Promise<void>;
 }) {
   const loading = false;
@@ -34,6 +33,8 @@ export default function EditRealEstateDialog({
   // ----------------------------
   // Root-level fields
   // ----------------------------
+  const asset_type = "real-estate";
+  const assetDef = assetRegistry[asset_type];
   const [label, setLabel] = useState("");
   const [address, setAddress] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
@@ -42,6 +43,7 @@ export default function EditRealEstateDialog({
   // ----------------------------
   // Child form state
   // ----------------------------
+  
   const initialRealEstateValues: RealEstatePropertyInput = {
     startYear: userAttributes?.startYear ?? new Date().getFullYear(),
     birthYear: userAttributes?.birthYear ?? 1970,
@@ -75,12 +77,6 @@ export default function EditRealEstateDialog({
     !label.trim() ||
     childHasErrors ||
     childValidationMessages.length > 0;
-
-  const friendlyType = "Real Estate Property";
-
-  const dialogTitle = isEditing
-    ? `Edit: ${friendlyType}`
-    : `Add: ${friendlyType}`;
 
   const childHook = (() => {
     return useRealEstateProjection(childValues as RealEstatePropertyInput);
@@ -153,8 +149,10 @@ export default function EditRealEstateDialog({
     let childValid = true;
     let childErrorMessages: string[] = [];
 
-    if (childHook?.validateInput) {
-      const validationErrors = childHook.validateInput();
+    //if (childHook?.validateInput) {
+    if (assetDef.validate) {
+      const validationErrors = assetDef.validate(childValues);
+      //const validationErrors = childHook.validateInput();
       
       if (validationErrors.length > 0) {
         childValid = false;
@@ -186,9 +184,7 @@ export default function EditRealEstateDialog({
 
     await onSave({
       id: propertyId ?? undefined,
-      asset_type: "real-estate",
-      //label: label.trim(),
-      //address: address.trim(),
+      asset_type: asset_type,
 
       data: 
         JSON.stringify({
@@ -204,7 +200,7 @@ export default function EditRealEstateDialog({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogTitle>{assetDef.title}</DialogTitle>
 
       <DialogContent dividers>
         {showLoading ? (

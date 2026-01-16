@@ -1,7 +1,5 @@
 "use client";
 import React from "react";
-import { NormalizedAsset } from "@/lib/assets/types";
-import { NormalizedProperty } from "@/lib/realEstate/types";
 import {
   Timeline,
   TimelineItem,

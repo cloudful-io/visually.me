@@ -1,25 +1,13 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress, Typography } from "@mui/material";
 import { useForm } from "@/hooks/useForm";
-import EditRetirementSavings from "./EditRetirementSavings";
-import EditSocialSecurityBenefit from "./EditSocialSecurityBenefit";
-import EditFERSPension from "./EditFERSPension";
-import EditMilitaryPension from "./EditMilitaryPension";
-import { retirementSavingsConfig, retirementSavingsFieldConfigs } from "@/configs/retirementSavings";
-import { socialSecurityConfig, socialSecurityFieldConfigs } from "@/configs/socialSecurityBenefits";
-import { fersPensionConfig, fersPensionFieldConfigs } from "@/configs/fersPension";
-import { militaryPensionConfig, militaryPensionFieldConfigs } from "@/configs/militaryPension";
-import { RetirementSavingsInput, SocialSecurityBenefitInput, FersPensionInput, MilitaryPensionInput } from "financial-calcs";
 import { AssetInput } from "@/lib/assets/schema";
-import { useFersPensionProjection } from '@/hooks/useFersPensionProjection';
-import { useMilitaryPensionProjection } from '@/hooks/useMilitaryPensionProjection';
-import { useRetirementSavingsProjection } from "@/hooks/useRetirementSavingsProjection";
-import { useSocialSecurityBenefitProjection } from "@/hooks/useSocialSecurityBenefitProjection";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
-import { calculatorRegistry, CalculatorId } from "@/lib/calculators/registry";
+import { calculatorRegistry } from "@/lib/calculators/registry";
 import { assetRegistry } from "@/lib/assets/registry";
+import { FormFields } from "../../shared/FormFields";
+import { incomeAssetTypes } from "@/lib/assets/registry";
 
 export default function EditIncomeSourceDialog({
   userAttributes,
@@ -45,56 +33,28 @@ export default function EditIncomeSourceDialog({
   // ----------------------------
   // Root-level fields
   // ----------------------------
-  //type IncomeSourceType = "retirement-savings" | "social-security" | "fers-pension" | "military-pension";
   const [asset_type, setAsset_Type] = useState<AssetInput["asset_type"]>("retirement-savings");
   const [label, setLabel] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
   const [childValidationMessages, setChildValidationMessages] = useState<string[]>([]);
 
   const assetDef = assetRegistry[asset_type];
-  const calculator = calculatorRegistry[assetDef.calculatorId!];
+  const calculator = assetDef.calculatorId ? calculatorRegistry[assetDef.calculatorId] : null;
+  if (!calculator) throw new Error(`Calculator not found for ${asset_type}`);
 
-  // ----------------------------
-  // Child form state
-  // ----------------------------
-  /*const initialRetirementSavingsValues: RetirementSavingsInput = {
-    ...retirementSavingsConfig.initialFormValues!,
-    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
-    birthYear: userAttributes?.birthYear ?? 1970,
-    withdrawStartAge: userAttributes?.targetRetirementAge ?? 60,
-    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
-  };
+  const buildInitialValues = () => {
+    const base = {
+      ...calculator.config.initialFormValues,
+      startYear: userAttributes?.startYear ?? new Date().getFullYear(),
+      birthYear: userAttributes?.birthYear ?? 1970,
+      lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
+    };
 
-  const initialSocialSecurityValues: SocialSecurityBenefitInput = {
-    ...socialSecurityConfig.initialFormValues!,
-    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
-    birthYear: userAttributes?.birthYear ?? 1970,
-    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
-  };
+    if ("retirementAge" in base) base.retirementAge = userAttributes?.targetRetirementAge;
+    if ("withdrawStartAge" in base) base.withdrawStartAge = userAttributes?.targetRetirementAge;
 
-  const initialFersPensionValues: FersPensionInput = {
-    ...fersPensionConfig.initialFormValues!,
-    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
-    birthYear: userAttributes?.birthYear ?? 1970,
-    retirementAge: userAttributes?.targetRetirementAge ?? 62,
-    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
+    return base;
   };
-
-  const initialMilitaryPensionValues: MilitaryPensionInput = {
-    ...militaryPensionConfig.initialFormValues!,
-    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
-    birthYear: userAttributes?.birthYear ?? 1970,
-    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
-  };
-  */
-  const buildInitialValues = () => ({
-    ...calculator.config.initialFormValues,
-    startYear: userAttributes?.startYear ?? new Date().getFullYear(),
-    birthYear: userAttributes?.birthYear ?? 1970,
-    retirementAge: userAttributes?.targetRetirementAge,
-    withdrawStartAge: userAttributes?.targetRetirementAge,
-    lifeExpectancyAge: userAttributes?.lifeExpectancyAge ?? 85,
-  });
 
   const {
     values: childValues,
@@ -107,85 +67,12 @@ export default function EditIncomeSourceDialog({
     calculator.fieldConfigs
   );
 
-  /*const typeConfig: Record<IncomeSourceType, {
-    title: string;
-    description: string;
-    initial: any;
-    Component: any;
-    fieldConfigs: any;
-  }> = {
-    "retirement-savings": { 
-      title: "Retirement Savings",
-      description: retirementSavingsConfig.calculatorDescription,
-      initial: initialRetirementSavingsValues, 
-      Component: EditRetirementSavings, 
-      fieldConfigs: retirementSavingsFieldConfigs,
-    },
-    "social-security": { 
-      title: "Social Security Benefits",
-      description: socialSecurityConfig.calculatorDescription,
-      initial: initialSocialSecurityValues, 
-      Component: EditSocialSecurityBenefit, 
-      fieldConfigs: socialSecurityFieldConfigs,
-    },
-    "fers-pension": { 
-      title: "Federal Employee Retirement System (FERS) Pension",
-      description: fersPensionConfig.calculatorDescription,
-      initial: initialFersPensionValues, 
-      Component: EditFERSPension, 
-      fieldConfigs: fersPensionFieldConfigs 
-    },
-    "military-pension": { 
-      title: "Uniformed Service Pension",
-      description: militaryPensionConfig.calculatorDescription,
-      initial: initialMilitaryPensionValues, 
-      Component: EditMilitaryPension, 
-      fieldConfigs: militaryPensionFieldConfigs 
-    },
-  };*/
-
-  //const currentType = typeConfig[asset_type] ?? typeConfig["retirement-savings"];
-  const ChildComponent = currentType.Component;
-
-  /*const {
-    values: childValues,
-    handleChange: handleChildChange,
-    errors: childErrors,
-    hasErrors: childHasErrors,
-    reset
-  } = useForm<typeof currentType.initial, { isAuthenticated: boolean }>(
-    currentType.initial,
-    currentType.fieldConfigs
-  );*/
-
   const isSaveDisabled =
     showLoading ||
     !asset_type.trim() ||
     !label.trim() ||
     childHasErrors ||
     childValidationMessages.length > 0;
-
-  const friendlyType = calculator.config.shortTitle;
-
-  const dialogTitle = isEditing
-    ? `Edit: ${friendlyType}`
-    : `Add: ${friendlyType}`;
-
-  /*const childHook = (() => {
-    switch (asset_type) {
-      case "fers-pension":
-        return useFersPensionProjection(childValues as FersPensionInput);
-      case "military-pension":
-        return useMilitaryPensionProjection(childValues as MilitaryPensionInput);
-      case "retirement-savings":
-        return useRetirementSavingsProjection(childValues as RetirementSavingsInput);
-      case "social-security":
-        return useSocialSecurityBenefitProjection(childValues as SocialSecurityBenefitInput);
-      default:
-        return null;
-    }
-  })();*/
-  const childHook = calculator.useProjection(childValues);
 
   // ----------------------------
   // Load existing source if editing or defaultType if adding
@@ -196,14 +83,11 @@ export default function EditIncomeSourceDialog({
     if (isEditing && sources) {
       const src = sources.find((s) => s.id === sourceId);
       if (src) {
-        if (src.asset_type === "retirement-savings" ||
-          src.asset_type === "social-security" ||
-          src.asset_type === "fers-pension" ||
-          src.asset_type === "military-pension") {
-        setAsset_Type(src.asset_type);
-        } else {
-          setAsset_Type("retirement-savings");
-        }
+        setAsset_Type(
+          incomeAssetTypes.includes(src.asset_type)
+            ? (src.asset_type as AssetInput["asset_type"])
+            : "retirement-savings"
+        );
 
         if (src.data) {
           try {
@@ -226,23 +110,13 @@ export default function EditIncomeSourceDialog({
       }
     }
 
-    // New source
-    if (defaultType === "retirement-savings" ||
-      defaultType === "social-security" ||
-      defaultType === "fers-pension" ||
-      defaultType === "military-pension"
-    ) {
-      setAsset_Type(defaultType);
-    } else {
-      setAsset_Type("retirement-savings");  // fallback
-    }
+    setAsset_Type(
+      incomeAssetTypes.includes(defaultType!)
+        ? (defaultType as AssetInput["asset_type"])
+        : "retirement-savings"
+    );
     setLabel("");
     reset(buildInitialValues());
-    /*
-    if (defaultType === "retirement-savings") reset(initialRetirementSavingsValues);
-    else if (defaultType === "social-security") reset(initialSocialSecurityValues);
-    else if (defaultType === "fers-pension") reset(initialFersPensionValues);
-    else if (defaultType === "military-pension") reset(initialMilitaryPensionValues);*/
     setErrors({});
   }, [open, sourceId, sources, isEditing, defaultType]);
 
@@ -274,8 +148,8 @@ export default function EditIncomeSourceDialog({
     let childValid = true;
     let childErrorMessages: string[] = [];
 
-    if (childHook?.validateInput) {
-      const validationErrors = childHook.validateInput();
+    if (assetDef.validate) {
+      const validationErrors = assetDef.validate(childValues);
       
       if (validationErrors.length > 0) {
         childValid = false;
@@ -322,7 +196,7 @@ export default function EditIncomeSourceDialog({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogTitle>{assetDef.title}</DialogTitle>
 
       <DialogContent dividers>
         {showLoading ? (
@@ -355,13 +229,16 @@ export default function EditIncomeSourceDialog({
             {/* Child Form */}
             
             <Grid size={{ xs: 12 }}>
-              <ChildComponent
+              <FormFields
+                fields={calculator.fieldConfigs}
                 values={childValues}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   handleChildChange(event);
                   setChildValidationMessages([]);
                 }}
                 errors={childErrors}
+                dialog
+                context={{ isAuthenticated: true }}
               />
             </Grid>
             {childValidationMessages && Array.isArray(childValidationMessages) && childValidationMessages.length > 0 && (

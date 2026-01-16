@@ -9,7 +9,6 @@ export interface AssetInput {
     | "retirement-savings"
     | "real-estate"
     | "college-savings";
-  //label: string;         
   data: any;
 }
 

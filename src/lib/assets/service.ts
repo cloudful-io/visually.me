@@ -1,24 +1,15 @@
 import { createClient } from "@/utils/supabase/server";
-import { encryptForUser, decryptForUser, wrapContentKeyForUser, unwrapContentKeyForUser, decryptWithKey, encryptWithKey, EncryptedField } from "@/services/encryption-service";
-import { AssetInput, EncryptedAssetRow, AssetRow, AssetKeyRow } from "./schema";
-import { incomeSourceRegistry, IncomeSourceId } from "../incomeSources/registry";
-import { realEstateRegistry, RealEstateId } from "../realEstate/registry";
+import { wrapContentKeyForUser, unwrapContentKeyForUser, decryptWithKey, encryptWithKey } from "@/services/encryption-service";
+import { AssetInput, AssetRow } from "./schema";
 import crypto from "crypto";
-
-export const incomeAssetTypes = Object.keys(
-  incomeSourceRegistry
-) as IncomeSourceId[];
-
-export const realEstateAssetTypes = Object.keys(
-  realEstateRegistry
-) as RealEstateId[];
+import { incomeAssetTypes, realEstateAssetTypes } from "./registry";
 
 export async function getIncomeAssets(userId: string) {
   const assets = await getAssets(userId);
 
   return assets.filter(
     (asset): asset is AssetRow =>
-      incomeAssetTypes.includes(asset.asset_type as IncomeSourceId)
+      incomeAssetTypes.includes(asset.asset_type)
   );
 }
 
@@ -27,7 +18,7 @@ export async function getRealEstateAssets(userId: string) {
 
   return assets.filter(
     (asset): asset is AssetRow =>
-      realEstateAssetTypes.includes(asset.asset_type as RealEstateId)
+      realEstateAssetTypes.includes(asset.asset_type)
   );
 }
 

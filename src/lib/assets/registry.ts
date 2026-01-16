@@ -1,9 +1,9 @@
 import {
-  calculateFersPensionProjectionWithOverrides,
-  calculateMilitaryPensionProjectionWithOverrides,
-  calculateRetirementSavingsProjectionWithOverrides,
-  calculateSocialSecurityBenefitProjectionWithOverrides,
-  calculateRealEstatePropertyProjectionWithOverrides,
+  calculateFersPensionProjectionWithOverrides, validateFersPensionInput,
+  calculateMilitaryPensionProjectionWithOverrides, validateMilitaryPensionInput,
+  calculateRetirementSavingsProjectionWithOverrides, validateRetirementSavingsInput,
+  calculateSocialSecurityBenefitProjectionWithOverrides, validateSocialSecurityBenefitInput,
+  calculateRealEstatePropertyProjectionWithOverrides, validateRealEstatePropertyInput,
 } from "financial-calcs";
 import { AssetCategory, NormalizedAsset } from "./types";
 import { AnyProjectionRow } from "./types";
@@ -16,6 +16,7 @@ type ComputeArgs = {
 };
 
 type ProjectionFn = (input: any) => any[];
+type ValidateFn = (input: any) => any[];
 
 export function computeIncomeAsset(
   projectionFn: ProjectionFn,
@@ -95,9 +96,11 @@ function getBaseMergedFields(userAttributes: any) {
 
 export interface AssetDefinition<FormValues = any, Row = any, Context = any> {
   category: AssetCategory;
+  title: string;
   calculatorId?: CalculatorId;
 
   // Optional capabilities
+  validate?: ValidateFn;
   projection?: ProjectionFn;
   compute?: (args: ComputeArgs) => {
     mergedFields: any;
@@ -113,8 +116,9 @@ export interface AssetDefinition<FormValues = any, Row = any, Context = any> {
 export const assetRegistry: Record<string, AssetDefinition> = {
   "fers-pension": {
     category: "income-source",
+    title: "Federal Employee Retirement System (FERS) Pension",
     calculatorId: "fers-pension",
-    projection: calculateFersPensionProjectionWithOverrides,
+    validate: validateFersPensionInput,
     compute: computeIncomeAsset(
       calculateFersPensionProjectionWithOverrides,
       "pension",
@@ -127,8 +131,9 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "military-pension": {
     category: "income-source",
+    title: "Uniformed Service Pension",
     calculatorId: "military-pension",
-    projection: calculateMilitaryPensionProjectionWithOverrides,
+    validate: validateMilitaryPensionInput,
     compute: computeIncomeAsset(
       calculateMilitaryPensionProjectionWithOverrides,
       "pension"
@@ -138,8 +143,9 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "retirement-savings": {
     category: "income-source",
+    title: "Retirement Savings",
     calculatorId: "retirement-savings",
-    projection: calculateRetirementSavingsProjectionWithOverrides,
+    validate: validateRetirementSavingsInput,
     compute: computeIncomeAsset(
       calculateRetirementSavingsProjectionWithOverrides,
       "annualWithdraw"
@@ -150,8 +156,9 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "social-security": {
     category: "income-source",
+    title: "Social Security Benefits",
     calculatorId: "social-security",
-    projection: calculateSocialSecurityBenefitProjectionWithOverrides,
+    validate: validateSocialSecurityBenefitInput,
     compute: computeIncomeAsset(
       calculateSocialSecurityBenefitProjectionWithOverrides,
       "annualBenefit"
@@ -161,7 +168,8 @@ export const assetRegistry: Record<string, AssetDefinition> = {
 
   "real-estate": {
     category: "property",
-    projection: calculateRealEstatePropertyProjectionWithOverrides,
+    title: "Real Estate Property",
+    validate: validateRealEstatePropertyInput,
     compute: computeRealEstateAsset(
       calculateRealEstatePropertyProjectionWithOverrides
     ),
@@ -169,4 +177,10 @@ export const assetRegistry: Record<string, AssetDefinition> = {
   },
 };
 
+export const incomeAssetTypes = Object.entries(assetRegistry)
+  .filter(([_, def]) => def.category === "income-source")
+  .map(([key]) => key as keyof typeof assetRegistry);
 
+export const realEstateAssetTypes = Object.entries(assetRegistry)
+  .filter(([_, def]) => def.category === "property")
+  .map(([key]) => key as keyof typeof assetRegistry);
