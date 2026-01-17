@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button } from '@mui/material';
+import { useMediaQuery, Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 // components
@@ -9,10 +9,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import ThemeModeToggle from '@/app/components/ThemeModeToggle';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
-import { usePathname } from "next/navigation";
+import Logo from './Logo';
 
 const Header = ({ onToggleSidebar, sidebarCollapsed }: { onToggleSidebar: () => void, sidebarCollapsed: boolean }) => {
   const { user, loading } = useSupabaseAuth();
+  const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
@@ -40,7 +41,7 @@ const Header = ({ onToggleSidebar, sidebarCollapsed }: { onToggleSidebar: () => 
             mr: 2,
             display: {
               xs: "none",   // hide on mobile
-              lg: "flex",   // show on desktop
+              md: "flex",   // show on desktop
             },
           }}
         > 
@@ -51,6 +52,7 @@ const Header = ({ onToggleSidebar, sidebarCollapsed }: { onToggleSidebar: () => 
           )}
         </IconButton>
 
+        {(!mdUp && <Logo showTitle homeUrl="/dashboard" />)}
         <Box flexGrow={1} />
         {/* Profile / Login / Theme Toggle */}
         <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 8 }}>

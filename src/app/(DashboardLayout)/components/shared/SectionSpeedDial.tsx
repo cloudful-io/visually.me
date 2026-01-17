@@ -52,7 +52,7 @@ export default function SectionSpeedDial({
         }}
         sx={{
           position: "fixed",
-          bottom: { xs: 16, sm: 84 },
+          bottom: { xs: 64, md: 32, lg: 96 },
           right: { xs: 8, sm: 32 },
           zIndex: 9999,
           "& .MuiFab-root": {

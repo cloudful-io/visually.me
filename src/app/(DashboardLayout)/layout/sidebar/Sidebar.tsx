@@ -10,12 +10,12 @@ const MSidebar = ({
   onSidebarClose,
   isSidebarOpen,
 }: ItemType) => {
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
+  const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
 
   const drawerWidthExpanded = 360;
   const drawerWidthCollapsed = 72;
   
-  if (lgUp) {
+  if (mdUp) {
     return (
       <Box
         sx={{
