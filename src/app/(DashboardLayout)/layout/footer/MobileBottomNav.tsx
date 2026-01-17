@@ -16,11 +16,6 @@ const MobileBottomNav = () => {
   const router = useRouter();
   const { user, loading } = useSupabaseAuth();
 
-  // Pick only top-level items you want in bottom nav
-  /*const navItems = Menuitems.filter(
-    (item) => item.href && !item.children && !item.subheader
-  ).slice(0, 4); // limit to 3–5 items max*/
-
   return (
     <Paper
       sx={{
@@ -34,34 +29,34 @@ const MobileBottomNav = () => {
       elevation={8}
     >
       <BottomNavigation
-        showLabels
+        
         value={pathname}
         onChange={(_, newValue) => router.push(newValue)}
       >
         {user ? [
-    <BottomNavigationAction  
-      key="/dashboard"
-      label="Dashboard"
-      value="/dashboard"
-      icon={<IconLayoutDashboard size={22} />}
-    />,
-    <BottomNavigationAction  
-      key="/income"
-      label="Income and Investment"
-      value="/income"
-      icon={<IconCash size={22} />}
-    />,
-    <BottomNavigationAction  
-      key="/real-estate"
-      label="Real Estate"
-      value="/real-estate"
-      icon={<IconHomeSignal size={22} />}
-    />
-  ] : null}
+            <BottomNavigationAction  
+            key="/dashboard"
+            label="Dashboard"
+            value="/dashboard"
+            icon={<IconLayoutDashboard/>}
+            />,
+            <BottomNavigationAction  
+            key="/income"
+            label="Income"
+            value="/income"
+            icon={<IconCash/>}
+            />,
+            <BottomNavigationAction  
+            key="/real-estate"
+            label="Real Estate"
+            value="/real-estate"
+            icon={<IconHomeSignal/>}
+            />
+        ] : null}
         <BottomNavigationAction  
             label="Calculators"
             value="/calculators"
-            icon={<IconCalculator size={22} />}
+            icon={<IconCalculator/>}
         />
       </BottomNavigation>
     </Paper>
