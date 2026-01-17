@@ -1,28 +1,18 @@
 "use client";
 
-import React, { useEffect } from 'react';
 import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 // components
 import Profile from '@/app/components/Profile';
-import { IconMenu } from '@tabler/icons-react';
+import MenuIcon from '@mui/icons-material/Menu';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import ThemeModeToggle from '@/app/components/ThemeModeToggle';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { usePathname } from "next/navigation";
 
-interface ItemType {
-  toggleMobileSidebar:  (event: React.MouseEvent<HTMLElement>) => void;
-  closeMobileSidebar: () => void;
-}
-
-const Header = ({toggleMobileSidebar, closeMobileSidebar}: ItemType) => {
+const Header = ({ onToggleSidebar, sidebarCollapsed }: { onToggleSidebar: () => void, sidebarCollapsed: boolean }) => {
   const { user, loading } = useSupabaseAuth();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    closeMobileSidebar();
-  }, [pathname]);
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
@@ -42,18 +32,25 @@ const Header = ({toggleMobileSidebar, closeMobileSidebar}: ItemType) => {
     <AppBarStyled position="sticky" color="default">
       <ToolbarStyled>
         <IconButton
+          edge="start"
           color="inherit"
-          aria-label="menu"
-          onClick={toggleMobileSidebar}
-          sx={{
+          aria-label="toggle sidebar"
+          onClick={onToggleSidebar}
+          sx={{ 
+            mr: 2,
             display: {
-              lg: "none",
-              xs: "inline",
+              xs: "none",   // hide on mobile
+              lg: "flex",   // show on desktop
             },
           }}
-        >
-          <IconMenu width="20" height="20" />
-        </IconButton>        
+        > 
+          {sidebarCollapsed ? (
+            <MenuIcon/>
+          ) : (
+            <MenuOpenIcon/>
+          )}
+        </IconButton>
+
         <Box flexGrow={1} />
         {/* Profile / Login / Theme Toggle */}
         <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 8 }}>

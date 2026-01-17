@@ -1,7 +1,7 @@
 "use client"
 import Menuitems from "./MenuItems";
 import { useTheme } from '@mui/material/styles';
-import { Box } from "@mui/material";
+import { Box, Divider, Tooltip } from "@mui/material";
 import {
   Sidebar as MUI_Sidebar,
   Menu,
@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation";
 import Logo from "../header/Logo";
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 
-const renderMenuItems = (items: any[], pathDirect: string, user: any) => {
+const renderMenuItems = (items: any[], pathDirect: string, user: any, collapsed: boolean) => {
   // Filter and render menu items recursively
   const visibleItems = items.filter((item) => {
     if (item.authRequired && !user) return false;
@@ -27,6 +27,8 @@ const renderMenuItems = (items: any[], pathDirect: string, user: any) => {
 
     // --- Subheader ---
     if (item.subheader) {
+      if (collapsed) 
+        return <Divider key={item.subheader} sx={{ my:1}}/>;
       // Only show if there is at least one item after it that is visible and not another subheader
       const hasFollowingVisible = visibleItems.some(
         (next) => !next.subheader && (!next.authRequired || user)
@@ -37,7 +39,22 @@ const renderMenuItems = (items: any[], pathDirect: string, user: any) => {
 
     // --- Submenu (nested items) ---
     if (item.children) {
-      const renderedChildren = renderMenuItems(item.children, pathDirect, user);
+      if (collapsed) {
+        return (
+          <Tooltip title={item.title} key={item.id} placement="right" arrow>
+            <Box sx={{ display: collapsed ? "flex" : "inline", justifyContent: collapsed ? "center" : "flex-start" }}>
+              <MenuItem 
+                icon={itemIcon} 
+                sx={{
+                  justifyContent: "center",
+                  px: 0,
+                  minHeight: 48,
+                }}/>
+                </Box>
+          </Tooltip>
+        );
+      }
+      const renderedChildren = renderMenuItems(item.children, pathDirect, user, collapsed);
       if (renderedChildren.filter(Boolean).length === 0) return null; // hide if all children are filtered out
 
       return (
@@ -54,23 +71,29 @@ const renderMenuItems = (items: any[], pathDirect: string, user: any) => {
 
     // --- Normal item ---
     return (
-      <Box px={3} key={item.id}>
-        <MenuItem
-          key={item.id}
-          isSelected={pathDirect.indexOf(item?.href) >= 0}
-          borderRadius="8px"
-          icon={itemIcon}
-          link={item.href}
-          component={Link}
-        >
-          {item.title}
-        </MenuItem>
+      <Box 
+        px={collapsed ? 1 : 3} 
+        key={item.id}>
+        <Tooltip title={item.title} key={item.id} placement="right" arrow>
+          <Box sx={{ width: "100%",display: collapsed ? "flex" : "inline", justifyContent: collapsed ? "center" : "flex-start" }}>
+            <MenuItem
+              key={item.id}
+              isSelected={pathDirect.indexOf(item?.href) >= 0}
+              borderRadius="8px"
+              icon={itemIcon}
+              link={item.href}
+              component={Link}
+            >
+              {!collapsed && item.title}
+            </MenuItem>
+          </Box>
+        </Tooltip>
       </Box>
     );
   });
 };
 
-const SidebarItems = () => {
+const SidebarItems = ({ collapsed }: { collapsed: boolean }) => {
   const pathname = usePathname();
   const theme = useTheme();
   const { user, loading } = useSupabaseAuth();
@@ -84,11 +107,11 @@ const SidebarItems = () => {
       themeSecondaryColor={theme.palette.secondary.main}
       textColor={theme.palette.text.primary}
     >
-      <Box sx={{ mx: 3, my: 1.5 }}>
-        <Logo showTitle homeUrl={homeUrl} />
+      <Box sx={{ mx: collapsed ? 1 : 3, my: 1.5 }}>
+        <Logo showTitle={!collapsed} homeUrl={homeUrl} />
       </Box>
-
-      {renderMenuItems(Menuitems, pathname, user)}
+      
+      {renderMenuItems(Menuitems, pathname, user, collapsed)}
     </MUI_Sidebar>
   );
 };

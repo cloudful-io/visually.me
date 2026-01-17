@@ -18,7 +18,7 @@ import {
   IconMapPin,
   IconUserPlus,
   IconList,
-  IconHome,
+  IconHomeDollar,
   IconHeart,
 } from "@tabler/icons-react";
 import DashboardCard from "../shared/DashboardCard";
@@ -133,8 +133,8 @@ export function FinancialTimeline({
     "current": IconMapPin,
     "retirement": IconUserPlus,
     "summary": IconList,
-    "real-estate": IconHome,
-    "mortgage-end": IconHome,
+    "real-estate": IconHomeDollar,
+    "mortgage-end": IconHomeDollar,
     "life-expectancy": IconHeart,
     "income": IconCoin,
   };

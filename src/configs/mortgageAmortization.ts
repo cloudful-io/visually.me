@@ -1,12 +1,12 @@
 import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig } from '@/types/forms';
-import { MortgageAmortizationInput, AmortizationRow, YearlyAmortizationRow } from 'financial-calcs';
+import { MortgageAmortizationInput, AmortizationRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms'; 
-import { IconHome } from "@tabler/icons-react";
+import { IconHomeDollar } from "@tabler/icons-react";
 
 export const mortgageAmortizationConfig: CalculatorConfig<MortgageAmortizationInput> = {
   id: "mortgage-amortization",
-  icon: IconHome,
+  icon: IconHomeDollar,
   shortTitle: "Mortgage Amortization",
   calculatorTitle: "Mortgage Amortization Calculator",
   calculatorDescription:

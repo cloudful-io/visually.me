@@ -19,18 +19,24 @@ const PageWrapper = styled("div")(() => ({
   zIndex: 1,
   backgroundColor: "transparent",
 }));
-
-interface Props {
-  children: React.ReactNode;
-}
-  
+ 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    const stored = localStorage.getItem("sidebar-open");
+    return stored ? JSON.parse(stored) : true;
+  });
+  const toggleSidebar = () => {
+  setIsSidebarOpen((prev) => {
+    const next = !prev;
+    localStorage.setItem("sidebar-open", JSON.stringify(next));
+    return next;
+  });
+};
   return (
     <MainWrapper className="mainwrapper">
       {/* ------------------------------------------- */}
@@ -38,8 +44,7 @@ export default function RootLayout({
       {/* ------------------------------------------- */}
       <Sidebar
         isSidebarOpen={isSidebarOpen}
-        isMobileSidebarOpen={isMobileSidebarOpen}
-        onSidebarClose={() => setMobileSidebarOpen(false)}
+        onSidebarClose={() => {}}
       />
       {/* ------------------------------------------- */}
       {/* Main Wrapper */}
@@ -48,7 +53,7 @@ export default function RootLayout({
         {/* ------------------------------------------- */}
         {/* Header */}
         {/* ------------------------------------------- */}
-        <Header toggleMobileSidebar={() => setMobileSidebarOpen(true)} closeMobileSidebar={() => setMobileSidebarOpen(false)}/>
+        <Header onToggleSidebar={toggleSidebar} sidebarCollapsed={!isSidebarOpen} />
         {/* ------------------------------------------- */}
         {/* PageContent */}
         {/* ------------------------------------------- */}
@@ -68,7 +73,7 @@ export default function RootLayout({
           {/* End Page */}
           {/* ------------------------------------------- */}
         </Container>
-        <Footer sidebarWidth={360}/>
+        <Footer sidebarWidth={isSidebarOpen ? 360 : 72} />
       </PageWrapper>
     </MainWrapper>
   );

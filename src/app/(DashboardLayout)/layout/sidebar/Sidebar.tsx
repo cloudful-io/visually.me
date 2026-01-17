@@ -1,112 +1,83 @@
 import { useMediaQuery, Box, Drawer } from "@mui/material";
 import SidebarItems from "./SidebarItems";
 
-
-
 interface ItemType {
-  isMobileSidebarOpen: boolean;
   onSidebarClose: (event: React.MouseEvent<HTMLElement>) => void;
   isSidebarOpen: boolean;
 }
 
 const MSidebar = ({
-  isMobileSidebarOpen,
   onSidebarClose,
   isSidebarOpen,
 }: ItemType) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
-  const sidebarWidth = "360px";
-
-  // Custom CSS for short scrollbar
-  const scrollbarStyles = {
-    '&::-webkit-scrollbar': {
-      width: '7px',
-
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#eff2f7',
-      borderRadius: '15px',
-    },
-  };
-
-
+  const drawerWidthExpanded = 360;
+  const drawerWidthCollapsed = 72;
+  
   if (lgUp) {
     return (
       <Box
         sx={{
-          width: sidebarWidth,
+          width: isSidebarOpen ? drawerWidthExpanded : drawerWidthCollapsed,
           flexShrink: 0,
+          whiteSpace: "nowrap",
+          transition: (theme) =>
+            theme.transitions.create("width", {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.standard,
+            }),
         }}
       >
-        {/* ------------------------------------------- */}
-        {/* Sidebar for desktop */}
-        {/* ------------------------------------------- */}
         <Drawer
-          anchor="left"
-          open={isSidebarOpen}
           variant="permanent"
+          open
           slotProps={{
             paper: {
               sx: {
-                boxSizing: "border-box",
-                ...scrollbarStyles,
-                width: sidebarWidth,
+                overflowX: "hidden",
+                width: isSidebarOpen
+                  ? drawerWidthExpanded
+                  : drawerWidthCollapsed,
+                transition: (theme) =>
+                  theme.transitions.create("width", {
+                    easing: theme.transitions.easing.sharp,
+                    duration: theme.transitions.duration.standard,
+                  }),
               },
-            }
+            },
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar Box */}
-          {/* ------------------------------------------- */}
-          <Box
-            sx={{
-              height: "100%",
-            }}
-          >
-
-            <Box sx={{width:"360px"}}>
-              {/* ------------------------------------------- */}
-              {/* Sidebar Items */}
-              {/* ------------------------------------------- */}
-              <SidebarItems />
-            </Box>
-          </Box>
+          {/* Apply styles to hide text when collapsed */}
+          {!isSidebarOpen && (
+            <style>
+              {`
+                /* Hide the text container entirely when collapsed */
+                .MuiListItemText-root {
+                  display: none !important;
+                }
+                /* Remove forced margins/widths from the icon container */
+                .MuiListItemIcon-root {
+                  margin-right: 0 !important;
+                  min-width: 0 !important;
+                  justify-content: center !important;
+                  width: 100% !important;
+                }
+                /* Center the button content */
+                .MuiButtonBase-root {
+                  justify-content: center !important;
+                }
+              `}
+            </style>
+          )}
+          <SidebarItems collapsed={!isSidebarOpen} />
         </Drawer>
-      </Box >
+      </Box>
     );
   }
 
-  return (
-    <Drawer
-      anchor="left"
-      open={isMobileSidebarOpen}
-      onClose={onSidebarClose}
-      variant="temporary"
-      slotProps={{
-        paper: {
-          sx: {
-            boxShadow: (theme) => theme.shadows[8],
-            ...scrollbarStyles,
-            width: sidebarWidth,
-          },
-        }
-      }}
-    >
-      {/* ------------------------------------------- */}
-      {/* Sidebar Box */}
-      {/* ------------------------------------------- */}
-      <Box>
-        {/* ------------------------------------------- */}
-        {/* Sidebar Items */}
-        {/* ------------------------------------------- */}
-        <SidebarItems />
-      </Box>
-      {/* ------------------------------------------- */}
-      {/* Sidebar For Mobile */}
-      {/* ------------------------------------------- */}
-    </Drawer>
-  );
+  // Mobile 
+  return null;
 };
 
 export default MSidebar;

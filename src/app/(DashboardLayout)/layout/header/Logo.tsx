@@ -25,11 +25,11 @@ const Logo = ({ showTitle = false, homeUrl = "/" }: Props) => {
                 variant="h4" 
                 color='primary'
                 sx={{ 
-                    ml: 1, 
-                    fontWeight: 800, 
-                    display: showTitle
-                        ? "block"
-                        : { xs: "none", sm: "none", md: "block" },
+                  ml: 2, 
+                  fontWeight: 800, 
+                  display: showTitle
+                    ? "block"
+                    : { xs: "none", sm: "none", md: "block" },
                 }}>
                 Visually.Me
             </Typography>

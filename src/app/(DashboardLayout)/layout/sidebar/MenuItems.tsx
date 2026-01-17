@@ -1,5 +1,5 @@
 import {
-  IconHome,
+  IconHomeSignal,
   IconLayoutDashboard,
   IconCash,
 } from "@tabler/icons-react";
@@ -41,7 +41,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: "Real Estate Properties",
-    icon: IconHome,
+    icon: IconHomeSignal,
     href: "/real-estate",
     authRequired: true,
   },
