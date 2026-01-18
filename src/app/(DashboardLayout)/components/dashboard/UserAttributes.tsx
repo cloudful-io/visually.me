@@ -81,7 +81,7 @@ const UserAttributes = () => {
       title={
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
           <IconUser />
-          Financial Profile
+          Your Financial Profile
         </Box>
       }
       action={<IconButton size="small" color="primary" aria-label="Edit" aria-haspopup="dialog" onClick={() => setOpenEditDialog(true)}><IconEdit/></IconButton>}
