@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-import { Grid, Stack, Typography, Avatar, Box, IconButton } from "@mui/material";
+import { Grid, Stack, Typography, Avatar, Box, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
+import { IconDotsVertical, IconPencil } from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/utils/supabase/client";
@@ -10,7 +11,7 @@ import { UserProfileService } from "supabase-auth-lib";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
 import EditUserAttributesDialog from "./EditDialogs/EditUserAttributesDialog";
 import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
-import { IconEdit, IconUser } from "@tabler/icons-react";
+import { IconFriends, IconUser } from "@tabler/icons-react";
 
 const UserAttributes = () => {
   const { user } = useSupabaseAuth();
@@ -24,9 +25,10 @@ const UserAttributes = () => {
   const [monthsLeft, setMonthsLeft] = useState<number | null>(null);
   const [progressPct, setProgressPct] = useState<number>(0);
 
-  const [openEditDialog, setOpenEditDialog] = React.useState(false);
+  const [openEditProfileDialog, setOpenEditProfileDialog] = React.useState(false);
 
-
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+  
   // Load display name and avatar
   useEffect(() => {
     if (!user) return;
@@ -76,6 +78,11 @@ const UserAttributes = () => {
     setProgressPct(Math.round(pct));
   }, [attrs]);
 
+  const handleEditProfile = () => {
+    setMenuAnchor(null);
+    setOpenEditProfileDialog(true);
+  };
+
   return (
     <DashboardCard 
       title={
@@ -84,11 +91,40 @@ const UserAttributes = () => {
           Your Financial Profile
         </Box>
       }
-      action={<IconButton size="small" color="primary" aria-label="Edit" aria-haspopup="dialog" onClick={() => setOpenEditDialog(true)}><IconEdit/></IconButton>}
-    >
+      action={
+      <>
+        <IconButton
+          size="small"
+          color="info"
+          aria-label="Add Source"
+          onClick={(e) => setMenuAnchor(e.currentTarget)}
+        >
+          <IconDotsVertical />
+        </IconButton>
+
+        <Menu
+          anchorEl={menuAnchor}
+          open={Boolean(menuAnchor)}
+          onClose={() => setMenuAnchor(null)}
+        >
+          <MenuItem onClick={() => handleEditProfile()}>
+            <ListItemIcon>
+              <IconPencil fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Edit Profile</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={() => setOpenEditProfileDialog(true)} sx={{display: 'none'}}>
+            <ListItemIcon>
+              <IconFriends fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Add Spouse</ListItemText>
+          </MenuItem>
+        </Menu>
+      </>
+    }>
       <EditUserAttributesDialog
-        open={openEditDialog}
-        onClose={() => setOpenEditDialog(false)}
+        open={openEditProfileDialog}
+        onClose={() => setOpenEditProfileDialog(false)}
         onSaved={refreshAttrs}    // ← NEW LINE
       />
       <Grid container spacing={3}>

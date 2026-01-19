@@ -183,6 +183,7 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
           },
         ]}
         series={series}
+        
         height={height}
         colors={
           stacked || disableMetricToggle

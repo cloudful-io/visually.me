@@ -5,9 +5,11 @@ const API_URL = "/api/assets";
 
 export function useAssetsFetch({
   category,
+  joint = true,
   lazy = false,
 }: {
   category?: AssetCategory;
+  joint?: boolean;
   lazy?: boolean;
 })
  {
@@ -32,6 +34,8 @@ export function useAssetsFetch({
       try {
         const url = new URL(API_URL, window.location.origin);
         url.searchParams.set("category", category ?? "");
+        url.searchParams.set("joint", String(joint));
+
         const res = await fetch(url.toString(), {
           signal: opts?.signal,
         });
@@ -49,7 +53,7 @@ export function useAssetsFetch({
         }
       }
     },
-    [normalize, category]
+    [normalize, category, joint]
   );
 
   useEffect(() => {

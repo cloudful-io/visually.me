@@ -5,7 +5,7 @@ const StyledText = styled('text')(({ theme }) => ({
   fill: theme.palette.text.primary,
   textAnchor: 'middle',
   dominantBaseline: 'central',
-  fontSize: 15,
+  fontSize: 16,
   fontWeight: 800,
 }));
 

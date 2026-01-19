@@ -101,6 +101,7 @@ export default function OnboardingPage() {
       
       // Save attributes via hook
       await saveUserAttributes({
+        spouse: false,
         birthYear,
         startYear,
         targetRetirementAge,

@@ -92,7 +92,7 @@ export function InvestmentBreakdown({
           series={[
             {
               data,
-              innerRadius: 60,
+              innerRadius: 55,
               outerRadius: 90,
               arcLabel: (item) =>
                 `${((item.value / total) * 100).toFixed(0)}%`,

@@ -185,7 +185,7 @@ export default function EditRealEstateDialog({
     await onSave({
       id: propertyId ?? undefined,
       asset_type: asset_type,
-
+      spouse: false,
       data: 
         JSON.stringify({
           label: label.trim(),

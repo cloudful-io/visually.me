@@ -182,7 +182,7 @@ export default function EditIncomeSourceDialog({
     await onSave({
       id: sourceId ?? undefined,
       asset_type,
-
+      spouse: false,
       data: 
         JSON.stringify({
           label: label.trim(),

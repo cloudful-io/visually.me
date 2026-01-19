@@ -9,6 +9,7 @@ export interface AssetInput {
     | "retirement-savings"
     | "real-estate"
     | "college-savings";
+  spouse: boolean;
   data: any;
 }
 
@@ -16,6 +17,7 @@ export interface AssetRow {
   id: string;
   owner_user_id: string;
   asset_type: AssetInput["asset_type"];
+  spouse: boolean;
   data: any;
   created_at: string;
   updated_at: string;

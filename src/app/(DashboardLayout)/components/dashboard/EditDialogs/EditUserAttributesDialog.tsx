@@ -73,6 +73,7 @@ export default function EditUserAttributesDialog({
 
     try {
       await saveUserAttrs({
+        spouse: false,
         birthYear: Number(birthYear),
         startYear: Number(startYear),
         targetRetirementAge: Number(targetRetirementAge),
@@ -90,7 +91,7 @@ export default function EditUserAttributesDialog({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Financial Profile: Edit</DialogTitle>
+      <DialogTitle>Financial Profile</DialogTitle>
 
       <DialogContent dividers>
         {loading ? (

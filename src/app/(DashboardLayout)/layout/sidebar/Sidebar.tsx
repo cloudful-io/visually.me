@@ -53,19 +53,8 @@ const MSidebar = ({
             <style>
               {`
                 /* Hide the text container entirely when collapsed */
-                .MuiListItemText-root {
+                .sidebar .MuiListItemText-root {
                   display: none !important;
-                }
-                /* Remove forced margins/widths from the icon container */
-                .MuiListItemIcon-root {
-                  margin-right: 0 !important;
-                  min-width: 0 !important;
-                  justify-content: center !important;
-                  width: 100% !important;
-                }
-                /* Center the button content */
-                .MuiButtonBase-root {
-                  justify-content: center !important;
                 }
               `}
             </style>

@@ -2,19 +2,21 @@ import { createClient } from "@/utils/supabase/server";
 import { encryptForUser, decryptForUser } from "@/services/encryption-service";
 import { UserAttributesInput, EncryptedUserAttributesRow } from "./schema";
 
-export async function getUserAttributes(userId: string) {
+export async function getUserAttributes(userId: string, spouse: boolean = false) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("user_attributes")
     .select("*")
     .eq("id", userId)
+    .eq("spouse", spouse)
     .maybeSingle();
 
   if (error) throw error;
   if (!data) return null;
 
   return {
+    spouse: data.spouse,
     birthYear: data.birth_year_enc
       ? Number(
           decryptForUser(userId, { key_version: data.key_version, ...data.birth_year_enc })
@@ -47,6 +49,7 @@ export async function upsertUserAttributes(
   const supabase = await createClient();
   const encrypted = {
     id: userId,
+    spouse: input.spouse,
     birth_year_enc: input.birthYear != null ? encryptForUser(userId, String(input.birthYear)) : null,
     target_retirement_age_enc: input.targetRetirementAge != null ? encryptForUser(userId, String(input.targetRetirementAge)) : null,
     start_year_enc: input.startYear != null ? encryptForUser(userId, String(input.startYear)) : null,

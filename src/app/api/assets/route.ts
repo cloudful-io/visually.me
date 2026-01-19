@@ -21,6 +21,9 @@ export async function GET(req: Request) {
   const id = url.searchParams.get("id");
   const category = url.searchParams.get("category");
 
+  const jointParam = url.searchParams.get("joint");
+  const joint = jointParam === null ? true : jointParam === "true";
+
   // ----------------------------
   // 1. Fetch by ID
   // ----------------------------
@@ -43,11 +46,11 @@ export async function GET(req: Request) {
 
     switch (category) {
       case "income-source":
-        return NextResponse.json(await getIncomeAssets(user.id));
+        return NextResponse.json(await getIncomeAssets(user.id, joint));
 
       case "property":
         // future
-        return NextResponse.json(await getRealEstateAssets(user.id));
+        return NextResponse.json(await getRealEstateAssets(user.id, joint));
 
       case "college-savings":
         // future
@@ -58,7 +61,7 @@ export async function GET(req: Request) {
   // ----------------------------
   // 3. Fetch all assets
   // ----------------------------
-  const assets = await getAssets(user.id);
+  const assets = await getAssets(user.id, joint);
   return NextResponse.json(assets);
 }
 

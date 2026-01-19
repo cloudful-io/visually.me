@@ -4,8 +4,8 @@ import { AssetInput, AssetRow } from "./schema";
 import crypto from "crypto";
 import { incomeAssetTypes, realEstateAssetTypes } from "./registry";
 
-export async function getIncomeAssets(userId: string) {
-  const assets = await getAssets(userId);
+export async function getIncomeAssets(userId: string, joint: boolean = true) {
+  const assets = await getAssets(userId, joint);
 
   return assets.filter(
     (asset): asset is AssetRow =>
@@ -13,8 +13,8 @@ export async function getIncomeAssets(userId: string) {
   );
 }
 
-export async function getRealEstateAssets(userId: string) {
-  const assets = await getAssets(userId);
+export async function getRealEstateAssets(userId: string, joint: boolean = true) {
+  const assets = await getAssets(userId, joint);
 
   return assets.filter(
     (asset): asset is AssetRow =>
@@ -67,7 +67,7 @@ export async function getAssetById(userId: string, assetId: string) {
 // ----------------------------
 // Fetch all assets for a user
 // ----------------------------
-export async function getAssets(userId: string) {
+export async function getAssets(userId: string, joint: boolean = true) {
   const supabase = await createClient();
 
   // 1. Get all asset keys for this user
@@ -82,10 +82,17 @@ export async function getAssets(userId: string) {
   const assetIds = keyRows.map(k => k.asset_id);
 
   // 2. Fetch all assets in a single query
-  const { data: assetRows, error: assetError } = await supabase
+  let assetsQuery = supabase
     .from("assets")
     .select("*")
     .in("id", assetIds);
+
+  // Apply spouse filter ONLY when not joint
+  if (!joint) {
+    assetsQuery = assetsQuery.eq("spouse", false);
+  }
+
+  const { data: assetRows, error: assetError } = await assetsQuery;
 
   if (assetError) throw assetError;
   if (!assetRows || assetRows.length === 0) return [];
@@ -101,6 +108,7 @@ export async function getAssets(userId: string) {
         id: asset.id,
         owner_user_id: asset.owner_user_id,
         asset_type: asset.asset_type,
+        spouse: asset.spouse,
         data: JSON.parse(decryptedData),
         created_at: asset.created_at,
         updated_at: asset.updated_at,
@@ -150,6 +158,7 @@ export async function getAssets(userId: string) {
       id: assetId,
       owner_user_id: userId,
       asset_type: input.asset_type,
+      spouse: input.spouse,
       data_enc,
     })
     .select()

@@ -100,19 +100,21 @@ const SidebarItems = ({ collapsed }: { collapsed: boolean }) => {
   const homeUrl = user ? "/dashboard" : "/";
 
   return (
-    <MUI_Sidebar
-      width="100%"
-      showProfile={false}
-      themeColor={theme.palette.primary.main}
-      themeSecondaryColor={theme.palette.secondary.main}
-      textColor={theme.palette.text.primary}
-    >
-      <Box sx={{ mx: collapsed ? 1 : 3, my: 1.5 }}>
-        <Logo showTitle={!collapsed} homeUrl={homeUrl} />
-      </Box>
-      
-      {renderMenuItems(Menuitems, pathname, user, collapsed)}
-    </MUI_Sidebar>
+    <Box className="sidebar">
+      <MUI_Sidebar
+        width="100%"
+        showProfile={false}
+        themeColor={theme.palette.primary.main}
+        themeSecondaryColor={theme.palette.secondary.main}
+        textColor={theme.palette.text.primary}
+      >
+        <Box sx={{ mx: collapsed ? 1 : 3, my: 1.5 }}>
+          <Logo showTitle={!collapsed} homeUrl={homeUrl} />
+        </Box>
+        
+        {renderMenuItems(Menuitems, pathname, user, collapsed)}
+      </MUI_Sidebar>
+    </Box>
   );
 };
 

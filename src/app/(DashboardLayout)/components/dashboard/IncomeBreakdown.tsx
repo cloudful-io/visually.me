@@ -93,7 +93,7 @@ export function IncomeBreakdown({
               data,
               arcLabel: (item) =>
                 `${((item.value / total) * 100).toFixed(0)}%`,
-              innerRadius: 60,
+              innerRadius: 55,
               outerRadius: 90,
               valueFormatter: (item) => currencyFormatter(item.value),
               highlightScope: { fade: 'global', highlight: 'item' },
