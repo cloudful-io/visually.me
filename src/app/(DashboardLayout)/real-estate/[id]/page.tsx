@@ -80,6 +80,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
 
     await save({
       id: property.id!,
+      spouse: property.spouse,
       asset_type: "real-estate",
       data: JSON.stringify(merged),
     });
@@ -133,6 +134,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
       existingInput.yearOverrides = yearOverrides;
       await save({
         id: property.id!,
+        spouse: property.spouse,
         asset_type: "real-estate",
         data: JSON.stringify(existingInput),
       });
@@ -162,6 +164,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
 
       await save({
         id: property.id!,
+        spouse: property.spouse,
         asset_type: "real-estate",
         data: JSON.stringify(existingInput),
       });

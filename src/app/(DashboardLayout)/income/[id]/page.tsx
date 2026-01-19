@@ -64,6 +64,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     await save({
       id: source.id!,
       asset_type: input.asset_type,
+      spouse: false,
       data: JSON.stringify(merged),
     });
 
@@ -134,6 +135,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       
       await save({
         id: source.id!,
+        spouse: source.spouse,
         asset_type: source.asset_type,
         data: JSON.stringify(existingInput),
       });
@@ -163,6 +165,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
       await save({
         id: source.id!,
+        spouse: source.spouse,
         asset_type: source.asset_type,
         data: JSON.stringify(existingInput),
       });
