@@ -64,9 +64,12 @@ type Props = {
   incomeSources?: any[] | null;
   realEstateProperties?: any[] | null;
   currentYear: number;
-  retirementAge?: number;
-  birthYear?: number;
-  lifeExpectancyAge?: number;
+  retirementAge?: number | null;
+  birthYear?: number | null;
+  lifeExpectancyAge?: number | null;
+  spouseRetirementAge?: number | null;
+  spouseBirthYear?: number | null;
+  spouseLifeExpectancyAge?: number | null;
 };
 
 export function FinancialTimeline({
@@ -76,6 +79,9 @@ export function FinancialTimeline({
   retirementAge,
   birthYear,
   lifeExpectancyAge,
+  spouseRetirementAge,
+  spouseBirthYear,
+  spouseLifeExpectancyAge,
 }: Props) {
   const yearMap = new Map<number, TimelineEvent[]>();
 
@@ -84,30 +90,56 @@ export function FinancialTimeline({
 
   // Add retirement year if birthYear and retirementAge provided
   if (birthYear != null && retirementAge != null) {
-    const retirementYear = birthYear + retirementAge;
-    yearMap.set(retirementYear, [{ label: "Target Retirement Age", type: "retirement" }]);
+    addEvent(yearMap, birthYear + retirementAge, {
+      label: spouseRetirementAge
+        ? "Target Retirement Age (You)"
+        : "Target Retirement Age",
+      type: "retirement",
+    });
   }
 
   // Add life expectancy age if it is provided
   if (birthYear != null && lifeExpectancyAge != null) {
-    const lifeExpectancyYear = birthYear + lifeExpectancyAge;
-    yearMap.set(lifeExpectancyYear, [{ label: "Life Expectancy Age", type: "life-expectancy" }]);
+    addEvent(yearMap, birthYear + lifeExpectancyAge, {
+      label: spouseLifeExpectancyAge
+        ? "Life Expectancy Age (You)"
+        : "Life Expectancy Age",
+      type: "life-expectancy",
+    });
+  }
+
+  // Add spouse's retirement year if birthYear and retirementAge provided
+  if (spouseBirthYear != null && spouseRetirementAge != null) {
+    addEvent(yearMap, spouseBirthYear + spouseRetirementAge, {
+      label: "Target Retirement Age (Spouse)",
+      type: "retirement",
+    });
+  }
+
+  // Add life expectancy age if it is provided
+  if (spouseBirthYear != null && spouseLifeExpectancyAge != null) {
+    addEvent(yearMap, spouseBirthYear + spouseLifeExpectancyAge, {
+      label: "Life Expectancy Age (Spouse)",
+      type: "life-expectancy",
+    });
   }
 
   // Add income sources
-  (incomeSources ?? [])
+ (incomeSources ?? [])
     .filter((s) => s.firstYear != null)
     .forEach((s) => {
-      const events = yearMap.get(s.firstYear!) ?? [];
-      events.push({ label: s.label, type: s.type as TimelineItemType });
-      yearMap.set(s.firstYear!, events);
-    });
+      addEvent(yearMap, s.firstYear!, {
+        label: s.label,
+        type: s.type as TimelineItemType,
+      });
+  });
   // Add real estate properties
   (realEstateProperties ?? []).forEach((p) => {
     if (p.mergedFields.mortgageEndYear != null) {
-      const events = yearMap.get(p.mergedFields.mortgageEndYear) ?? [];
-      events.push({ label: `${p.label} Mortgage Payoff`, type: "mortgage-end" });
-      yearMap.set(p.mergedFields.mortgageEndYear, events);
+      addEvent(yearMap, p.mergedFields.mortgageEndYear, {
+        label: `${p.label} Mortgage Payoff`,
+        type: "mortgage-end",
+      });
     }
   });
 
@@ -138,6 +170,16 @@ export function FinancialTimeline({
     "life-expectancy": IconHeart,
     "income": IconCoin,
   };
+
+  function addEvent(
+    map: Map<number, TimelineEvent[]>,
+    year: number,
+    event: TimelineEvent
+  ) {
+    const events = map.get(year) ?? [];
+    events.push(event);
+    map.set(year, events);
+  }
 
   const getTimelineDotIcon = (events: TimelineEvent[]) => {
     if (events.length === 1) {

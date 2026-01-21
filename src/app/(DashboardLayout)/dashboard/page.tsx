@@ -97,9 +97,14 @@ const Dashboard = () => {
                 <FinancialTimeline 
                   incomeSources={computedSources!} 
                   realEstateProperties={computedProperties} 
-                  currentYear={new Date().getFullYear()} birthYear={attrs?.birthYear!} 
-                  retirementAge={attrs?.targetRetirementAge!}
-                  lifeExpectancyAge={attrs?.lifeExpectancyAge!}/>
+                  currentYear={new Date().getFullYear()} 
+                  birthYear={attrs?.birthYear} 
+                  retirementAge={attrs?.targetRetirementAge}
+                  lifeExpectancyAge={attrs?.lifeExpectancyAge}
+                  spouseBirthYear={spouseData?.birthYear}
+                  spouseRetirementAge={spouseData?.targetRetirementAge}
+                  spouseLifeExpectancyAge={spouseData?.lifeExpectancyAge}
+                  />
               </Grid>
             </Grid>
           </Grid>
