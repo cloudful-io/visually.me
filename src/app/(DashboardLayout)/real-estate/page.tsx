@@ -18,7 +18,7 @@ import SectionSpeedDial from "../components/shared/SectionSpeedDial";
 export default function RealEstateSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedAssets: computedProperties, projectionTables, save, remove, refresh } =
     useRealEstate();
-  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();  
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});  
 
   type ChartMode = "income" | "net";
   const [mode, setMode] = useState<ChartMode>("net");

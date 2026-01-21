@@ -28,7 +28,7 @@ import type { RealEstatePropertyProjectionRow } from "financial-calcs";
 export default function RealEstatePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { loading, computedAssets: computedProperties, projectionTables, save, remove, refresh } = useRealEstate();
-  const { data: userAttributes } = useUserAttributes();
+  const { data: userAttributes } = useUserAttributes({spouse: false});
   const router = useRouter();
 
   const [openEditDialog, setOpenEditDialog] = useState(false);

@@ -13,25 +13,37 @@ import EditUserAttributesDialog from "./EditDialogs/EditUserAttributesDialog";
 import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
 import { IconFriends, IconUser } from "@tabler/icons-react";
 
-const UserAttributes = () => {
+type UserAttributesProps = {
+  spouse?: boolean;
+  onChange?: () => void;
+};
+
+const UserAttributes = ({ spouse = false, onChange, }: UserAttributesProps) => {
   const { user } = useSupabaseAuth();
 
   const [displayName, setDisplayName] = useState<string>("");
   const [avatarUrl, setAvatarUrl] = useState<string>("");
 
-  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
+  const {
+    data: attrs,
+    loading: attrsLoading,
+    refresh: refreshAttrs,
+    remove,
+  } = useUserAttributes({ spouse: spouse });
+  const { data: spouseData, exists: spouseExists, refresh: refreshSpouseAttrs, loading: spouseLoading } = useUserAttributes({ spouse: true });
 
   const [yearsLeft, setYearsLeft] = useState<number | null>(null);
   const [monthsLeft, setMonthsLeft] = useState<number | null>(null);
   const [progressPct, setProgressPct] = useState<number>(0);
 
-  const [openEditProfileDialog, setOpenEditProfileDialog] = React.useState(false);
+  const [editingSpouse, setEditingSpouse] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   
   // Load display name and avatar
   useEffect(() => {
-    if (!user) return;
+    if (!user || spouse) return;
 
     const fetchProfile = async () => {
       const userProfileService = new UserProfileService(supabase);
@@ -44,7 +56,7 @@ const UserAttributes = () => {
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user, spouse]);
 
   // Retirement countdown math
   useEffect(() => {
@@ -70,25 +82,19 @@ const UserAttributes = () => {
 
     // progress percentage
     const currentAge = currentYear - attrs.birthYear;
-    const pct = Math.min(
-      100,
-      Math.max(0, (currentAge / attrs.targetRetirementAge) * 100)
+    setProgressPct(
+      Math.round(
+        Math.min(100, Math.max(0, (currentAge / attrs.targetRetirementAge) * 100))
+      )
     );
-
-    setProgressPct(Math.round(pct));
-  }, [attrs]);
-
-  const handleEditProfile = () => {
-    setMenuAnchor(null);
-    setOpenEditProfileDialog(true);
-  };
+  }, [attrs, spouse]);
 
   return (
     <DashboardCard 
       title={
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-          <IconUser />
-          Your Financial Profile
+          {spouse ? <IconFriends /> : <IconUser />}
+          {spouse ? "Spouse Profile" : "Your Financial Profile"}
         </Box>
       }
       action={
@@ -107,38 +113,89 @@ const UserAttributes = () => {
           open={Boolean(menuAnchor)}
           onClose={() => setMenuAnchor(null)}
         >
-          <MenuItem onClick={() => handleEditProfile()}>
+          <MenuItem
+            onClick={() => {
+              setEditing(true);
+              setMenuAnchor(null);
+            }}
+          >
             <ListItemIcon>
               <IconPencil fontSize="small" />
             </ListItemIcon>
             <ListItemText>Edit Profile</ListItemText>
           </MenuItem>
-          <MenuItem onClick={() => setOpenEditProfileDialog(true)} sx={{display: 'none'}}>
-            <ListItemIcon>
-              <IconFriends fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Add Spouse</ListItemText>
-          </MenuItem>
+          {!spouse && !spouseLoading && !spouseExists && (
+            <MenuItem
+              onClick={() => {
+                setEditingSpouse(true); // open dialog specifically to add spouse
+                setMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <IconFriends fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Add Spouse</ListItemText>
+            </MenuItem>
+          )}
+          {spouse && (
+            <MenuItem
+              onClick={async () => {
+                setMenuAnchor(null);
+                if (!confirm("Are you sure you want to delete your spouse?")) return;
+
+                try {
+                  await remove(); 
+                  refreshAttrs();
+                  refreshSpouseAttrs();
+                  onChange?.();
+                } catch (err) {
+                  console.error(err);
+                  alert("Failed to delete spouse");
+                }
+              }}
+            >
+              <ListItemIcon>
+                <IconFriends fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Delete Spouse</ListItemText>
+            </MenuItem>
+          )}
         </Menu>
       </>
     }>
       <EditUserAttributesDialog
-        open={openEditProfileDialog}
-        onClose={() => setOpenEditProfileDialog(false)}
-        onSaved={refreshAttrs}    // ← NEW LINE
+        open={editing}
+        onClose={() => setEditing(false)}
+        onSaved={() => {
+          refreshAttrs();       // refresh primary user
+          refreshSpouseAttrs(); // refresh spouse data
+          onChange?.();
+        }}
+        spouse={spouse} // edit the record this component represents
+      />
+
+      <EditUserAttributesDialog
+        open={editingSpouse}
+        onClose={() => setEditingSpouse(false)}
+        onSaved={() => {
+          refreshAttrs();       // refresh primary user
+          refreshSpouseAttrs(); // refresh spouse data
+          onChange?.();
+        }}
+        spouse={true} // always true, because this is the new spouse
       />
       <Grid container spacing={3}>
         <Grid size={{xs: 12, md: 12}}>
-          <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-            <Avatar src={avatarUrl || undefined} sx={{ width: 36, height: 36 }} />
-            <Stack>
+          {!spouse && (
+            <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+              <Avatar src={avatarUrl || undefined} sx={{ width: 36, height: 36 }} />
               <Typography variant="h6" fontWeight={600}>
                 {displayName || "Loading..."}
               </Typography>
             </Stack>
-          </Stack>
+          )}
 
-          <Box mt={2}>
+          <Box>
             {attrsLoading && <Typography>Loading attributes…</Typography>}
 
             {!attrsLoading && attrs && (

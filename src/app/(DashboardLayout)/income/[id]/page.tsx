@@ -25,7 +25,7 @@ import { calculatorRegistry } from "@/lib/calculators/registry";
 export default function IncomePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { loading, computedAssets: computedSources, projectionTables, save, remove, refresh } = useIncomeSources();
-  const { data: userAttributes } = useUserAttributes();
+  const { data: userAttributes } = useUserAttributes({spouse: false});
   const router = useRouter();
 
   const [openEditDialog, setOpenEditDialog] = useState(false);

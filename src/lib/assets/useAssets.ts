@@ -14,7 +14,7 @@ type UseAssetsOptions = {
 export function useAssets({ category, lazy = false }: UseAssetsOptions = {}) {
   
   const { data, loading, save, remove, refresh, setData } = useAssetsFetch({ category, lazy });
-  const { data: attrs } = useUserAttributes();
+  const { data: attrs } = useUserAttributes({spouse: false});
 
   const sortedData = useMemo(() => {
     if (!data) return data;

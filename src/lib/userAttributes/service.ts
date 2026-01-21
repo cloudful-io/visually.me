@@ -56,7 +56,23 @@ export async function upsertUserAttributes(
     life_expectancy_age_enc: input.lifeExpectancyAge != null ? encryptForUser(userId, String(input.lifeExpectancyAge)) : null,
   };
 
-  const { error } = await supabase.from("user_attributes").upsert(encrypted);
+  const { error } = await supabase.from("user_attributes").upsert(encrypted, {
+    onConflict: "id,spouse",
+  });
   console.log(error);
+  if (error) throw error;
+}
+
+
+export async function deleteUserAttribute(userId: string) {
+  const supabase = await createClient();
+
+  // Always delete the spouse, and not primary user
+  const { error } = await supabase
+    .from("user_attributes")
+    .delete()
+    .eq("id", userId)
+    .eq("spouse", true);
+
   if (error) throw error;
 }

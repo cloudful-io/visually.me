@@ -11,7 +11,7 @@ import { AssetInput } from "@/lib/assets/schema";
 
 export default function IncomeSourceOnboarding() {
 
-  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});
   const requiredTypes = ["fers-pension", "military-pension", "retirement-savings", "social-security"];
   const [typeStatus, setTypeStatus] = useState<{type: string; exists: boolean}[]>([]);
   const { computedAssets: sources, loading, save, remove, refresh } = useIncomeSources();

@@ -22,7 +22,9 @@ const Dashboard = () => {
 
   const { computedAssets: computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources();
   const { computedAssets: computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
-  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});
+  const { data: spouseData, exists: spouseExists, refresh: refreshSpouseAttrs, loading: spouseLoading } = useUserAttributes({ spouse: true });
+  
   const { user } = useSupabaseAuth();
   const [displayName, setDisplayName] = useState<string>("");
 
@@ -62,6 +64,11 @@ const Dashboard = () => {
     }
   }, [attrs?.targetRetirementAge]);
 
+  const handleChange = async () => {
+    refreshAttrs();
+    refreshSpouseAttrs();
+  };
+
   return (
     <PageContainer title="Visually Me: Dashboard" description="Dashboard displaying financial projections and breakdowns.">
       <Box>
@@ -79,8 +86,13 @@ const Dashboard = () => {
           >
             <Grid container spacing={2}>
               <Grid size={12}>
-                <UserAttributes />
+                <UserAttributes onChange={handleChange}/>
               </Grid>
+              {!spouseLoading && spouseExists && (
+              <Grid size={12}>
+                <UserAttributes spouse onChange={handleChange}/>
+              </Grid>
+              )}
               <Grid size={12}>
                 <FinancialTimeline 
                   incomeSources={computedSources!} 

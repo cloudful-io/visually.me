@@ -20,12 +20,15 @@ export default function EditUserAttributesDialog({
   open,
   onClose,
   onSaved,
+  spouse = false,
 }: {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
+  spouse?: boolean;
 }) {
-  const { data: attrs, save: saveUserAttrs } = useUserAttributes();
+  const { data: attrs, save: saveUserAttrs } = useUserAttributes({spouse});
+  const { data: primaryAttrs } = useUserAttributes({ spouse: false });
   const currentYear = new Date().getFullYear();
   const [birthYear, setBirthYear] = useState(1970);
   const [startYear, setStartYear] = useState(currentYear);
@@ -45,11 +48,14 @@ export default function EditUserAttributesDialog({
     setLifeExpectancyAge(attrs.lifeExpectancyAge!);
   }, [attrs]);
 
-  const canSave = birthYear && targetRetirementAge && startYear && lifeExpectancyAge;
+  const canSave = birthYear && targetRetirementAge && (spouse || startYear) && lifeExpectancyAge;
   const validate = {
     birthYear: birthYear && (birthYear < 1900 || birthYear > currentYear),
     targetRetirementAge: targetRetirementAge && (targetRetirementAge < 40 || targetRetirementAge > 80),
-    startYear: startYear && (startYear < 1900 || startYear > currentYear),
+    startYear:
+      !spouse &&
+      startYear &&
+      (startYear < 1900 || startYear > currentYear),
     lifeExpectancyAge: lifeExpectancyAge && (lifeExpectancyAge <= 0 || lifeExpectancyAge > 150),
   };
 
@@ -62,7 +68,11 @@ export default function EditUserAttributesDialog({
       setErrorMsg("Please provide your target retirement age.");
       return;
     }
-    else if (!startYear) {
+    const resolvedStartYear = spouse
+      ? primaryAttrs?.startYear
+      : startYear;
+
+    if (!resolvedStartYear) {
       setErrorMsg("Please provide the year to start projecting data");
       return;
     }
@@ -73,9 +83,9 @@ export default function EditUserAttributesDialog({
 
     try {
       await saveUserAttrs({
-        spouse: false,
+        spouse,
         birthYear: Number(birthYear),
-        startYear: Number(startYear),
+        startYear: Number(resolvedStartYear),
         targetRetirementAge: Number(targetRetirementAge),
         lifeExpectancyAge: Number(lifeExpectancyAge),
       });
@@ -91,7 +101,7 @@ export default function EditUserAttributesDialog({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Financial Profile</DialogTitle>
+      <DialogTitle>{spouse ? "Spouse Profile" : "Your Financial Profile"}</DialogTitle>
 
       <DialogContent dividers>
         {loading ? (
@@ -130,22 +140,24 @@ export default function EditUserAttributesDialog({
                   },
                 }}
               />
-              <TextField
-                type="number"
-                fullWidth
-                label="Year to Start Projecting Data"
-                value={startYear}
-                disabled={isSaving}
-                onChange={(e) => setStartYear(Number(e.target.value))}
-                error={!!validate.startYear}
-                helperText={validate.startYear ? `Enter a year between 1900 and ${currentYear}` : ""}
-                slotProps={{
-                  htmlInput: {
-                    min: 1900,
-                    max: currentYear,
-                  },
-                }}
-              />
+              {!spouse && (
+                <TextField
+                  type="number"
+                  fullWidth
+                  label="Year to Start Projecting Data"
+                  value={startYear}
+                  disabled={isSaving}
+                  onChange={(e) => setStartYear(Number(e.target.value))}
+                  error={!!validate.startYear}
+                  helperText={validate.startYear ? `Enter a year between 1900 and ${currentYear}` : ""}
+                  slotProps={{
+                    htmlInput: {
+                      min: 1900,
+                      max: currentYear,
+                    },
+                  }}
+                />
+              )}
               <TextField
                 type="number"
                 fullWidth
@@ -183,7 +195,7 @@ export default function EditUserAttributesDialog({
         <Button
           variant="contained"
           onClick={handleSave}
-          disabled={!canSave || validate.birthYear || validate.targetRetirementAge || validate.startYear || validate.lifeExpectancyAge || isSaving}
+          disabled={!canSave || validate.birthYear || validate.targetRetirementAge || (!spouse && validate.startYear) || validate.lifeExpectancyAge || isSaving}
         >
           {loading ? <CircularProgress size={20} /> : "Save"}
         </Button>

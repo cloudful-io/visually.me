@@ -18,7 +18,7 @@ import SectionSpeedDial from "../components/shared/SectionSpeedDial";
 export default function IncomeSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedAssets: computedSources, save, remove, refresh } =
     useIncomeSources();
-  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes();  
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});  
 
   const [mode, setMode] = useState<"income" | "balance">("income");
 
