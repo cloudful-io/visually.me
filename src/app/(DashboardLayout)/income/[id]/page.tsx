@@ -7,6 +7,7 @@ import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarCha
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
 import { CircularProgress, Button, Typography } from "@mui/material";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
+import { Box, Chip } from "@mui/material";
 import BackToList from "../../components/shared/BackToList";
 import EditIncomeSourceDialog from "../../components/dashboard/EditDialogs/EditIncomeSourcesDialog";
 import EditIcon from '@mui/icons-material/Edit';
@@ -21,12 +22,15 @@ import { AssetInput } from "@/lib/assets/schema";
 import { AnyProjectionRow } from "@/lib/assets/types";
 import { assetRegistry } from "@/lib/assets/registry";
 import { calculatorRegistry } from "@/lib/calculators/registry";
+import { useTheme } from '@mui/material/styles';
 
 export default function IncomePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { loading, computedAssets: computedSources, projectionTables, save, remove, refresh } = useIncomeSources();
   const { data: userAttributes } = useUserAttributes({spouse: false});
+  const { data: spouseAttrs, exists: hasSpouse } = useUserAttributes({spouse: true});
   const router = useRouter();
+  const theme = useTheme();
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingSourceId, setEditingSourceId] = useState<string | null>(null);
@@ -64,7 +68,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
     await save({
       id: source.id!,
       asset_type: input.asset_type,
-      spouse: false,
+      spouse: source.spouse,
       data: JSON.stringify(merged),
     });
 
@@ -176,11 +180,13 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
       await refresh();
     }
   };
-  const retirementX =
-    userAttributes?.birthYear !== undefined &&
-    userAttributes?.targetRetirementAge !== undefined
-      ? userAttributes.birthYear! + userAttributes.targetRetirementAge!
-      : undefined;
+  const retirementX = source.spouse
+    ? spouseAttrs?.birthYear !== undefined && spouseAttrs?.targetRetirementAge !== undefined
+      ? spouseAttrs.birthYear! + spouseAttrs.targetRetirementAge!
+      : undefined
+    : userAttributes?.birthYear !== undefined && userAttributes?.targetRetirementAge !== undefined
+    ? userAttributes.birthYear! + userAttributes.targetRetirementAge!
+    : undefined;
 
   return (
     <>
@@ -189,7 +195,17 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           href="/income"
           listLabel="Income and Investment"
         />
-      <PageContainer title={ source.label} showTitle>
+      <PageContainer title={source.label} showTitle>
+        {hasSpouse && (
+          <Box mb={2}>
+            <Chip
+              label={source.spouse ? "Spouse" : "You"}
+              size="small"
+              color={source.spouse ? "secondary" : "primary"}
+              sx={{ fontWeight: 600 }}
+            />
+          </Box>
+        )}
         <ReadOnlyFields
           fields={fields}
           values={source.mergedFields}
@@ -222,7 +238,13 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
           dataKeys={dataKeys}
           title={`${source.label} Over Time`}
           enableRangeFilter
-          retirementX={retirementX}
+          retirementX={[
+            {
+              year: retirementX!,
+              label: hasSpouse ? (source.spouse ? "Target Retirement\n(Spouse)" : "Target Retirement\n(You)") : "Target Retirement",
+              color: theme.palette.primary.main,
+              position: "start"
+            }]}
         />
 
         <div id="tableSection" />
@@ -236,6 +258,7 @@ export default function IncomePage({ params }: { params: Promise<{ id: string }>
 
         <EditIncomeSourceDialog
           userAttributes={userAttributes!}
+          hasSpouse={hasSpouse}
           open={openEditDialog}
           sources={computedSources}
           sourceId={editingSourceId}

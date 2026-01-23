@@ -4,7 +4,10 @@ import { assetRegistry } from "./registry";
 
 export function useComputedAssets(
   rawData: NormalizedAsset[] | null,
-  userAttributes: any | undefined
+  userAttributes: {
+    primary?: any;
+    spouse?: any;
+  }
 ) {
   return useMemo(() => {
     if (!rawData) return null;
@@ -14,6 +17,11 @@ export function useComputedAssets(
     return rawData.map((asset) => {
       const def = assetRegistry[asset.asset_type];
       
+      const attrsForAsset =
+        asset.spouse && userAttributes.spouse
+          ? userAttributes.spouse
+          : userAttributes.primary;
+          
       if (!def?.compute) {
         return {
           ...asset,
@@ -28,7 +36,7 @@ export function useComputedAssets(
       try {
         const result = def.compute({
           asset,
-          userAttributes,
+          userAttributes: attrsForAsset,
           currentYear,
         });
 

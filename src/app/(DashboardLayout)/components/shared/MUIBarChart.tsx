@@ -26,7 +26,7 @@ type Props<T extends Record<string, any>> = {
   defaultRange?: YearRange;
   disableMetricToggle?: boolean;
   showFutureYearOnly?: boolean;
-  retirementX?: number;
+  retirementX?: { year: number; label: string; position: "start" | "middle" | "end"; color?: string;  }[];
 };
 
 export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
@@ -191,19 +191,24 @@ export function MUIBarChart<T extends Record<string, any>>(props: Props<T>) {
             : [theme.palette.primary.light]
         }
       >
-        {retirementX !== undefined && filteredData.some(row => String(row[xKey]) === String(retirementX)) && (
-          <ChartsReferenceLine
-            x={String(retirementX)}
-            label="Target Retirement"
-            labelAlign="start"
-            labelStyle={{ fontWeight: 600 }}
-            lineStyle={{
-              stroke: theme.palette.secondary.main,
-              strokeWidth: 2,          
-              strokeDasharray: '6 4',
-            }}
-          />
-        )}
+        {retirementX && (
+          Array.isArray(retirementX) ? retirementX : [{ year: retirementX, label: "Target Retirement", position: retirementX, color: theme.palette.primary.main }])
+            .map(({ year, label, position, color }, index) =>
+              filteredData.some(row => String(row[xKey]) === String(year)) && (
+              <ChartsReferenceLine
+                key={`${year}-${label}-${index}`}
+                x={String(year)}
+                label={label}
+                labelAlign={position}
+                labelStyle={{ fontWeight: 600 }}
+                lineStyle={{
+                  stroke: color ?? theme.palette.secondary.main,
+                  strokeWidth: 2,
+                  strokeDasharray: '6 4',
+                }}
+              />
+            )
+          )}
       </BarChart>
     </Box>
   );

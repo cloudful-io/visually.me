@@ -5,7 +5,7 @@ import { useRealEstate } from "@/lib/assets/useRealEstate";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import { MUIBarChart } from "@/app/(DashboardLayout)/components/shared/MUIBarChart";
 import { ProjectionDataGrid } from "../../components/shared/ProjectionDataGrid";
-import { ToggleButton, ToggleButtonGroup, CircularProgress, Button, Typography, Box } from "@mui/material";
+import { ToggleButton, ToggleButtonGroup, Chip, CircularProgress, Button, Typography, Box } from "@mui/material";
 import { ReadOnlyFields } from "../../components/shared/ReadOnlyFields";
 import { realEstateFieldConfigs, getRealEstateProjectionColumns, realEstateDataKeys } from "@/configs/realEstate";
 import BackToList from "../../components/shared/BackToList";
@@ -21,6 +21,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../../components/shared/SectionSpeedDial";
 import { ColumnDef, DataKeyOption, FormFieldConfig } from '@/types/forms';
+import { useTheme } from '@mui/material/styles';
 
 // Projection row union
 import type { RealEstatePropertyProjectionRow } from "financial-calcs";
@@ -29,7 +30,9 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
   const { id } = use(params);
   const { loading, computedAssets: computedProperties, projectionTables, save, remove, refresh } = useRealEstate();
   const { data: userAttributes } = useUserAttributes({spouse: false});
+  const { data: spouseAttrs, exists: hasSpouse } = useUserAttributes({spouse: true});
   const router = useRouter();
+  const theme = useTheme();
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
@@ -176,11 +179,13 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
     }
   };
 
-  const retirementX =
-    userAttributes?.birthYear !== undefined &&
-    userAttributes?.targetRetirementAge !== undefined
-      ? userAttributes.birthYear! + userAttributes.targetRetirementAge!
-      : undefined;
+  const retirementX = property.spouse
+    ? spouseAttrs?.birthYear !== undefined && spouseAttrs?.targetRetirementAge !== undefined
+      ? spouseAttrs.birthYear! + spouseAttrs.targetRetirementAge!
+      : undefined
+    : userAttributes?.birthYear !== undefined && userAttributes?.targetRetirementAge !== undefined
+    ? userAttributes.birthYear! + userAttributes.targetRetirementAge!
+    : undefined;
 
   return (
     <>
@@ -190,7 +195,16 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
         listLabel="Real Estate Properties"
       />
       <PageContainer title={`${property.label} Projection`} showTitle>
-        
+        {hasSpouse && (
+          <Box mb={2}>
+            <Chip
+              label={property.spouse ? "Spouse" : "You"}
+              size="small"
+              color={property.spouse ? "secondary" : "primary"}
+              sx={{ fontWeight: 600 }}
+            />
+          </Box>
+        )}
         <ReadOnlyFields
           fields={fields}
           values={property.mergedFields}
@@ -249,7 +263,13 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
             ]}
             title="Net Monthly Cash Flow by Year"
             enableRangeFilter
-            retirementX={retirementX}
+            retirementX={[
+            {
+              year: retirementX!,
+              label: hasSpouse ? (property.spouse ? "Target Retirement\n(Spouse)" : "Target Retirement\n(You)") : "Target Retirement",
+              color: theme.palette.primary.main,
+              position: "start"
+            }]}
           />
         )}
         {viewMode === "detail" && (
@@ -267,7 +287,13 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
             title="Monthly Income and Expense Breakdown"
             stacked
             enableRangeFilter
-            retirementX={retirementX}
+            retirementX={[
+            {
+              year: retirementX!,
+              label: hasSpouse ? (property.spouse ? "Target Retirement\n(Spouse)" : "Target Retirement\n(You)") : "Target Retirement",
+              color: theme.palette.primary.main,
+              position: "start"
+            }]}
           />
         )}
 
@@ -282,6 +308,7 @@ export default function RealEstatePage({ params }: { params: Promise<{ id: strin
 
         <EditRealEstateDialog
           userAttributes={userAttributes!}
+          hasSpouse={hasSpouse}
           open={openEditDialog}
           properties={computedProperties}
           propertyId={editingPropertyId}

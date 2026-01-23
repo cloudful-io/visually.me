@@ -14,14 +14,18 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
+import { useTheme } from '@mui/material/styles';
+
 
 export default function RealEstateSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedAssets: computedProperties, projectionTables, save, remove, refresh } =
     useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});  
+  const { data: spouseAttrs, exists: hasSpouse } = useUserAttributes({spouse: true});
 
   type ChartMode = "income" | "net";
   const [mode, setMode] = useState<ChartMode>("net");
+  const theme = useTheme();
 
   const tableRows = getCombinedProjection();
   const chartRows = getCombinedChartRows;
@@ -62,7 +66,9 @@ export default function RealEstateSummaryPage() {
       <div id="formSection"></div>
       <PageContainer title="Real Estate Properties" showTitle>
         <RealEstateDetailedList
-            userAttributes={attrs || {}}
+            primaryUserAttributes={attrs || {}}
+            spouseUserAttributes={spouseAttrs}
+            hasSpouse={hasSpouse}
             properties={computedProperties}
             projectionTables={projectionTables}
             loading={loading}
@@ -98,7 +104,22 @@ export default function RealEstateSummaryPage() {
                 ]}
                 title="Annual Net Cash Flow"
                 enableRangeFilter
-                retirementX={retirementX}
+                retirementX={[
+                {
+                  year: attrs?.birthYear! + attrs?.targetRetirementAge!,
+                  label: hasSpouse ? "Target Retirement\n(You)" : "Target Retirement",
+                  color: theme.palette.primary.main,
+                  position: "start"
+                },
+                hasSpouse && spouseAttrs
+                  ? {
+                      year: spouseAttrs.birthYear! + spouseAttrs.targetRetirementAge!,
+                      label: "Target Retirement\n(Spouse)",
+                      color: theme.palette.secondary.main,
+                      position: "middle"
+                    }
+                  : undefined
+              ].filter(Boolean) as { year: number; label: string; position: "start" | "middle" | "end"; color?: string }[]}
               />
             )}
 
@@ -113,7 +134,22 @@ export default function RealEstateSummaryPage() {
                 ]}
                 title="Income vs Expense"
                 enableRangeFilter
-                retirementX={retirementX}
+                retirementX={[
+                {
+                  year: attrs?.birthYear! + attrs?.targetRetirementAge!,
+                  label: hasSpouse ? "Target Retirement\n(You)" : "Target Retirement",
+                  color: theme.palette.primary.main,
+                  position: "start"
+                },
+                hasSpouse && spouseAttrs
+                  ? {
+                      year: spouseAttrs.birthYear! + spouseAttrs.targetRetirementAge!,
+                      label: "Target Retirement\n(Spouse)",
+                      color: theme.palette.secondary.main,
+                      position: "middle"
+                    }
+                  : undefined
+              ].filter(Boolean) as { year: number; label: string; position: "start" | "middle" | "end"; color?: string }[]}
               />
             )}
 

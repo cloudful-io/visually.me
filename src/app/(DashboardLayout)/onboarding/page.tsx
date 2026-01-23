@@ -107,6 +107,7 @@ export default function IncomeSourceOnboarding() {
 
       <EditIncomeSourceDialog
         userAttributes={attrs || {}}
+        hasSpouse={false}
         open={openEditDialog}
         sources={sources}   
         sourceId={editingSourceId}

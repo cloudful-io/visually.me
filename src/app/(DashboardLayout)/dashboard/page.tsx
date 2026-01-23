@@ -16,7 +16,7 @@ import { buildCashFlowTable, CashFlowSourceRow } from '@/lib/dashboard/util';
 import { supabase } from "@/utils/supabase/client";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { UserProfileService } from "supabase-auth-lib";
-
+import { useTheme } from '@mui/material/styles';
 
 const Dashboard = () => {
 
@@ -33,6 +33,7 @@ const Dashboard = () => {
   const propertiesChartRows = getCombinedPrpoertiesChartRows;
   const [selectedAge, setSelectedAge] = useState(60);
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
+  const theme = useTheme();
 
   const netCashFlow = useMemo(() => 
     buildCashFlowTable([
@@ -154,12 +155,27 @@ const Dashboard = () => {
                   <MUILineChart
                     title=""
                     data={netCashFlow}
-                    xKey="age"
+                    xKey="year"
                     dataKeys={[
                       { key: 'netCashFlow', label: 'Net Cash Flow' },
                     ]}
                     enableRangeFilter
-                    retirementX={attrs?.targetRetirementAge!}
+                    retirementX={[
+                    {
+                      year: attrs?.birthYear! + attrs?.targetRetirementAge!,
+                      label: spouseExists ? "Target Retirement\n(You)" : "Target Retirement",
+                      color: theme.palette.primary.main,
+                      position: "start"
+                    },
+                    spouseExists && spouseData
+                      ? {
+                          year: spouseData?.birthYear! + spouseData.targetRetirementAge!,
+                          label: "Target Retirement\n(Spouse)",
+                          color: theme.palette.secondary.main,
+                          position: "middle"
+                        }
+                      : undefined
+                  ].filter(Boolean) as { year: number; label: string; position: "start" | "middle" | "end"; color?: string }[]}
                   />
                 </DashboardCard>
               </Grid>

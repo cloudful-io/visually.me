@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress, Typography } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, ToggleButton, ToggleButtonGroup, CircularProgress, Typography } from "@mui/material";
 import { useForm } from "@/hooks/useForm";
 import { AssetInput } from "@/lib/assets/schema";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
@@ -8,9 +8,11 @@ import { calculatorRegistry } from "@/lib/calculators/registry";
 import { assetRegistry } from "@/lib/assets/registry";
 import { FormFields } from "../../shared/FormFields";
 import { incomeAssetTypes } from "@/lib/assets/registry";
+import { IconUser, IconFriends } from "@tabler/icons-react";
 
 export default function EditIncomeSourceDialog({
   userAttributes,
+  hasSpouse,
   open,
   sources,
   sourceId,
@@ -19,6 +21,7 @@ export default function EditIncomeSourceDialog({
   onSave,
 }: {
   userAttributes: Record<string, any>;
+  hasSpouse: boolean;
   open: boolean;
   sources: AssetInput[] | null;
   sourceId: string | null;
@@ -34,6 +37,7 @@ export default function EditIncomeSourceDialog({
   // Root-level fields
   // ----------------------------
   const [asset_type, setAsset_Type] = useState<AssetInput["asset_type"]>("retirement-savings");
+  const [isSpouse, setIsSpouse] = useState<boolean>(false);
   const [label, setLabel] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
   const [childValidationMessages, setChildValidationMessages] = useState<string[]>([]);
@@ -89,6 +93,8 @@ export default function EditIncomeSourceDialog({
             : "retirement-savings"
         );
 
+        setIsSpouse(hasSpouse ? !!src.spouse : false);
+
         if (src.data) {
           try {
             const parsed = JSON.parse(src.data);
@@ -115,6 +121,7 @@ export default function EditIncomeSourceDialog({
         ? (defaultType as AssetInput["asset_type"])
         : "retirement-savings"
     );
+    setIsSpouse(false);
     setLabel("");
     reset(buildInitialValues());
     setErrors({});
@@ -182,7 +189,7 @@ export default function EditIncomeSourceDialog({
     await onSave({
       id: sourceId ?? undefined,
       asset_type,
-      spouse: false,
+      spouse: hasSpouse ? isSpouse : false,
       data: 
         JSON.stringify({
           label: label.trim(),
@@ -206,6 +213,39 @@ export default function EditIncomeSourceDialog({
             <Typography variant="body1">
               {calculator.config.calculatorDescription}
             </Typography>
+            {/* Owner Toggle */}
+            {hasSpouse && (
+              <Grid size={{ xs: 12 }}>
+                <ToggleButtonGroup
+                  value={isSpouse ? "spouse" : "primary"}
+                  exclusive
+                  onChange={(_, value) => {
+                    if (!value) return;
+                    setIsSpouse(value === "spouse");
+                  }}
+                  fullWidth
+                  size="medium"
+                  sx={{
+                    "& .MuiToggleButton-root.Mui-selected": {
+                      bgcolor: "primary.main",
+                      color: "primary.contrastText",
+                      "&:hover": {
+                        bgcolor: "primary.dark",
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton value="primary">
+                    <IconUser size={18} style={{ marginRight: 6 }} />
+                    You
+                  </ToggleButton>
+                  <ToggleButton value="spouse">
+                    <IconFriends size={18} style={{ marginRight: 6 }} />
+                    Spouse
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+            )}
             {/* Account Label */}
             <Grid size={{ xs: 12 }}>
               <TextField

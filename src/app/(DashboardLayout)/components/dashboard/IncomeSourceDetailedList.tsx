@@ -7,7 +7,9 @@ import { AddIncomeCard } from "./AddIncomeCard";
 import { AssetInput } from "@/lib/assets/schema";
 
 interface IncomeSourcesProps {
-  userAttributes: Record<string, any>;
+  primaryUserAttributes: Record<string, any>;
+  spouseUserAttributes: Record<string, any> | null;
+  hasSpouse: boolean;
   sources: any[] | null;
   loading: boolean;
   save: (input: AssetInput & { id?: string }) => Promise<void>;
@@ -16,7 +18,9 @@ interface IncomeSourcesProps {
 }
 
 const IncomeSourceDetailedList = ({
-  userAttributes,
+  primaryUserAttributes,
+  spouseUserAttributes,
+  hasSpouse,
   sources,
   loading,
   save,
@@ -61,7 +65,8 @@ const IncomeSourceDetailedList = ({
   return (
     <>
       <EditIncomeSourceDialog
-        userAttributes={userAttributes}
+        userAttributes={primaryUserAttributes}
+        hasSpouse={hasSpouse}
         open={openEditDialog}
         sources={sources}
         sourceId={editingSourceId}
@@ -80,16 +85,24 @@ const IncomeSourceDetailedList = ({
             </Grid>
             
             {sources && sources.length > 0 &&
-              sources.map((src) => (
-                <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={src.id}>
-                  <IncomeCard
-                    src={src}
-                    birthYear={userAttributes.birthYear}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                  />
-                </Grid>
-              ))}
+              sources.map((src) => {
+                const birthYear =
+                  src.spouse && hasSpouse
+                    ? spouseUserAttributes?.birthYear
+                    : primaryUserAttributes.birthYear;
+
+                return (
+                  <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={src.id}>
+                    <IncomeCard
+                      src={src}
+                      hasSpouse={hasSpouse}
+                      birthYear={birthYear}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                    />
+                  </Grid>
+                );
+            })}
           </Grid>
         )}
       </Box>

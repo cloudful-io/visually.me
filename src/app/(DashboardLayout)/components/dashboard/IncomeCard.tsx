@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
-import { Box, Button, Stack, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
 import { IconDotsVertical, IconPencil, IconTrash, IconUser } from "@tabler/icons-react";
 import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
@@ -12,6 +12,7 @@ import { currencyFormatter } from "@/lib/formatters/currency";
 interface IncomeSource {
   id: string;
   asset_type: string;
+  spouse: boolean;
   data: string;      
   firstYear?: number;
   firstAmount?: number;
@@ -20,12 +21,13 @@ interface IncomeSource {
 
 interface IncomeCardProps {
   src: IncomeSource;
+  hasSpouse: boolean;
   birthYear: number;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-export function IncomeCard({ src, birthYear, onEdit, onDelete }: IncomeCardProps) {
+export function IncomeCard({ src, hasSpouse, birthYear, onEdit, onDelete }: IncomeCardProps) {
 
   const handleEdit = (id: string) => {
     setMenuAnchor(null);
@@ -85,6 +87,15 @@ export function IncomeCard({ src, birthYear, onEdit, onDelete }: IncomeCardProps
           <Typography variant="h6" fontWeight={600} noWrap>
               {label}
           </Typography>
+          {/* Spouse / Primary Indicator */}
+          {hasSpouse && (
+            <Chip
+              label={src.spouse ? "Spouse" : "You"}
+              size="small"
+              color={src.spouse ? "secondary" : "primary"}
+              sx={{ ml: 0.5, height: 20, fontWeight: 600 }}
+            />
+          )}
         </Box>
       }
       action={
@@ -148,7 +159,7 @@ export function IncomeCard({ src, birthYear, onEdit, onDelete }: IncomeCardProps
                 size="small"
                 color="primary"
               >
-                View Details
+                View Detail
               </Button>
             </Box>
           </Stack>

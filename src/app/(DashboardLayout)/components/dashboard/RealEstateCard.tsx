@@ -3,24 +3,26 @@
 import { useState } from "react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { RealEstatePropertyProjectionRow } from "financial-calcs";
-import { Box, Button, Stack, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import Link from "next/link";
 import { IconDotsVertical, IconPencil, IconTrash, IconMapPin, IconFlagFilled, IconHome } from "@tabler/icons-react";
 import { currencyFormatter } from "@/lib/formatters/currency";
 
 interface RealEstate {
   id: string;
+  spouse: boolean;
   data: string;      
 }
 
 interface RealEstateProps {
   property: RealEstate;
+  hasSpouse: boolean;
   projectionTable: RealEstatePropertyProjectionRow[];
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
 
-export function RealEstateCard({ property, projectionTable, onEdit, onDelete }: RealEstateProps) {
+export function RealEstateCard({ property, hasSpouse, projectionTable, onEdit, onDelete }: RealEstateProps) {
   const handleEdit = (id: string) => {
     setMenuAnchor(null);
     onEdit(id);
@@ -74,6 +76,15 @@ export function RealEstateCard({ property, projectionTable, onEdit, onDelete }: 
             {/* Show flag if primary home */}
             {parsed.fields.propertyType === 'residence' && (
               <IconFlagFilled color="grey"/>
+            )}
+            {/* Spouse / Primary Indicator */}
+            {hasSpouse && (
+              <Chip
+                label={property.spouse ? "Spouse" : "You"}
+                size="small"
+                color={property.spouse ? "secondary" : "primary"}
+                sx={{ ml: 0.5, height: 20, fontWeight: 600 }}
+              />
             )}
           </Box>
         </Box>
@@ -181,7 +192,7 @@ export function RealEstateCard({ property, projectionTable, onEdit, onDelete }: 
                 size="small"
                 color="primary"
               >
-                View Details
+                View Detail
               </Button>
             </Box>
           </Stack>

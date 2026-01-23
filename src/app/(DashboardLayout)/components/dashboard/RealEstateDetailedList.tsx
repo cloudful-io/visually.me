@@ -10,7 +10,9 @@ import { AnyProjectionRow } from "@/lib/assets/types";
 import { AssetInput } from "@/lib/assets/schema";
 
 interface RealEstateProps {
-  userAttributes: Record<string, any>;
+  primaryUserAttributes: Record<string, any>;
+  spouseUserAttributes: Record<string, any> | null;
+  hasSpouse: boolean;
   properties: any[] | null;
   projectionTables: Record<string, AnyProjectionRow[]>;
   loading: boolean;
@@ -20,7 +22,9 @@ interface RealEstateProps {
 }
 
 const RealEstateDetailedList = ({
-  userAttributes,
+  primaryUserAttributes,
+  spouseUserAttributes,
+  hasSpouse,
   properties,
   projectionTables,
   loading,
@@ -68,7 +72,8 @@ const RealEstateDetailedList = ({
   return (
     <>
       <EditRealEstateDialog
-        userAttributes={userAttributes}
+        userAttributes={primaryUserAttributes}
+        hasSpouse={hasSpouse}
         open={openEditDialog}
         properties={properties}
         propertyId={editingPropertyId}
@@ -90,6 +95,7 @@ const RealEstateDetailedList = ({
                 <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={property.id}>
                   <RealEstateCard
                     property={property}
+                    hasSpouse={hasSpouse}
                     projectionTable={projectionTables[property.id] as RealEstatePropertyProjectionRow[]}
                     onEdit={handleEdit}
                     onDelete={handleDelete}

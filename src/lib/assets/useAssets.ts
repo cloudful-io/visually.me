@@ -15,6 +15,7 @@ export function useAssets({ category, lazy = false }: UseAssetsOptions = {}) {
   
   const { data, loading, save, remove, refresh, setData } = useAssetsFetch({ category, lazy });
   const { data: attrs } = useUserAttributes({spouse: false});
+  const { data: spouseAttrs, exists: hasSpouse } = useUserAttributes({spouse: true});
 
   const sortedData = useMemo(() => {
     if (!data) return data;
@@ -23,7 +24,13 @@ export function useAssets({ category, lazy = false }: UseAssetsOptions = {}) {
     );
   }, [data]);
 
-  const computedAssets = useComputedAssets(sortedData, attrs);
+  const computedAssets = useComputedAssets(
+    sortedData, 
+    {
+      primary: attrs,
+      spouse: hasSpouse ? spouseAttrs : undefined,
+    }
+  );
 
   const projectionTables = useProjectionTables(computedAssets);
 

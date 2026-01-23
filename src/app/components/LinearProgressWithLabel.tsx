@@ -15,6 +15,7 @@ export default function LinearProgressWithLabel({ value, label }: Props) {
           <Tooltip title={label}>
             <LinearProgress
                 variant="determinate"
+                color="info"
                 value={value}
                 sx={{
                 height: 8,

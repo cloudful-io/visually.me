@@ -14,13 +14,16 @@ import ListIcon from "@mui/icons-material/List";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
+import { useTheme } from '@mui/material/styles';
 
 export default function IncomeSummaryPage() {
   const { loading, getCombinedProjection, getCombinedChartRows, computedAssets: computedSources, save, remove, refresh } =
     useIncomeSources();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});  
+  const { data: spouseAttrs, exists: hasSpouse } = useUserAttributes({spouse: true});
 
   const [mode, setMode] = useState<"income" | "balance">("income");
+  const theme = useTheme();
 
   if (loading || !computedSources) {
     return (
@@ -57,7 +60,9 @@ export default function IncomeSummaryPage() {
       <div id="formSection"></div>
       <PageContainer title="Retirement Income and Investment" showTitle>
         <IncomeSourceDetailedList
-            userAttributes={attrs || {}}
+            primaryUserAttributes={attrs || {}}
+            spouseUserAttributes={spouseAttrs}
+            hasSpouse={hasSpouse}
             sources={computedSources}
             loading={loading}
             save={save}
@@ -98,7 +103,22 @@ export default function IncomeSummaryPage() {
                 : "Investment Balance by Account"
             }
             enableRangeFilter
-            retirementX={retirementX}
+            retirementX={[
+              {
+                year: attrs?.birthYear! + attrs?.targetRetirementAge!,
+                label: hasSpouse ? "Target Retirement\n(You)" : "Target Retirement",
+                color: theme.palette.primary.main,
+                position: "start"
+              },
+              hasSpouse && spouseAttrs
+                ? {
+                    year: spouseAttrs.birthYear! + spouseAttrs.targetRetirementAge!,
+                    label: "Target Retirement\n(Spouse)",
+                    color: theme.palette.secondary.main,
+                    position: "middle"
+                  }
+                : undefined
+            ].filter(Boolean) as { year: number; label: string; position: "start" | "middle" | "end"; color?: string }[]}
           />
 
           <div id="tableSection"></div>   

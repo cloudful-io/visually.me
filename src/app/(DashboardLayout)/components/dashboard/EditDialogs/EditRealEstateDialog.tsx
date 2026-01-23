@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, CircularProgress, Typography } from "@mui/material";
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, TextField, ToggleButton, ToggleButtonGroup, CircularProgress, Typography } from "@mui/material";
 import { useForm } from "@/hooks/useForm";
 import { FormFields } from "../../shared/FormFields";
 import { realEstateFieldConfigs } from "@/configs/realEstate";
@@ -10,9 +10,11 @@ import { useRealEstateProjection } from "@/hooks/useRealEstateProjection";
 import { FormSummary } from "@/app/(DashboardLayout)/components/shared/FormSummary";
 import { assetRegistry } from "@/lib/assets/registry";
 import { AssetInput } from "@/lib/assets/schema";
+import { IconUser, IconFriends } from "@tabler/icons-react";
 
 export default function EditRealEstateDialog({
   userAttributes,
+  hasSpouse,
   open,
   properties,
   propertyId,
@@ -20,6 +22,7 @@ export default function EditRealEstateDialog({
   onSave,
 }: {
   userAttributes: Record<string, any>;
+  hasSpouse: boolean;
   open: boolean;
   properties: AssetInput[] | null;
   propertyId: string | null;
@@ -35,6 +38,7 @@ export default function EditRealEstateDialog({
   // ----------------------------
   const asset_type = "real-estate";
   const assetDef = assetRegistry[asset_type];
+  const [isSpouse, setIsSpouse] = useState<boolean>(false);
   const [label, setLabel] = useState("");
   const [address, setAddress] = useState("");
   const [errors, setErrors] = useState<{ type?: string; label?: string }>({});
@@ -91,6 +95,8 @@ export default function EditRealEstateDialog({
     if (isEditing && properties) {
       const property = properties.find((s) => s.id === propertyId);
       if (property) {
+        setIsSpouse(hasSpouse ? !!property.spouse : false);
+
         if (property.data) {
           try {
             const parsed = JSON.parse(property.data);
@@ -115,6 +121,7 @@ export default function EditRealEstateDialog({
       }
     }
 
+    setIsSpouse(false);
     setLabel("");
     setAddress("");
     reset(initialRealEstateValues);
@@ -185,7 +192,7 @@ export default function EditRealEstateDialog({
     await onSave({
       id: propertyId ?? undefined,
       asset_type: asset_type,
-      spouse: false,
+      spouse: hasSpouse ? isSpouse : false,
       data: 
         JSON.stringify({
           label: label.trim(),
@@ -210,6 +217,39 @@ export default function EditRealEstateDialog({
             <Typography variant="body1">
               Estimate your future income (if any) and cost of homeownership based on mortgage, property tax, homeowner and/or private mortgage insurance, and HOA fee. 
             </Typography>
+            {/* Owner Toggle */}
+            {hasSpouse && (
+              <Grid size={{ xs: 12 }}>
+                <ToggleButtonGroup
+                  value={isSpouse ? "spouse" : "primary"}
+                  exclusive
+                  onChange={(_, value) => {
+                    if (!value) return;
+                    setIsSpouse(value === "spouse");
+                  }}
+                  fullWidth
+                  size="medium"
+                  sx={{
+                    "& .MuiToggleButton-root.Mui-selected": {
+                      bgcolor: "primary.main",
+                      color: "primary.contrastText",
+                      "&:hover": {
+                        bgcolor: "primary.dark",
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton value="primary">
+                    <IconUser size={18} style={{ marginRight: 6 }} />
+                    You
+                  </ToggleButton>
+                  <ToggleButton value="spouse">
+                    <IconFriends size={18} style={{ marginRight: 6 }} />
+                    Spouse
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+            )}
             {/* Account Label */}
             <Grid size={{ xs: 12 }}>
               <TextField
