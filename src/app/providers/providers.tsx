@@ -1,6 +1,7 @@
 "use client";
 
 import { ThemeModeProvider } from "@/contexts/ThemeModeContext";
+import { IncludeSpouseProvider } from "@/contexts/IncludeSpouseContext";
 import { CacheProvider } from "@emotion/react";
 import GoogleAnalytics from "@/app/(DashboardLayout)/components/shared/GoogleAnalytics"
 import createEmotionCache from "@/utils/createEmotionCache";
@@ -12,8 +13,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <>
       <CacheProvider value={clientSideEmotionCache}>
         <ThemeModeProvider>
-          <GoogleAnalytics />
-          {children}
+          <IncludeSpouseProvider>
+            <GoogleAnalytics />
+            {children}
+          </IncludeSpouseProvider>
         </ThemeModeProvider>
       </CacheProvider>
     </>

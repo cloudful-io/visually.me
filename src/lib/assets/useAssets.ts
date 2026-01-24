@@ -9,11 +9,12 @@ import { AssetCategory } from "./types";
 type UseAssetsOptions = {
   category?: AssetCategory;
   lazy?: boolean;
+  joint?: boolean;
 };
 
-export function useAssets({ category, lazy = false }: UseAssetsOptions = {}) {
+export function useAssets({ category, lazy = false, joint = true }: UseAssetsOptions = {}) {
   
-  const { data, loading, save, remove, refresh, setData } = useAssetsFetch({ category, lazy });
+  const { data, loading, save, remove, refresh, setData } = useAssetsFetch({ category, lazy, joint });
   const { data: attrs } = useUserAttributes({spouse: false});
   const { data: spouseAttrs, exists: hasSpouse } = useUserAttributes({spouse: true});
 

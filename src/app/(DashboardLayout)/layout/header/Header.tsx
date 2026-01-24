@@ -1,6 +1,6 @@
 "use client";
 
-import { useMediaQuery, Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button } from '@mui/material';
+import { useMediaQuery, Box, AppBar, FormControlLabel, Switch, Toolbar, styled, Stack, IconButton, Badge, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 // components
@@ -9,12 +9,22 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import ThemeModeToggle from '@/app/components/ThemeModeToggle';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useUserAttributes } from '@/lib/userAttributes/hook';
+import { useIncludeSpouse } from "@/contexts/IncludeSpouseContext";
 import Logo from './Logo';
 
-const Header = ({ onToggleSidebar, sidebarCollapsed }: { onToggleSidebar: () => void, sidebarCollapsed: boolean }) => {
+const Header = ({
+  onToggleSidebar,
+  sidebarCollapsed,
+}: {
+  onToggleSidebar: () => void;
+  sidebarCollapsed: boolean;
+}) => {
   const { user, loading } = useSupabaseAuth();
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
-
+  const { exists: hasSpouse } = useUserAttributes({spouse: true});
+  const { includeSpouse, toggleIncludeSpouse } = useIncludeSpouse();
+  
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
     background: theme.palette.background.paper,
@@ -53,6 +63,26 @@ const Header = ({ onToggleSidebar, sidebarCollapsed }: { onToggleSidebar: () => 
         </IconButton>
 
         {(!mdUp && <Logo showTitle homeUrl="/dashboard" />)}
+
+        {/* Include Spouse Switch */}
+        {hasSpouse && (
+          <FormControlLabel
+          sx={{
+            display: {
+              xs: "none",   // hide on mobile
+              md: "flex"    // show on desktop
+            }
+          }}
+            control={
+              <Switch
+                checked={includeSpouse}
+                onChange={toggleIncludeSpouse}
+                color="primary"
+              />
+            }
+            label="Include Spouse"
+          />
+        )}
         <Box flexGrow={1} />
         {/* Profile / Login / Theme Toggle */}
         <Stack direction="row" spacing={1} alignItems="center" sx={{ ml: 8 }}>

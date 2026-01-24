@@ -15,10 +15,12 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
 import { useTheme } from '@mui/material/styles';
+import { useIncludeSpouse } from "@/contexts/IncludeSpouseContext";
 
 export default function IncomeSummaryPage() {
+  const { includeSpouse } = useIncludeSpouse();
   const { loading, getCombinedProjection, getCombinedChartRows, computedAssets: computedSources, save, remove, refresh } =
-    useIncomeSources();
+    useIncomeSources({joint: includeSpouse});
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});  
   const { data: spouseAttrs, exists: hasSpouse } = useUserAttributes({spouse: true});
 

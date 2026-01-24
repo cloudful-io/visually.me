@@ -17,10 +17,11 @@ import { supabase } from "@/utils/supabase/client";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { UserProfileService } from "supabase-auth-lib";
 import { useTheme } from '@mui/material/styles';
+import { useIncludeSpouse } from "@/contexts/IncludeSpouseContext";
 
 const Dashboard = () => {
-
-  const { computedAssets: computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources();
+  const { includeSpouse } = useIncludeSpouse();
+  const { computedAssets: computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources({joint: includeSpouse});
   const { computedAssets: computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});
   const { data: spouseData, exists: spouseExists, refresh: refreshSpouseAttrs, loading: spouseLoading } = useUserAttributes({ spouse: true });

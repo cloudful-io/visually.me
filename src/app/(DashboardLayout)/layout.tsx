@@ -32,12 +32,13 @@ export default function RootLayout({
     return stored ? JSON.parse(stored) : true;
   });
   const toggleSidebar = () => {
-  setIsSidebarOpen((prev) => {
-    const next = !prev;
-    localStorage.setItem("sidebar-open", JSON.stringify(next));
-    return next;
-  });
-};
+    setIsSidebarOpen((prev) => {
+      const next = !prev;
+      localStorage.setItem("sidebar-open", JSON.stringify(next));
+      return next;
+    });
+  };
+  
   return (
     <MainWrapper className="mainwrapper">
       {/* ------------------------------------------- */}
@@ -54,7 +55,10 @@ export default function RootLayout({
         {/* ------------------------------------------- */}
         {/* Header */}
         {/* ------------------------------------------- */}
-        <Header onToggleSidebar={toggleSidebar} sidebarCollapsed={!isSidebarOpen} />
+        <Header 
+          onToggleSidebar={toggleSidebar} 
+          sidebarCollapsed={!isSidebarOpen} 
+        />
         {/* ------------------------------------------- */}
         {/* PageContent */}
         {/* ------------------------------------------- */}

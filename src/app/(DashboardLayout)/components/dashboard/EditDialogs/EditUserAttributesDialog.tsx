@@ -68,11 +68,7 @@ export default function EditUserAttributesDialog({
       setErrorMsg("Please provide your target retirement age.");
       return;
     }
-    const resolvedStartYear = spouse
-      ? primaryAttrs?.startYear
-      : startYear;
-
-    if (!resolvedStartYear) {
+    else if (!startYear) {
       setErrorMsg("Please provide the year to start projecting data");
       return;
     }
@@ -85,7 +81,7 @@ export default function EditUserAttributesDialog({
       await saveUserAttrs({
         spouse,
         birthYear: Number(birthYear),
-        startYear: Number(resolvedStartYear),
+        startYear: Number(startYear),
         targetRetirementAge: Number(targetRetirementAge),
         lifeExpectancyAge: Number(lifeExpectancyAge),
       });
@@ -140,24 +136,22 @@ export default function EditUserAttributesDialog({
                   },
                 }}
               />
-              {!spouse && (
-                <TextField
-                  type="number"
-                  fullWidth
-                  label="Year to Start Projecting Data"
-                  value={startYear}
-                  disabled={isSaving}
-                  onChange={(e) => setStartYear(Number(e.target.value))}
-                  error={!!validate.startYear}
-                  helperText={validate.startYear ? `Enter a year between 1900 and ${currentYear}` : ""}
-                  slotProps={{
-                    htmlInput: {
-                      min: 1900,
-                      max: currentYear,
-                    },
-                  }}
-                />
-              )}
+              <TextField
+                type="number"
+                fullWidth
+                label="Year to Start Projecting Data"
+                value={startYear}
+                disabled={isSaving}
+                onChange={(e) => setStartYear(Number(e.target.value))}
+                error={!!validate.startYear}
+                helperText={validate.startYear ? `Enter a year between 1900 and ${currentYear}` : ""}
+                slotProps={{
+                  htmlInput: {
+                    min: 1900,
+                    max: currentYear,
+                  },
+                }}
+              />
               <TextField
                 type="number"
                 fullWidth
@@ -195,7 +189,7 @@ export default function EditUserAttributesDialog({
         <Button
           variant="contained"
           onClick={handleSave}
-          disabled={!canSave || validate.birthYear || validate.targetRetirementAge || (!spouse && validate.startYear) || validate.lifeExpectancyAge || isSaving}
+          disabled={!canSave || validate.birthYear || validate.targetRetirementAge ||  validate.startYear || validate.lifeExpectancyAge || isSaving}
         >
           {loading ? <CircularProgress size={20} /> : "Save"}
         </Button>
