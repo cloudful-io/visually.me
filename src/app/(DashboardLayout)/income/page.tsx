@@ -58,7 +58,7 @@ export default function IncomeSummaryPage() {
     { key: "age", label: "Your Age" },
 
     ...(hasSpouse
-      ? ([{ key: "spouseAge", label: "Spouse Age" }] as ColumnDef<CombinedRow>[])
+      ? ([{ key: "spouseAge", label: "Spouse's Age" }] as ColumnDef<CombinedRow>[])
       : []),
 
     { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
