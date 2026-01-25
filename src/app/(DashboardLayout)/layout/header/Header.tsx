@@ -80,7 +80,7 @@ const Header = ({
                 color="primary"
               />
             }
-            label="Include Spouse"
+            label="Include Spouse's Asset"
           />
         )}
         <Box flexGrow={1} />
