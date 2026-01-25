@@ -29,7 +29,8 @@ export type AnyProjectionRow =
 
 export type CombinedRow = {
   year: number;
-  age: number;
+  age: number | null;
+  spouseAge?: number | null;
   monthlyIncome: number;
   annualIncome: number;
   annualInvestmentBalance?: number | null;

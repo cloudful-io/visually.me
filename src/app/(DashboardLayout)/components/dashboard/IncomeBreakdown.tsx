@@ -50,8 +50,6 @@ export function IncomeBreakdown({
     }))
     .filter((d) => d.value > 0);
 
-  const total = data.reduce((sum, d) => sum + d.value, 0);
-
   return (
     <DashboardCard
       title={
@@ -92,7 +90,7 @@ export function IncomeBreakdown({
             {
               data,
               arcLabel: (item) =>
-                `${((item.value / total) * 100).toFixed(0)}%`,
+                `${((item.value / income) * 100).toFixed(0)}%`,
               innerRadius: 55,
               outerRadius: 90,
               valueFormatter: (item) => currencyFormatter(item.value),
@@ -100,7 +98,7 @@ export function IncomeBreakdown({
             },
           ]}  
         >
-          <PieCenterLabel>{currencyFormatter(total)}</PieCenterLabel>
+          <PieCenterLabel>{currencyFormatter(income)}</PieCenterLabel>
         </PieChart>
       )}
 

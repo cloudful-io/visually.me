@@ -39,7 +39,13 @@ export function useAssets({ category, lazy = false, joint = true }: UseAssetsOpt
     getAllProjectionTables,
     getCombinedProjection,
     getCombinedChartRows,
-  } = useCombinedProjections(computedAssets);
+  } = useCombinedProjections(
+    computedAssets,
+    {
+      primary: attrs,
+      spouse: hasSpouse ? spouseAttrs : undefined,
+    }
+  );
 
   // ----------------------------
   // Public API

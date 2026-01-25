@@ -16,6 +16,8 @@ import TableChartIcon from "@mui/icons-material/TableChart";
 import SectionSpeedDial from "../components/shared/SectionSpeedDial";
 import { useTheme } from '@mui/material/styles';
 import { useIncludeSpouse } from "@/contexts/IncludeSpouseContext";
+import { ColumnDef } from '@/types/forms';
+import type { CombinedRow } from "@/lib/assets/types";
 
 export default function IncomeSummaryPage() {
   const { includeSpouse } = useIncludeSpouse();
@@ -51,11 +53,18 @@ export default function IncomeSummaryPage() {
             label: `${src.label} Balance`,
           }));
 
-  const retirementX =
-    attrs?.birthYear !== undefined &&
-    attrs?.targetRetirementAge !== undefined
-      ? attrs.birthYear! + attrs.targetRetirementAge!
-      : undefined;
+  const projectionColumns: ColumnDef<CombinedRow>[] = [
+    { key: "year", label: "Year" },
+    { key: "age", label: "Your Age" },
+
+    ...(hasSpouse
+      ? ([{ key: "spouseAge", label: "Spouse Age" }] as ColumnDef<CombinedRow>[])
+      : []),
+
+    { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
+    { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
+    { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
+  ];
       
   return (
     <>
@@ -126,13 +135,7 @@ export default function IncomeSummaryPage() {
           <div id="tableSection"></div>   
           <ProjectionDataGrid
             rows={tableRows}
-            columns={[
-              { key: "year", label: "Year" },
-              { key: "age", label: "Age" },
-              { key: "monthlyIncome", label: "Total Monthly Income ($)", currency: true, hiddenOnMobile: true },
-              { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
-              { key: "annualInvestmentBalance", label: "Investment Balance ($)", currency: true },
-            ]}
+            columns={projectionColumns}
             highlightYear={new Date().getFullYear()}
           />
           <SectionSpeedDial

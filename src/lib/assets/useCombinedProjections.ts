@@ -4,6 +4,10 @@ import { assetRegistry } from "./registry";
 
 export function useCombinedProjections(
   computedAssets: NormalizedAsset[] | null,
+  userAttributes: {
+    primary?: any;
+    spouse?: any;
+  }
 ) {
   const getAllProjectionTables = useCallback(() => {
     if (!computedAssets) return [];
@@ -18,6 +22,12 @@ export function useCombinedProjections(
 
   const getCombinedProjection = useCallback((): CombinedRow[] => {
     const all = getAllProjectionTables();
+
+    const primaryBirthYear = userAttributes.primary?.birthYear;
+    const spouseBirthYear = userAttributes.spouse ? userAttributes.spouse.birthYear : null;  
+
+    if (!primaryBirthYear) return [];
+
     if (!all.length) return [];
 
     const allYears = Array.from(
@@ -27,7 +37,14 @@ export function useCombinedProjections(
     const result: CombinedRow[] = [];
 
     for (const year of allYears) {
-      let age: number | null = null;
+      const primaryAge =
+        typeof primaryBirthYear === "number"
+          ? year - primaryBirthYear
+          : null;
+      const spouseAge =
+        typeof spouseBirthYear === "number"
+          ? year - spouseBirthYear
+          : null;
       let annualIncome = 0;
       let annualExpense = 0;
       let annualInvestmentBalance = 0;
@@ -35,9 +52,10 @@ export function useCombinedProjections(
       const balances: Record<string, number> = {};
 
       for (const asset of all) {
+        
         const row = asset.rows.find((r) => r.year === year);
         if (!row) continue;
-        if (age === null) age = (row as any).age ?? null;
+        //if (age === null) age = (row as any).age ?? null;
 
         const def = assetRegistry[asset.asset_type];
 
@@ -85,7 +103,8 @@ export function useCombinedProjections(
 
       result.push({
         year,
-        age: age ?? 0,
+        age: primaryAge,
+        spouseAge: spouseAge ?? null,
         monthlyIncome: Math.round(annualIncome/12),
         annualIncome: Math.round(annualIncome),
         monthlyExpense: Math.round(annualExpense / 12),
@@ -105,10 +124,11 @@ export function useCombinedProjections(
     return combined.map((row) => {
       const obj: Record<string, number> = {
         year: row.year,
-        age: row.age,
+        age: row.age ?? 0,
+        spouseAge: row.spouseAge ?? 0,
         monthlyIncome: Math.round(row.annualIncome/12),
         annualIncome: Math.round(row.annualIncome),
-        monthlyExpense: Math.round(row.annualExpense ?? 0 / 12),
+        monthlyExpense: Math.round((row.annualExpense ?? 0) / 12),
         annualExpense: Math.round(row.annualExpense ?? 0),
         annualNetCashFlow: Math.round(row.annualNetCashFlow ?? 0),
         annualInvestmentBalance: Math.round(row.annualInvestmentBalance ?? 0),
