@@ -9,7 +9,7 @@ export default function BlogPage() {
   
   return (
     <PageContainer title="Blog" description="Visually Me: Blog" showTitle>
-      <BlogList posts={posts} blogRootUrl='/blog' title='Blog' showFullContent/>
+      <BlogList posts={posts} blogRootUrl='/blog'/>
     </PageContainer>
   );
 }
