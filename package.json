@@ -32,7 +32,7 @@
     "financial-calcs": "^1.7.16",
     "framer-motion": "^12.23.24",
     "lodash": "^4.17.23",
-    "next": "^16.0.0",
+    "next": "^16.1.5",
     "papaparse": "^5.5.3",
     "react": "19.2.0",
     "react-apexcharts": "^1.8.0",
