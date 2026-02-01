@@ -34,7 +34,7 @@ interface IncomeCardProps {
   onDelete: (id: string) => void;
 }
 
-function calculateSimpleAnnualizedReturn(rows: IncomeSource["rows"]) {
+function calculateAnnualizedReturn(rows: IncomeSource["rows"]) {
   if (!rows || rows.length === 0) return null;
 
   const currentYear = new Date().getFullYear();
@@ -42,29 +42,33 @@ function calculateSimpleAnnualizedReturn(rows: IncomeSource["rows"]) {
     .filter((r) => r.year < currentYear)
     .sort((a, b) => a.year - b.year);
 
-  if (pastRows.length < 1) return null;
+  if (pastRows.length === 0) return null;
 
-  const startBalance = pastRows[0].beginningBalance;
-  const endBalance = pastRows[pastRows.length - 1].endingBalance;
-  const totalContributions = pastRows.reduce(
-    (sum, r) => sum + (r.contribution ?? 0),
-    0
-  );
-  const years = pastRows.length;
+  const relevantRows = pastRows.slice(0, pastRows.length);
+  
+  // 1. Calculate the Total Invested Capital (Weighted by time)
+  // Or, for a simpler 'Total Return' over the period:
+  const startValue = relevantRows[0].beginningBalance;
+  const endValue = relevantRows[relevantRows.length - 1].endingBalance;
+  
+  // 2. TWR (Time-Weighted Return) is usually better for performance 
+  // It calculates the growth of $1 regardless of contributions.
+  let growthFactor = 1;
+  relevantRows.forEach(row => {
+    const netContribution = row.contribution ?? 0;
+    const beginning = row.beginningBalance;
+    
+    // Yearly return: (End - (Start + Contribution)) / (Start + Contribution)
+    const yearlyReturn = (row.endingBalance - (beginning + netContribution)) / (beginning + netContribution);
+    growthFactor *= (1 + yearlyReturn);
+  });
 
-  if (startBalance <= 0 || endBalance <= 0 || years === 0) return null;
-
-  const adjustedEnd = endBalance - totalContributions;
-  if (adjustedEnd <= 0) return null;
-
-  const annualizedReturn = Math.pow(adjustedEnd / startBalance, 1 / years) - 1;
-  const firstYear = pastRows[0].year;
-  const lastYear = pastRows[pastRows.length - 1].year;
-  const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}-${lastYear}`;
+  const years = relevantRows.length;
+  const annualizedReturn = Math.pow(growthFactor, 1 / years) - 1;
 
   return {
     value: (annualizedReturn * 100).toFixed(1),
-    range: yearRange,
+    range: `${relevantRows[0].year}-${relevantRows[relevantRows.length - 1].year}`,
   };
 }
 
@@ -123,7 +127,7 @@ export function IncomeCard({ src, hasSpouse, birthYear, onEdit, onDelete }: Inco
 
   const annualizedReturn = useMemo(() => {
   if (src.asset_type === "retirement-savings") {
-    const result = calculateSimpleAnnualizedReturn(src.rows);
+    const result = calculateAnnualizedReturn(src.rows);
     return result;
   }
   return null;
