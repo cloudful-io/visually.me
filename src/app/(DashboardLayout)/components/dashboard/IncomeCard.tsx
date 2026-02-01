@@ -124,12 +124,12 @@ export function IncomeCard({ src, hasSpouse, birthYear, onEdit, onDelete }: Inco
   const annualizedReturn = useMemo(() => {
   if (src.asset_type === "retirement-savings") {
     const result = calculateSimpleAnnualizedReturn(src.rows);
-    return result ?? { value: "-", range: "" };
+    return result;
   }
-  return { value: "-", range: "" };
+  return null;
 }, [src]);
 
-  const effectiveView: IncomeCardView = src.asset_type === "retirement-savings" ? view : "income";
+  const effectiveView: IncomeCardView = src.asset_type === "retirement-savings" ? (annualizedReturn ? "performance" : "income") : "income";
 
   return (
     <DashboardCard 
@@ -162,7 +162,7 @@ export function IncomeCard({ src, hasSpouse, birthYear, onEdit, onDelete }: Inco
       action={
         <Box display="flex" alignItems="center" gap={0.5}>
           {/* View toggle (only for retirement savings) */}
-          {src.asset_type === "retirement-savings" && (
+          {src.asset_type === "retirement-savings" && annualizedReturn && (
             <ToggleButtonGroup
               size="small"
               exclusive
@@ -243,18 +243,18 @@ export function IncomeCard({ src, hasSpouse, birthYear, onEdit, onDelete }: Inco
             )}
 
             {/* PERFORMANCE VIEW */}
-            {effectiveView === "performance" && (
+            {effectiveView === "performance" && annualizedReturn && (
               <Stack spacing={0.75}>
                 <Typography variant="body1" color="text.secondary">
-                  Annualized Return {annualizedReturn.range && `(${annualizedReturn.range})`}
+                  Annualized Return {annualizedReturn!.range && `(${annualizedReturn!.range})`}
                 </Typography>
 
                 <Typography 
                   variant="h4" 
                   fontWeight={700}
-                  color={Number(annualizedReturn.value) >= 0 ? "success.main" : "error.main"}
+                  color={Number(annualizedReturn!.value) >= 0 ? "success.main" : "error.main"}
                 >
-                  {annualizedReturn.value}%
+                  {annualizedReturn!.value}%
                 </Typography>
 
                 {/*<Typography variant="caption" color="success.main">
