@@ -63,7 +63,7 @@ function calculateSimpleAnnualizedReturn(rows: IncomeSource["rows"]) {
   const yearRange = firstYear === lastYear ? `${firstYear}` : `${firstYear}-${lastYear}`;
 
   return {
-    value: (annualizedReturn * 100).toFixed(1) + "%",
+    value: (annualizedReturn * 100).toFixed(1),
     range: yearRange,
   };
 }
@@ -249,8 +249,12 @@ export function IncomeCard({ src, hasSpouse, birthYear, onEdit, onDelete }: Inco
                   Annualized Return {annualizedReturn.range && `(${annualizedReturn.range})`}
                 </Typography>
 
-                <Typography variant="h4" fontWeight={700}>
-                  {annualizedReturn.value}
+                <Typography 
+                  variant="h4" 
+                  fontWeight={700}
+                  color={Number(annualizedReturn.value) >= 0 ? "success.main" : "error.main"}
+                >
+                  {annualizedReturn.value}%
                 </Typography>
 
                 {/*<Typography variant="caption" color="success.main">
