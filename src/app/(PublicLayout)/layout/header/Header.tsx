@@ -4,7 +4,7 @@ import { useTheme, styled } from '@mui/material/styles';
 import { usePathname } from "next/navigation";
 import { Box, AppBar, Toolbar, Stack, IconButton, Button, Drawer } from '@mui/material';
 import { Sidebar as MUI_Sidebar, Menu, MenuItem } from "react-mui-sidebar";
-import { IconMenu, IconX, IconInfoCircle, IconEdit } from '@tabler/icons-react';
+import { IconMenu, IconX, IconInfoCircle, IconEdit, IconStars} from '@tabler/icons-react';
 import Link from 'next/link';
 import ThemeModeToggle from '@/app/components/ThemeModeToggle';
 import Profile from '@/app/components/Profile';
@@ -23,7 +23,7 @@ const Header = () => {
     setMobileOpen(false);
   }, [pathname]);
 
-  const pages = ['About', 'Blog'];
+  const pages = ['About', 'Blog', 'Features'];
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
@@ -91,6 +91,17 @@ const Header = () => {
             sx={{ color: theme.palette.text.secondary }}
           >
             Blog
+          </MenuItem>
+          <MenuItem
+            key="features"
+            isSelected={pathname === "/features"}
+            borderRadius="8px"
+            icon={<IconStars/>}
+            link="/features"
+            component={Link}
+            sx={{ color: theme.palette.text.secondary }}
+          >
+            Features
           </MenuItem>
         </Menu>
       </MUI_Sidebar>

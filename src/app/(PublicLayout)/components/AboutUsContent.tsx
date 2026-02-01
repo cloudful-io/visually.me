@@ -56,7 +56,7 @@ export default function AboutPage() {
             >
               <Box
                 component="img"
-                src="/images/visually-me.png"
+                src="/images/blog/feature/dashboard.png"
                 alt="Mission illustration"
                 sx={{
                   width: "100%",
