@@ -126,14 +126,17 @@ export function IncomeCard({ src, hasSpouse, birthYear, onEdit, onDelete }: Inco
   }
 
   const annualizedReturn = useMemo(() => {
-  if (src.asset_type === "retirement-savings") {
-    const result = calculateAnnualizedReturn(src.rows);
-    return result;
-  }
-  return null;
-}, [src]);
+    if (src.asset_type === "retirement-savings") {
+      const result = calculateAnnualizedReturn(src.rows);
+      return result;
+    }
+    return null;
+  }, [src]);
 
-  const effectiveView: IncomeCardView = src.asset_type === "retirement-savings" ? (annualizedReturn ? "performance" : "income") : "income";
+const effectiveView: IncomeCardView =
+  src.asset_type === "retirement-savings" && annualizedReturn
+    ? view
+    : "income";
 
   return (
     <DashboardCard 
