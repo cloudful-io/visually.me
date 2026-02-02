@@ -144,14 +144,15 @@ const effectiveView: IncomeCardView =
         <Box
           display="flex"
           alignItems="center"
-          justifyContent="space-between"
           width="100%"
+          flex={1}
+          minWidth={0}
         >
           {/* Left side: icon, label, chip */}
           <Box display="flex" alignItems="center" gap={1} minWidth={0}>
             {IncomeSourcesIcon[src.asset_type] ?? <IconUser size={20} />}
 
-            <Typography variant="h6" fontWeight={600} noWrap>
+            <Typography variant="h6" fontWeight={600}>
               {label}
             </Typography>
 
@@ -167,7 +168,7 @@ const effectiveView: IncomeCardView =
         </Box>
       }
       action={
-        <Box display="flex" alignItems="center" gap={0.5}>
+        <Box display="flex" alignItems="center" gap={0.5} flexShrink={0}>
           {/* View toggle (only for retirement savings) */}
           {src.asset_type === "retirement-savings" && annualizedReturn && (
             <ToggleButtonGroup

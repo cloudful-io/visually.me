@@ -66,11 +66,17 @@ export function RealEstateCard({ property, hasSpouse, projectionTable, onEdit, o
   return (
     <DashboardCard 
       title={
-        <Box display="flex" flexDirection="column" gap={1}>
+        <Box 
+          display="flex" 
+          flexDirection="column" 
+          gap={1}
+          flex={1}
+          minWidth={0}
+        >
           <Box display="flex" alignItems="center" gap={1}>
             <IconHome size={20} />
             {/* Label */}
-            <Typography variant="h6" fontWeight={600} noWrap>
+            <Typography variant="h6" fontWeight={600}>
                 {label}
             </Typography>
             {/* Show flag if primary home */}
