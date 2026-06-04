@@ -64,6 +64,7 @@ export const retirementSavingsConfig: CalculatorConfig<RetirementSavingsInput> =
     estimatedYield: 6,
     estimatedWithdrawRate: 5,
     contributionIncreaseRate: 2,
+    subjectToRmd: false,
     withdrawStartAge: 60,
     lifeExpectancyAge: 85,
   },
