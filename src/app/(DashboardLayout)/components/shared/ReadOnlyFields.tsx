@@ -40,6 +40,10 @@ export function ReadOnlyFields<T, C = void>({
             displayValue = match ? match.label : String(rawValue ?? "");
           }
           
+          else if (field.type === "boolean") {
+            displayValue = rawValue ? "Yes" : "No";
+          }
+          
           else {
             displayValue = startCase(String(rawValue ?? ""));
           }

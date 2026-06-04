@@ -43,7 +43,7 @@ export const retirementSavingsConfig: CalculatorConfig<RetirementSavingsInput> =
       >
         Required Minimum Distributions (RMDs)
       </a>
-      , which mandate a minimum withdrawal percentage starting at age 73. This
+      , which mandate a minimum withdrawal percentage starting at age 72-75 (depending on when you were born). This
       requirement does not apply to Roth 401(k) or Roth IRA accounts.
     </>,
 
@@ -132,6 +132,12 @@ export const retirementSavingsFieldConfigs: FormFieldConfig<RetirementSavingsInp
     helperText: 'Percentage of increase of annual contribution ',
   },
   {
+    name: 'subjectToRmd',
+    label: 'Subject to RMD',
+    type: 'boolean',
+    helperText: 'Whether the account is subject to Required Minimum Distribution',
+  },
+  {
     name: 'withdrawStartAge',
     label: 'Withdrawal Start Age',
     type: "number",
@@ -162,6 +168,7 @@ export function getRetirementSavingsProjectionColumns(editable: boolean = false)
     { key: "withdrawRate", label: "Withdrawal %", editable, min: 0, max: 100 },
     { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true, hiddenOnMobile: true },
     { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable, min: 0 },
+    { key: "rmd", label: "Required Minimum Distribution ($)", currency: true, hiddenOnMobile: true },
     { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable, min: 0 },
   ];
 }

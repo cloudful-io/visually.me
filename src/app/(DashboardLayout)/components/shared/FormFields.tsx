@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormFieldConfig } from '@/types/forms';
-import { Grid, TextField, MenuItem } from '@mui/material';
+import { Grid, TextField, MenuItem, Switch, FormControl, FormControlLabel, FormHelperText } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
@@ -52,6 +52,31 @@ export function FormFields<T, C = void>(props: Props<T, C>) {
                     },
                   }}
                 />
+              ) : type === 'boolean' ? (
+              <FormControl>
+                <FormControlLabel
+                  label={label}
+                  control={
+                    <Switch
+                      checked={Boolean(values[name])}
+                      onChange={(e) => {
+                        // Construct a synthetic-like event to match what TextField sends
+                        onChange({
+                          ...e,
+                          target: {
+                            ...e.target,
+                            name: String(name),
+                            // Pass the boolean state as the value
+                            value: e.target.checked as any, 
+                          },
+                        });
+                      }}
+                      name={String(name)}
+                    />
+                  }
+                />
+                <FormHelperText>{helperText}</FormHelperText>
+              </FormControl>
               ) : (
                 <TextField
                   fullWidth

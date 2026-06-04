@@ -18,7 +18,7 @@ export type DeriveContext<T> = {
 export type FormFieldConfig<T, C = void> = {
   name: keyof T;
   label: string;
-  type?: 'number' | 'text' | 'date' | 'select' | 'currency';
+  type?: 'number' | 'text' | 'date' | 'select' | 'currency' | 'boolean';
   min?: number;
   max?: number;
   step?: number;
