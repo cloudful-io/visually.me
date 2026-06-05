@@ -97,7 +97,23 @@ export function getMortgageAmortizationScenarioColumns(): ColumnDef<any>[] {
     { key: "year", label: "Year" },
     { key: "balance1", label: "Scenario 1 Balance ($)", currency: true },
     { key: "balance2", label: "Scenario 2 Balance ($)", currency: true },
-    { key: "balanceDiff", label: "Balance Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "balanceDiff", 
+      label: "Balance Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
   ];
 }
 

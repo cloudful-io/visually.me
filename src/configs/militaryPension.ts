@@ -123,7 +123,23 @@ export function getMilitaryPensionScenarioColumns(): ColumnDef<any>[] {
     { key: "age", label: "Age" },
     { key: "pension1", label: "Scenario 1 Pension ($)", currency: true },
     { key: "pension2", label: "Scenario 2 Pension ($)", currency: true },
-    { key: "pensionDiff", label: "Pension Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "pensionDiff", 
+      label: "Pension Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
   ];
 }
 

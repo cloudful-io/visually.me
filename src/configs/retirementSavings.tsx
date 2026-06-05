@@ -168,7 +168,24 @@ export function getRetirementSavingsProjectionColumns(editable: boolean = false)
     { key: "withdrawRate", label: "Withdrawal %", editable, min: 0, max: 100 },
     { key: "monthlyWithdraw", label: "Monthly Withdrawal ($)", currency: true, hiddenOnMobile: true },
     { key: "annualWithdraw", label: "Annual Withdrawal ($)", currency: true, editable, min: 0 },
-    { key: "rmd", label: "Required Minimum Distribution ($)", currency: true, hiddenOnMobile: true },
+    { 
+      key: "rmd", 
+      label: "Required Minimum Distribution ($)", 
+      currency: true, 
+      hiddenOnMobile: true,
+      getCellSx: (value, row) => {
+        const rmdDeficit = Number(value) > Number(row.annualWithdraw);
+        const noRmd = Number(value) === 0;
+
+        return {
+          color: noRmd ? "text.primary" : 
+            rmdDeficit
+            ? "error.main"
+            : "success.main",
+          fontWeight: noRmd ? 400 : 800,
+        };
+      },
+    },
     { key: "endingBalance", label: "Ending Balance ($)", currency: true, editable, min: 0 },
   ];
 }
@@ -179,10 +196,42 @@ export function getRetirementSavingsScenarioColumns(): ColumnDef<any>[] {
     { key: "age", label: "Age" },
     { key: "endingBalance1", label: "Scenario 1 Balance ($)", currency: true },
     { key: "endingBalance2", label: "Scenario 2 Balance ($)", currency: true },
-    { key: "endingBalanceDiff", label: "Balance Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "endingBalanceDiff", 
+      label: "Balance Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
     { key: "annualWithdraw1", label: "Scenario 1 Annual Withdrawal ($)", currency: true },
     { key: "annualWithdraw2", label: "Scenario 2 Annual Withdrawal ($)", currency: true },
-    { key: "annualWithdrawDiff", label: "Annual Withdrawal Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "annualWithdrawDiff", 
+      label: "Annual Withdrawal Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      }, 
+    },
   ];
 }
 

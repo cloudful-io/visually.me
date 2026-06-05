@@ -120,7 +120,23 @@ export function getSocialSecurityScenarioColumns(): ColumnDef<any>[] {
     { key: "age", label: "Age" },
     { key: "annualBenefit1", label: "Scenario 1 Annual Benefit ($)", currency: true },
     { key: "annualBenefit2", label: "Scenario 2 Annual Benefit ($)", currency: true },
-    { key: "annualBenefitDiff", label: "Annual Benefit Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "annualBenefitDiff", 
+      label: "Annual Benefit Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
   ];
 }
 

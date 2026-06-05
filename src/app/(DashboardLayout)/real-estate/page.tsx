@@ -164,7 +164,23 @@ export default function RealEstateSummaryPage() {
                 { key: "annualIncome", label: "Total Annual Income ($)", currency: true },
                 { key: "monthlyExpense", label: "Total Monthly Expense ($)", currency: true, hiddenOnMobile: true },
                 { key: "annualExpense", label: "Total Annual Expense ($)", currency: true },
-                { key: "annualNetCashFlow", label: "Annual Net Cash Flow ($)", currency: true, isDifference: true}
+                { 
+                  key: "annualNetCashFlow", 
+                  label: "Annual Net Cash Flow ($)", 
+                  currency: true, 
+                  getCellSx: (value, row) => {
+                    const isNegative = Number(value) < 0;
+                    const isZero = Number(value) === 0;
+
+                    return {
+                      color: isZero ? "text.primary" : 
+                        isNegative
+                        ? "error.main"
+                        : "success.main",
+                      fontWeight: isZero ? 400 : 800,
+                    };
+                  },
+                }
               ]}
               highlightYear={new Date().getFullYear()}
             />

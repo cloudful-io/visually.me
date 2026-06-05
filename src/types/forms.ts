@@ -36,9 +36,11 @@ export type ColumnDef<T> = {
   currency?: boolean;
   editable?: boolean;
   hiddenOnMobile?: boolean;
-  isDifference?: boolean;
   min?: number;
   max?: number;
+
+  getCellClassName?: (value: unknown, row: T) => string;
+  getCellSx?: (value: unknown, row: T) => any;
 };
 
 export type DataKeyOption<T> = {

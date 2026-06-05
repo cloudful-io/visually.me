@@ -146,10 +146,42 @@ export function getCollegeTuitionScenarioColumns(): ColumnDef<any>[] {
     { key: "age", label: 'Child\'s Age' },
     { key: "endingBalance1", label: "Scenario 1 Balance ($)", currency: true },
     { key: "endingBalance2", label: "Scenario 2 Balance ($)", currency: true },
-    { key: "endingBalanceDiff", label: "Balance Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "endingBalanceDiff", 
+      label: "Balance Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
     { key: "annualWithdraw1", label: "Scenario 1 Tuition Withdrawal ($)", currency: true },
     { key: "annualWithdraw2", label: "Scenario 2 Tuition Withdrawal ($)", currency: true },
-    { key: "annualWithdrawDiff", label: "Tuition Withdrawal Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "annualWithdrawDiff", 
+      label: "Tuition Withdrawal Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
   ];
 }
 

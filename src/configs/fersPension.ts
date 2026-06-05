@@ -187,10 +187,42 @@ export function getFersPensionScenarioColumns(): ColumnDef<any>[] {
     { key: "age", label: "Age" },
     { key: "salary1", label: "Scenario 1 Salary ($)", currency: true },
     { key: "salary2", label: "Scenario 2 Salary ($)", currency: true },
-    { key: "salaryDiff", label: "Salary Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "salaryDiff", 
+      label: "Salary Difference ($)", 
+      currency: true,
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
     { key: "pension1", label: "Scenario 1 Pension ($)", currency: true },
     { key: "pension2", label: "Scenario 2 Pension ($)", currency: true },
-    { key: "pensionDiff", label: "Pension Difference ($)", currency: true, isDifference: true },
+    { 
+      key: "pensionDiff", 
+      label: "Pension Difference ($)", 
+      currency: true, 
+      getCellSx: (value, row) => {
+        const isNegative = Number(value) < 0;
+        const isZero = Number(value) === 0;
+
+        return {
+          color: isZero ? "text.primary" : 
+            isNegative
+            ? "error.main"
+            : "success.main",
+          fontWeight: isZero ? 400 : 800,
+        };
+      },
+    },
   ];
 }
 
