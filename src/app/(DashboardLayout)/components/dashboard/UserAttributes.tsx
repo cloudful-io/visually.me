@@ -2,14 +2,16 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { Grid, Stack, Typography, Avatar, Box, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
-import { IconDotsVertical, IconPencil } from "@tabler/icons-react";
+import { IconDotsVertical, IconPencil, IconPlus } from "@tabler/icons-react";
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/utils/supabase/client";
 
 import { UserProfileService } from "supabase-auth-lib";
 import { useUserAttributes } from "@/lib/userAttributes/hook";
+import { useUserChildren } from "@/lib/userChildren/hook";
 import EditUserAttributesDialog from "./EditDialogs/EditUserAttributesDialog";
+import EditUserChildDialog from "./EditDialogs/EditUserChildDialog";
 import LinearProgressWithLabel from "@/app/components/LinearProgressWithLabel";
 import { IconFriends, IconUser } from "@tabler/icons-react";
 
@@ -30,6 +32,8 @@ const UserAttributes = ({ spouse = false, onChange, }: UserAttributesProps) => {
     refresh: refreshAttrs,
     remove,
   } = useUserAttributes({ spouse: spouse });
+  const { data: children } = useUserChildren({ lazy: spouse });
+  const hasChildren = !!children?.length;
   const { data: spouseData, exists: spouseExists, refresh: refreshSpouseAttrs, loading: spouseLoading } = useUserAttributes({ spouse: true });
 
   const [yearsLeft, setYearsLeft] = useState<number | null>(null);
@@ -38,6 +42,7 @@ const UserAttributes = ({ spouse = false, onChange, }: UserAttributesProps) => {
 
   const [editingSpouse, setEditingSpouse] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [addChildOpen, setAddChildOpen] = useState(false);
 
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   
@@ -102,7 +107,7 @@ const UserAttributes = ({ spouse = false, onChange, }: UserAttributesProps) => {
         <IconButton
           size="small"
           color="info"
-          aria-label="Add Source"
+          aria-label="Menu"
           onClick={(e) => setMenuAnchor(e.currentTarget)}
         >
           <IconDotsVertical />
@@ -124,6 +129,19 @@ const UserAttributes = ({ spouse = false, onChange, }: UserAttributesProps) => {
             </ListItemIcon>
             <ListItemText>Edit Profile</ListItemText>
           </MenuItem>
+          {!spouse && !hasChildren && (
+            <MenuItem
+              onClick={() => {
+                setAddChildOpen(true);
+                setMenuAnchor(null);
+              }}
+            >
+              <ListItemIcon>
+                <IconPlus fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Add Child</ListItemText>
+            </MenuItem>
+          )}
           {!spouse && !spouseLoading && !spouseExists && (
             <MenuItem
               onClick={() => {
@@ -183,6 +201,16 @@ const UserAttributes = ({ spouse = false, onChange, }: UserAttributesProps) => {
           onChange?.();
         }}
         spouse={true} // always true, because this is the new spouse
+      />
+
+      <EditUserChildDialog
+        open={addChildOpen}
+        onClose={() => setAddChildOpen(false)}
+        onSaved={() => {
+          refreshAttrs();
+          refreshSpouseAttrs();
+          onChange?.();
+        }}
       />
       <Grid container spacing={3}>
         <Grid size={{xs: 12, md: 12}}>

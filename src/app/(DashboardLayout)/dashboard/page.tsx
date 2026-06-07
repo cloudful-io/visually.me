@@ -8,6 +8,7 @@ import { InvestmentBreakdown } from '../components/dashboard/InvestmentBreakdown
 import DashboardCard from '../components/shared/DashboardCard';
 import { MUILineChart } from '../components/shared/MUILineChart';
 import UserAttributes from '../components/dashboard/UserAttributes';
+import ChildListCard from '../components/dashboard/ChildListCard';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
 import { useIncomeSources } from '@/lib/assets/useIncomeSources';
 import { useRealEstate } from '@/lib/assets/useRealEstate';
@@ -28,6 +29,7 @@ const Dashboard = () => {
   
   const { user } = useSupabaseAuth();
   const [displayName, setDisplayName] = useState<string>("");
+  const [childListRefreshKey, setChildListRefreshKey] = useState(0);
 
   const combined = getCombinedProjection() ?? [];
   const incomeChartRows = getCombinedIncomeChartRows;
@@ -69,6 +71,7 @@ const Dashboard = () => {
   const handleChange = async () => {
     refreshAttrs();
     refreshSpouseAttrs();
+    setChildListRefreshKey((prev) => prev + 1);
   };
 
   return (
@@ -95,6 +98,9 @@ const Dashboard = () => {
                 <UserAttributes spouse onChange={handleChange}/>
               </Grid>
               )}
+              <Grid size={12}>
+                <ChildListCard refreshKey={childListRefreshKey} onChange={handleChange} />
+              </Grid>
               <Grid size={12}>
                 <FinancialTimeline 
                   incomeSources={computedSources!} 

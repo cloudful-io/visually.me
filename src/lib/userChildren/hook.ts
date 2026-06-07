@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo,  useState } from "react";
 import { UserChildInput, UserChildRecord } from "./schema";
 
 export function useUserChildren({ lazy = false }: { lazy?: boolean } = {}) {
@@ -6,25 +6,37 @@ export function useUserChildren({ lazy = false }: { lazy?: boolean } = {}) {
   const [loading, setLoading] = useState(true);
   const API_URL = "/api/user-children";
 
-  const fetchChildren = useCallback(async () => {
-    setLoading(true);
+  const sortedData = useMemo(() => {
+    if (!data) return null;
+
+    return [...data].sort((a, b) =>
+      (a.label ?? "").localeCompare(b.label ?? "")
+    );
+  }, [data]);
+
+  const fetchChildren = useCallback(async (showLoading = true) => {
+    if (showLoading) {
+      setLoading(true);
+    }
 
     const res = await fetch(API_URL);
     const json = await res.json();
 
     setData(json?.empty ? null : json);
-    setLoading(false);
+    if (showLoading) {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
     if (!lazy) {
-      fetchChildren();
+      fetchChildren(true);
     }
   }, [lazy, fetchChildren]);
 
-  async function refresh() {
-    await fetchChildren();
-  }
+  const refresh = useCallback(async () => {
+    await fetchChildren(false);
+  }, [fetchChildren]);
 
   async function save(children: UserChildInput[]) {
     const res = await fetch(API_URL, {
@@ -34,7 +46,6 @@ export function useUserChildren({ lazy = false }: { lazy?: boolean } = {}) {
     });
 
     if (!res.ok) throw new Error("Failed to save user children");
-    await fetchChildren();
   }
 
   async function remove(childId?: string) {
@@ -53,5 +64,5 @@ export function useUserChildren({ lazy = false }: { lazy?: boolean } = {}) {
 
   const exists = !!data && data.length > 0;
 
-  return { data, save, refresh, remove, loading, exists };
+  return { data: sortedData, save, refresh, remove, loading, exists };
 }
