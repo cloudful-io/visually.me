@@ -10,6 +10,7 @@ import { MUILineChart } from '../components/shared/MUILineChart';
 import UserAttributes from '../components/dashboard/UserAttributes';
 import ChildListCard from '../components/dashboard/ChildListCard';
 import { useUserAttributes } from '@/lib/userAttributes/hook';
+import { useUserChildren } from "@/lib/userChildren/hook";
 import { useIncomeSources } from '@/lib/assets/useIncomeSources';
 import { useRealEstate } from '@/lib/assets/useRealEstate';
 import { FinancialTimeline } from '../components/dashboard/FinancialTimeline';
@@ -26,7 +27,8 @@ const Dashboard = () => {
   const { computedAssets: computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});
   const { data: spouseData, exists: spouseExists, refresh: refreshSpouseAttrs, loading: spouseLoading } = useUserAttributes({ spouse: true });
-  
+  const { data: children, loading: childrenLoading } = useUserChildren();
+
   const { user } = useSupabaseAuth();
   const [displayName, setDisplayName] = useState<string>("");
   const [childListRefreshKey, setChildListRefreshKey] = useState(0);
@@ -98,9 +100,11 @@ const Dashboard = () => {
                 <UserAttributes spouse onChange={handleChange}/>
               </Grid>
               )}
+              {!childrenLoading && children && children.length > 0 && (
               <Grid size={12}>
                 <ChildListCard refreshKey={childListRefreshKey} onChange={handleChange} />
               </Grid>
+              )}
               <Grid size={12}>
                 <FinancialTimeline 
                   incomeSources={computedSources!} 
