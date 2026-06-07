@@ -20,6 +20,7 @@ import {
   IconList,
   IconHomeDollar,
   IconHeart,
+  IconSchool,
 } from "@tabler/icons-react";
 import DashboardCard from "../shared/DashboardCard";
 
@@ -34,7 +35,8 @@ export type TimelineItemType =
   | "current"
   | "retirement"
   | "life-expectancy"
-  | "summary";
+  | "summary"
+  | "college-start";
 
 export type IncomeSourceTimelineItem = {
   id?: string;
@@ -50,6 +52,12 @@ export type RealEstateTimelineItem = {
   mortgageEndYear?: number | null;
 };
 
+export type ChildCollegeTimelineItem = {
+  childId?: string;
+  label: string;
+  startYear: number | null;
+};
+
 type TimelineEvent = {
   label: string;
   type: TimelineItemType;
@@ -63,6 +71,7 @@ type TimelineYear = {
 type Props = {
   incomeSources?: any[] | null;
   realEstateProperties?: any[] | null;
+  userChildren?: any[] | null;
   currentYear: number;
   retirementAge?: number | null;
   birthYear?: number | null;
@@ -75,6 +84,7 @@ type Props = {
 export function FinancialTimeline({
   incomeSources,
   realEstateProperties,
+  userChildren,
   currentYear,
   retirementAge,
   birthYear,
@@ -125,14 +135,14 @@ export function FinancialTimeline({
   }
 
   // Add income sources
- (incomeSources ?? [])
+  (incomeSources ?? [])
     .filter((s) => s.firstYear != null)
     .forEach((s) => {
       addEvent(yearMap, s.firstYear!, {
         label: s.label,
         type: s.type as TimelineItemType,
       });
-  });
+    });
   // Add real estate properties
   (realEstateProperties ?? []).forEach((p) => {
     if (p.mergedFields.mortgageEndYear != null) {
@@ -141,6 +151,14 @@ export function FinancialTimeline({
         type: "mortgage-end",
       });
     }
+  });
+
+  // Add children
+  (userChildren ?? []).forEach((s) => {
+    addEvent(yearMap, s.collegeStartYear, {
+      label: `${s.label}: First Year of College`,
+      type: "college-start",
+    });
   });
 
   // Sort years
@@ -169,6 +187,7 @@ export function FinancialTimeline({
     "mortgage-end": IconHomeDollar,
     "life-expectancy": IconHeart,
     "income": IconCoin,
+    "college-start": IconSchool,
   };
 
   function addEvent(
@@ -220,9 +239,10 @@ export function FinancialTimeline({
                     item.events.some((e) => ["retirement"].includes(e.type))
                       ? "info"
                       : item.events.some((e) => ["life-expectancy"].includes(e.type))
-                      ? "error"
-                      : item.events.some((e) => ["mortgage-end"].includes(e.type)) ? "success" : 
-                      "grey"
+                        ? "error"
+                        : item.events.some((e) => ["mortgage-end"].includes(e.type)) ? "success"
+                          : item.events.some((e) => ["college-start"].includes(e.type)) ? "warning" :
+                            "grey"
                   }
                 >
                   {getTimelineDotIcon(item.events)}

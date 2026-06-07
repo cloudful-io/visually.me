@@ -23,9 +23,9 @@ import { useIncludeSpouse } from "@/contexts/IncludeSpouseContext";
 
 const Dashboard = () => {
   const { includeSpouse } = useIncludeSpouse();
-  const { computedAssets: computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources({joint: includeSpouse});
+  const { computedAssets: computedSources, loading, getCombinedProjection, getCombinedChartRows: getCombinedIncomeChartRows, save, remove, refresh } = useIncomeSources({ joint: includeSpouse });
   const { computedAssets: computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
-  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({spouse: false});
+  const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({ spouse: false });
   const { data: spouseData, exists: spouseExists, refresh: refreshSpouseAttrs, loading: spouseLoading } = useUserAttributes({ spouse: true });
   const { data: children, loading: childrenLoading } = useUserChildren();
 
@@ -40,7 +40,7 @@ const Dashboard = () => {
   const [targetRetirementAge, setTargetRetirementAge] = useState<number>(60);
   const theme = useTheme();
 
-  const netCashFlow = useMemo(() => 
+  const netCashFlow = useMemo(() =>
     buildCashFlowTable([
       incomeChartRows as CashFlowSourceRow[],
       propertiesChartRows as CashFlowSourceRow[],
@@ -89,49 +89,50 @@ const Dashboard = () => {
           </Grid>
 
           <Grid
-            size={{sm: 12, lg: 4}}
+            size={{ sm: 12, lg: 4 }}
           >
             <Grid container spacing={2}>
               <Grid size={12}>
-                <UserAttributes onChange={handleChange}/>
+                <UserAttributes onChange={handleChange} />
               </Grid>
               {!spouseLoading && spouseExists && (
-              <Grid size={12}>
-                <UserAttributes spouse onChange={handleChange}/>
-              </Grid>
+                <Grid size={12}>
+                  <UserAttributes spouse onChange={handleChange} />
+                </Grid>
               )}
               {!childrenLoading && children && children.length > 0 && (
-              <Grid size={12}>
-                <ChildListCard refreshKey={childListRefreshKey} onChange={handleChange} />
-              </Grid>
+                <Grid size={12}>
+                  <ChildListCard refreshKey={childListRefreshKey} onChange={handleChange} />
+                </Grid>
               )}
               <Grid size={12}>
-                <FinancialTimeline 
-                  incomeSources={computedSources!} 
-                  realEstateProperties={computedProperties} 
-                  currentYear={new Date().getFullYear()} 
-                  birthYear={attrs?.birthYear} 
+                <FinancialTimeline
+                  incomeSources={computedSources!}
+                  realEstateProperties={computedProperties}
+                  userChildren={children}
+                  currentYear={new Date().getFullYear()}
+                  birthYear={attrs?.birthYear}
                   retirementAge={attrs?.targetRetirementAge}
                   lifeExpectancyAge={attrs?.lifeExpectancyAge}
                   spouseBirthYear={spouseData?.birthYear}
                   spouseRetirementAge={spouseData?.targetRetirementAge}
                   spouseLifeExpectancyAge={spouseData?.lifeExpectancyAge}
-                  />
+                />
               </Grid>
             </Grid>
           </Grid>
           {/* Spanning Grid for Income and Investment (4 + 4 = 8) */}
           <Grid
-           size={{sm: 12, lg: 8}}
+            size={{ sm: 12, lg: 8 }}
           >
             <Grid container spacing={2}>
-              <Grid size={{xs: 12, sm: 6}}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Grid container spacing={2}>
                   <Grid size={12}>
                     <IncomeBreakdown
                       combined={combined}
                       computedSources={(computedSources ?? []).map(s => ({
-                        id: s.id ?? "unknown",   
+                        id: s.id ?? "unknown",
                         label: s.label,
                         type: s.asset_type,
                       }))}
@@ -142,13 +143,13 @@ const Dashboard = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid size={{xs: 12, sm: 6}}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Grid container spacing={2}>
                   <Grid size={12}>
                     <InvestmentBreakdown
                       combined={combined}
                       computedSources={(computedSources ?? []).map(s => ({
-                        id: s.id ?? "unknown",   
+                        id: s.id ?? "unknown",
                         label: s.label,
                         type: s.asset_type,
                       }))}
@@ -160,8 +161,8 @@ const Dashboard = () => {
                 </Grid>
               </Grid>
               <Grid size={12}>
-                <DashboardCard 
-                  title="Overall Income and Expense Over Time" 
+                <DashboardCard
+                  title="Overall Income and Expense Over Time"
                   subtitle="Shows total income from all sources and real estate expenses over time, with net cash flow for each year.">
                   <MUILineChart
                     title=""
@@ -172,27 +173,27 @@ const Dashboard = () => {
                     ]}
                     enableRangeFilter
                     retirementX={[
-                    {
-                      year: attrs?.birthYear! + attrs?.targetRetirementAge!,
-                      label: spouseExists ? "Target Retirement\n(You)" : "Target Retirement",
-                      color: theme.palette.primary.main,
-                      position: "start"
-                    },
-                    spouseExists && spouseData
-                      ? {
+                      {
+                        year: attrs?.birthYear! + attrs?.targetRetirementAge!,
+                        label: spouseExists ? "Target Retirement\n(You)" : "Target Retirement",
+                        color: theme.palette.primary.main,
+                        position: "start"
+                      },
+                      spouseExists && spouseData
+                        ? {
                           year: spouseData?.birthYear! + spouseData.targetRetirementAge!,
                           label: "Target Retirement\n(Spouse)",
                           color: theme.palette.secondary.main,
                           position: "middle"
                         }
-                      : undefined
-                  ].filter(Boolean) as { year: number; label: string; position: "start" | "middle" | "end"; color?: string }[]}
+                        : undefined
+                    ].filter(Boolean) as { year: number; label: string; position: "start" | "middle" | "end"; color?: string }[]}
                   />
                 </DashboardCard>
               </Grid>
-              
+
             </Grid>
-          </Grid>          
+          </Grid>
         </Grid>
       </Box>
     </PageContainer>

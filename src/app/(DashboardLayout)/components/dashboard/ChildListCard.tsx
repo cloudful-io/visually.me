@@ -74,11 +74,11 @@ export default function ChildListCard({ refreshKey = 0, onChange }: ChildListCar
 
   return (
     <>
-      <DashboardCard 
+      <DashboardCard
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <IconBabyCarriage />
-            Children List
+            Children Profile
           </Box>
         }
         action={
@@ -94,7 +94,7 @@ export default function ChildListCard({ refreshKey = 0, onChange }: ChildListCar
         ) : children && children.length > 0 ? (
           <Grid container spacing={2}>
             {children.map((child) => (
-              <Grid size={{xs: 12, sm: 6}} key={child.id}>
+              <Grid size={{ xs: 12, sm: 6 }} key={child.id}>
                 <Card variant="outlined" sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
                   <CardContent sx={{ pb: 1 }}>
                     <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
@@ -153,7 +153,7 @@ export default function ChildListCard({ refreshKey = 0, onChange }: ChildListCar
         autoHideDuration={4000}
         onClose={() => setErrorMsg("")}
       >
-        <Alert severity="error" onClose={() => setErrorMsg("")}> 
+        <Alert severity="error" onClose={() => setErrorMsg("")}>
           {errorMsg}
         </Alert>
       </Snackbar>
