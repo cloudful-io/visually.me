@@ -207,7 +207,7 @@ export function FinancialTimeline({
     }
 
     // Prioritize current > retirement > mortgage-end > summary
-    const priority: TimelineItemType[] = ["current", "retirement", "mortgage-end", "summary"];
+    const priority: TimelineItemType[] = ["current", "retirement", "college-start", "mortgage-end", "summary"];
     for (const type of priority) {
       const e = events.find((ev) => ev.type === type);
       if (e) return React.createElement(iconByType[type], { size: 20 });
