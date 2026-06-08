@@ -98,7 +98,7 @@ export default function ChildListCard({ onChange }: ChildListCardProps) {
                     </Typography>
                     <Stack spacing={0.5}>
                       <Typography variant="caption">
-                        <strong>College:</strong> {child.collegeStartYear ?? "—"}–{child.collegeEndYear ?? "—"}
+                        <strong>College Years:</strong> {child.collegeStartYear ?? "—"}–{child.collegeEndYear ?? "—"}
                       </Typography>
                     </Stack>
                   </CardContent>
