@@ -23,21 +23,14 @@ import { UserChildRecord } from "@/lib/userChildren/schema";
 import EditUserChildDialog from "@/app/(DashboardLayout)/components/dashboard/EditDialogs/EditUserChildDialog";
 
 type ChildListCardProps = {
-  refreshKey?: number;
   onChange?: () => void;
 };
 
-export default function ChildListCard({ refreshKey = 0, onChange }: ChildListCardProps) {
+export default function ChildListCard({ onChange }: ChildListCardProps) {
   const { data: children, loading, refresh, remove } = useUserChildren();
   const [editingChild, setEditingChild] = useState<UserChildRecord | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
-  useEffect(() => {
-    if (refreshKey > 0) {
-      refresh();
-    }
-  }, [refreshKey, refresh]);
 
   const handleEdit = (child: UserChildRecord) => {
     setEditingChild(child);
