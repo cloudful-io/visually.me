@@ -65,7 +65,7 @@ const Header = ({
         {(!mdUp && <Logo showTitle homeUrl="/dashboard" />)}
 
         {/* Include Spouse Switch */}
-        {hasSpouse && (
+        {user && hasSpouse && (
           <FormControlLabel
           sx={{
             display: {
