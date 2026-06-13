@@ -27,7 +27,7 @@ const Dashboard = () => {
   const { computedAssets: computedProperties, getCombinedChartRows: getCombinedPrpoertiesChartRows } = useRealEstate();
   const { data: attrs, loading: attrsLoading, refresh: refreshAttrs } = useUserAttributes({ spouse: false });
   const { data: spouseData, exists: spouseExists, refresh: refreshSpouseAttrs, loading: spouseLoading } = useUserAttributes({ spouse: true });
-  const { data: children, loading: childrenLoading } = useUserChildren();
+  const { data: children, loading: childrenLoading, refresh: refreshChildren } = useUserChildren();
 
   const { user } = useSupabaseAuth();
   const [displayName, setDisplayName] = useState<string>("");
@@ -73,7 +73,7 @@ const Dashboard = () => {
   const handleChange = async () => {
     refreshAttrs();
     refreshSpouseAttrs();
-    setChildListRefreshKey((prev) => prev + 1);
+    refreshChildren();
   };
 
   return (
@@ -102,7 +102,7 @@ const Dashboard = () => {
               )}
               {!childrenLoading && children && children.length > 0 && (
                 <Grid size={12}>
-                  <ChildListCard refreshKey={childListRefreshKey} onChange={handleChange} />
+                  <ChildListCard onChange={handleChange} />
                 </Grid>
               )}
               <Grid size={12}>

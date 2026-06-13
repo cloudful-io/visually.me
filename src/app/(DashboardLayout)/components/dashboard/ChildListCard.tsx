@@ -23,21 +23,14 @@ import { UserChildRecord } from "@/lib/userChildren/schema";
 import EditUserChildDialog from "@/app/(DashboardLayout)/components/dashboard/EditDialogs/EditUserChildDialog";
 
 type ChildListCardProps = {
-  refreshKey?: number;
   onChange?: () => void;
 };
 
-export default function ChildListCard({ refreshKey = 0, onChange }: ChildListCardProps) {
+export default function ChildListCard({ onChange }: ChildListCardProps) {
   const { data: children, loading, refresh, remove } = useUserChildren();
   const [editingChild, setEditingChild] = useState<UserChildRecord | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
-  useEffect(() => {
-    if (refreshKey > 0) {
-      refresh();
-    }
-  }, [refreshKey, refresh]);
 
   const handleEdit = (child: UserChildRecord) => {
     setEditingChild(child);
@@ -105,7 +98,7 @@ export default function ChildListCard({ refreshKey = 0, onChange }: ChildListCar
                     </Typography>
                     <Stack spacing={0.5}>
                       <Typography variant="caption">
-                        <strong>College:</strong> {child.collegeStartYear ?? "—"}–{child.collegeEndYear ?? "—"}
+                        <strong>College Years:</strong> {child.collegeStartYear ?? "—"}–{child.collegeEndYear ?? "—"}
                       </Typography>
                     </Stack>
                   </CardContent>
