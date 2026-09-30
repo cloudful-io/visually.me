@@ -43,7 +43,8 @@ export default function CollegeSavingsSummaryPage() {
     <>
       <div id="formSection"></div>
       <PageContainer title="All College Savings Accounts" showTitle>
-        <RealEstateDetailedList
+        <br/>
+        {/* <RealEstateDetailedList
           primaryUserAttributes={attrs || {}}
           spouseUserAttributes={spouseAttrs}
           hasSpouse={hasSpouse}
@@ -53,7 +54,7 @@ export default function CollegeSavingsSummaryPage() {
           save={save}
           remove={remove}
           refresh={refresh}
-        />
+        /> */}
       </PageContainer>
     </>
   );
