@@ -15,6 +15,8 @@
 ## Workflow
 **[Verified]** The user enters assumptions and selects **Calculate**. Scenario mode compares two retirement assumptions. The same projection can back a saved FERS income source, where profile target retirement age is used and editable yearly overrides can be saved. See [Calculator Experience](../overview.md) and [Saved calculator projections](../saved-projections.md).
 
+**[Verified]** The standalone FERS calculator exposes retirement age as an editable input, as confirmed by the product owner. In saved-income editing, the retirement-age field is hidden and the profile target retirement age is supplied to the calculation.
+
 ## Business rules
 **[Verified]** The engine projects salary growth until retirement, derives a High-3 average from the final three projected salary years except for deferred retirement, and estimates pension using years of service, selected multiplier, retirement-type reduction, and survivor reduction. It applies the selected COLA to pension rows after age 62 according to the calculation package. Eligibility checks vary by retirement type, age, and service years. [Calculation package](../../../../node_modules/financial-calcs/dist/pension/fers.js)
 
@@ -29,9 +31,9 @@
 ## Current limitations
 **[Verified]** The displayed assumptions call this a simplified model and note that actual FERS calculations may include additional retirement-type and survivor-benefit factors. The projection uses a fixed salary-growth assumption and user-entered COLA; it is not an official eligibility determination or agency estimate.
 
-**[Inferred]** In saved-income mode, the user's profile target retirement age supplies the retirement age even though the standalone form exposes it; the behavior therefore depends on profile data being present and current.
+**[Inferred]** Saved-income mode therefore follows the profile retirement-age assumption rather than a per-source retirement age; this is distinct from the standalone calculator's editable retirement-age input.
 
 ## Evidence and questions
 **[Needs human confirmation]** Are the modeled eligibility thresholds, special provisions, and survivor reductions intended to represent official FERS policy or only illustrative scenarios?
 
-**[Needs human confirmation]** Should users be able to edit retirement age in saved-account mode, or should the profile target retirement age remain authoritative?
+**[Needs human confirmation]** In saved-income mode, should profile target retirement age remain authoritative, or should users be able to override it for an individual FERS source?
