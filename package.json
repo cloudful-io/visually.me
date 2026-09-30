@@ -47,5 +47,8 @@
     "@types/lodash": "4.14.196",
     "@types/papaparse": "^5.5.0",
     "@types/react-syntax-highlighter": "^15.5.13"
+  },
+  "overrides": {
+    "postcss": "8.5.23"
   }
 }
