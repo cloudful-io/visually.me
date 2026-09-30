@@ -29,7 +29,9 @@
 ## Current limitations
 **[Verified]** The visible assumptions describe the formula as simplified and exclude taxes, spousal benefits, and income-related reductions. The implementation uses one average-income amount; it does not calculate an earnings record using a user's actual 35 highest indexed years. The installed package contains an AIME helper, but the projection calls the single-income estimate instead. The bend points and taxable maximum are fixed 2025 values in the installed dependency.
 
-## Evidence and questions
-**[Needs human confirmation]** Should the displayed estimate follow current SSA parameters at runtime, or is a fixed-year illustrative estimate intentional?
+**[Confirmed product decision]** The fixed-year SSA parameters are intentional for this illustrative estimate; the calculator is not expected to update them dynamically.
 
-**[Needs human confirmation]** Should the product collect earnings history, spousal details, or tax assumptions, or are these exclusions intentional?
+**[Confirmed product decision]** Collecting earnings history or spousal details and modeling taxes or income-related reductions are intentionally out of scope.
+
+## Evidence and questions
+The fixed-year illustrative parameters and the listed data/model exclusions are confirmed product decisions.

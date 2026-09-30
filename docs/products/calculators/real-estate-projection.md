@@ -20,6 +20,8 @@
 
 **[Verified]** `propertyType` is collected and stored but is not read by the calculation function. Both property types use the same projection logic; rental income is used as entered.
 
+**[Confirmed product decision]** Property type is currently a descriptive label that differentiates property records; it is not intended to change the projection rules.
+
 ## Edge cases
 **[Verified]** The engine rejects a start year before 1900, negative mortgage/tax/insurance/increase values, invalid life expectancy, or a life-expectancy year before the start year. It does not explicitly validate every displayed field, including mortgage end year, HOA increase, or rental-income increase.
 
@@ -29,9 +31,9 @@
 **[Verified]** Uses `financial-calcs`, the asset registry and property hooks, user profile attributes, `/api/assets`, and the Supabase `assets` table. Property values are saved as asset data and computed into projection rows when loaded. [Asset registry](../../../../src/lib/assets/registry.ts) · [assets API](../../../../src/app/api/assets/route.ts) · [schema](../../../../sql/schema.sql)
 
 ## Current limitations
-**[Verified]** The model has no property appreciation, purchase/sale value, vacancy, repairs, maintenance, utilities, or tax treatment inputs. It estimates cash flow from the listed recurring items only. Property type currently has no computational effect. The page uses the profile target retirement year only as a chart marker, not as the end of the property projection.
+**[Verified]** The expense model accounts only for mortgage, HOA, property tax, and insurance. It has no property appreciation, purchase/sale value, vacancy, repairs, maintenance, utilities, or tax treatment inputs. The page uses the profile target retirement year only as a chart marker, not as the end of the property projection.
+
+**[Confirmed product decision]** These four expense categories are the current scope of the projection.
 
 ## Evidence and questions
-**[Needs human confirmation]** Should Primary Home and Rental Property use different income/expense rules, or is the property type currently only a label?
-
-**[Needs human confirmation]** Which omitted costs and ownership events are intended to be included in the product's definition of property cash flow?
+The descriptive property-type label and current expense categories are confirmed product decisions.

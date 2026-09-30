@@ -7,7 +7,11 @@
 **[Inferred]** A parent or saver planning for a student's future college costs.
 
 ## Inputs
-**[Verified]** Start year; child's birth year; first and last college years; starting savings balance; annual contribution; estimated annual yield; first-year tuition; and tuition inflation rate. When birth year changes, the form derives the first college year as birth year plus 18. When first college year changes, it derives the last year as first year plus three. [Field configuration](../../../src/configs/collegeTuition.ts)
+**[Verified]** Start year; child's birth year; first and last college years; starting savings balance; annual contribution; estimated annual yield; first-year tuition; and tuition inflation rate. Both college-year fields are editable. When birth year changes, the form derives the first college year as birth year plus 18. When first college year changes, it derives the last year as first year plus three. [Field configuration](../../../src/configs/collegeTuition.ts)
+
+**[Verified]** Initial balance defaults to $20,000 and is user-editable. [Calculator configuration](../../../src/configs/collegeTuition.ts)
+
+**[Confirmed product decision]** A four-year college span is the default, not a fixed duration; users can specify different first and last college years.
 
 ## Outputs
 **[Verified]** A year-by-year table includes child's age, beginning balance, contribution, yield rate, estimated tuition, annual withdrawal, and ending balance. The chart can show ending balance or tuition withdrawal. A summary reports whether the projection covers tuition, the first shortfall year and total shortfall, and, when relevant, an approximate annual contribution increase.
@@ -16,7 +20,7 @@
 **[Verified]** The user edits assumptions and selects **Calculate**. The projection covers the start year through one year after the last college year. The tool reports the projection; it does not automatically save the form as a college account. See [Calculator Experience](overview.md) for shared chart, table, persistence, and scenario behavior.
 
 ## Business rules
-**[Verified]** Tuition is zero outside the inclusive first-to-last college-year range. In college years, tuition grows from the first-year estimate using the annual inflation rate. Contributions continue through the last college year and then become zero. For unedited rows, annual withdrawal is capped at available funds, so it cannot exceed the projected tuition or available balance. The summary's additional-contribution estimate uses a search capped at $100,000 per year. [Calculation package](../../../node_modules/financial-calcs/dist/college/tuition.js)
+**[Verified]** Tuition is zero outside the inclusive first-to-last college-year range. In college years, tuition grows from the first-year estimate using the annual inflation rate. Contributions continue through the last college year and then become zero. For unedited rows, annual withdrawal is capped at available funds, so it cannot exceed the projected tuition or available balance. If the projection falls short, the summary estimates a required annual contribution by searching from $0 to $100,000. This $100,000 is the search ceiling for the suggested contribution, not the initial balance default. [Contribution helper](../../../src/hooks/useCollegeTuitionProjection.ts) · [projection rules](../../../node_modules/financial-calcs/dist/college/tuition.js)
 
 **[Verified]** Engine validation requires the first college year to be later than birth year, last college year to be no earlier than first year, positive starting balance and first-year tuition, and yield/inflation no lower than -100%. The form itself sets some different bounds, so engine validation remains relevant.
 
@@ -32,6 +36,3 @@
 **[Verified]** The displayed assumptions state that annual contributions are simplified to a single yearly deposit at the beginning of the year, contributions stop after the final college year, and tuition withdrawals do not drive the balance below zero. The model does not expose a school, aid package, or separate room-and-board input.
 
 ## Evidence and questions
-**[Needs human confirmation]** Is the derived four-year college period intended as a default only, or should the application support other program lengths as a first-class choice?
-
-**[Needs human confirmation]** Should the estimated contribution suggestion clearly report when its $100,000 search limit is reached?

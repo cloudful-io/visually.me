@@ -20,6 +20,8 @@
 ## Business rules
 **[Verified]** The engine projects salary growth until retirement, derives a High-3 average from the final three projected salary years except for deferred retirement, and estimates pension using years of service, selected multiplier, retirement-type reduction, and survivor reduction. It applies the selected COLA to pension rows after age 62 according to the calculation package. Eligibility checks vary by retirement type, age, and service years. [Calculation package](../../../../node_modules/financial-calcs/dist/pension/fers.js)
 
+**[Confirmed product decision]** FERS eligibility thresholds, pension calculations, special provisions, survivor reductions, and COLA behavior are expected to reflect official FERS policy, rather than only serve as illustrative approximations.
+
 **[Verified]** Deferred mode uses service start/end years to calculate service, requires a positive supplied High-3 salary, and hides current salary and salary growth. The form's selected age range is 40–80. Engine validation also checks service eligibility and requires the modeled life-expectancy year to reach the start year.
 
 ## Edge cases
@@ -29,11 +31,9 @@
 **[Verified]** Uses `financial-calcs`, shared calculator forms and charts, and (for saved income assets) user attributes and the `assets` data workflow. The global calculator counter is incremented on eligible Calculate actions. [Asset registry](../../../../src/lib/assets/registry.ts)
 
 ## Current limitations
-**[Verified]** The displayed assumptions call this a simplified model and note that actual FERS calculations may include additional retirement-type and survivor-benefit factors. The projection uses a fixed salary-growth assumption and user-entered COLA; it is not an official eligibility determination or agency estimate.
+**[Verified]** The displayed assumptions call the model simplified and say actual calculations may include additional retirement-type and survivor-benefit factors. The projection uses a fixed salary-growth assumption and user-entered COLA, and its UI says it is not an official eligibility determination or agency estimate. This current behavior does not establish that the confirmed official-policy requirement is met.
 
-**[Inferred]** Saved-income mode therefore follows the profile retirement-age assumption rather than a per-source retirement age; this is distinct from the standalone calculator's editable retirement-age input.
+**[Confirmed product decision]** In saved-income mode, the user's profile target retirement age remains authoritative; users do not override it for an individual FERS source. This is distinct from the standalone calculator's editable retirement-age input.
 
 ## Evidence and questions
-**[Needs human confirmation]** Are the modeled eligibility thresholds, special provisions, and survivor reductions intended to represent official FERS policy or only illustrative scenarios?
-
-**[Needs human confirmation]** In saved-income mode, should profile target retirement age remain authoritative, or should users be able to override it for an individual FERS source?
+The official-policy expectation and saved-income retirement-age rule are confirmed product decisions. The implementation's alignment with official FERS rules remains unverified.

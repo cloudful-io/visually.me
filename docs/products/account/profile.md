@@ -18,16 +18,18 @@
 ## Business rules
 **[Verified]** Display name cannot be saved when blank. Avatar upload stores a public URL. The profile schema includes display name, avatar URL, and bio, but the rendered profile editor exposes only display name and avatar.
 
+**[Confirmed product decision]** Profile data should not be readable by the public. The account profile remains limited to display name and avatar; no additional profile fields are currently in scope.
+
 ## Edge cases
 **[Verified]** While profile data loads, the widget shows a loading indicator. Save/upload failures are logged; the visible success notification is only shown on success. If no saved profile is found, display name and avatar fall back to Supabase user metadata and the configured default avatar.
 
 ## Dependencies
-**[Verified]** Uses Supabase Auth, the `user_profiles` table, Supabase Storage bucket `avatars`, and the `UserProfile`/`UserProfileService` implementation from `supabase-auth-lib`. The SQL schema permits public profile reads and self-owned insert/update.
+**[Verified]** Uses Supabase Auth, the `user_profiles` table, Supabase Storage bucket `avatars`, and the `UserProfile`/`UserProfileService` implementation from `supabase-auth-lib`. The checked-in SQL grants public profile reads and self-owned insert/update, which conflicts with the confirmed requirement that profiles not be publicly readable.
 
 ## Current limitations
 **[Verified]** The profile editor does not expose email, password, or bio editing. Avatar removal is not offered. The UI package is an external dependency rather than a component implemented in this repository.
 
 ## Evidence and questions
-**[Needs human confirmation]** Is a public avatar URL and publicly readable profile an intended product behavior?
+The profile privacy requirement and current field scope are confirmed product decisions. The checked-in public-read policy does not match the privacy requirement.
 
-**[Needs human confirmation]** Should users be able to edit profile fields beyond display name and avatar?
+**[Needs human confirmation]** Which non-public users, if any, should be allowed to read a profile (for example, only its owner, or also an authenticated linked household member)?

@@ -9,6 +9,8 @@
 ## Inputs
 **[Verified]** Start year, birth year, service start and end years, High-36 average monthly basic pay, COLA estimate, life expectancy, and retirement system. Choices are High-36 and Blended Retirement System (BRS). The default is BRS, with $5,000 High-36 monthly pay and 2% COLA. [Field configuration](../../../../src/configs/militaryPension.ts)
 
+**[Confirmed product decision]** High-36 is entered as average monthly basic pay in both standalone calculator and saved-account workflows.
+
 ## Outputs
 **[Verified]** Yearly rows include age, COLA, annual pension, and monthly pension. The chart shows pension over time. The summary estimates the first/last ages receiving a positive pension and total lifetime pension across projected rows.
 
@@ -27,7 +29,8 @@
 ## Current limitations
 **[Verified]** The displayed assumptions explicitly say REDUX and disability retirement are unsupported and the calculator supports only active-duty retirement. The model does not request reserve component service or break service details. It is a simplified estimate, not an official military retirement determination.
 
-## Evidence and questions
-**[Needs human confirmation]** Is the High-36 input intended to always be monthly basic pay, including for saved accounts?
+**[Confirmed product decision]** Reserve-component, disability, and REDUX retirement support is outside the current product scope and is deferred to a later implementation.
 
-**[Needs human confirmation]** Are reserve-component retirement, disability, or REDUX estimates intentionally out of scope?
+## Evidence and questions
+The High-36 input unit is confirmed as monthly basic pay for both workflows. The current field label could be clearer about the unit; its helper text specifies monthly salary.
+
