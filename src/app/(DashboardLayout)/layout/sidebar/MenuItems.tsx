@@ -2,6 +2,7 @@ import {
   IconHomeSignal,
   IconLayoutDashboard,
   IconCash,
+  IconSchool
 } from "@tabler/icons-react";
 import { uniqueId } from "lodash";
 import { calculatorRegistry } from "@/lib/calculators/registry";
@@ -45,6 +46,13 @@ const Menuitems = [
     href: "/real-estate",
     authRequired: true,
   },
+  // {
+  //   id: uniqueId(),
+  //   title: "College Savings Plan",
+  //   icon: IconSchool,
+  //   href: "/college-savings",
+  //   authRequired: true,
+  // },
   {
     navlabel: true,
     subheader: "CALCULATORS",

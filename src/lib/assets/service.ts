@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { wrapContentKeyForUser, unwrapContentKeyForUser, decryptWithKey, encryptWithKey } from "@/services/encryption-service";
 import { AssetInput, AssetRow } from "./schema";
 import crypto from "crypto";
-import { incomeAssetTypes, realEstateAssetTypes } from "./registry";
+import { incomeAssetTypes, realEstateAssetTypes, collegeSavingsAssetTypes } from "./registry";
 
 export async function getIncomeAssets(userId: string, joint: boolean = true) {
   const assets = await getAssets(userId, joint);
@@ -19,6 +19,15 @@ export async function getRealEstateAssets(userId: string, joint: boolean = true)
   return assets.filter(
     (asset): asset is AssetRow =>
       realEstateAssetTypes.includes(asset.asset_type)
+  );
+}
+
+export async function getCollegeSavingsAssets(userId: string, joint: boolean = true) {
+  const assets = await getAssets(userId, joint);
+
+  return assets.filter(
+    (asset): asset is AssetRow =>
+      collegeSavingsAssetTypes.includes(asset.asset_type)
   );
 }
 
@@ -119,7 +128,7 @@ export async function getAssets(userId: string, joint: boolean = true) {
   return assets;
 }
 
- export async function upsertAsset(
+export async function upsertAsset(
   userId: string,
   input: AssetInput,
   assetId?: string

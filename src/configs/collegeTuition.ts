@@ -2,11 +2,11 @@ import { CalculatorConfig } from './calculatorConfig';
 import { FormFieldConfig } from '@/types/forms';
 import { CollegeTuitionInput, CollegeTuitionProjectionRow } from 'financial-calcs';
 import { ColumnDef, DataKeyOption } from '@/types/forms';
-import { IconSchool } from "@tabler/icons-react";
+import { IconBuildingCommunity } from "@tabler/icons-react";
 
 export const collegeTuitionConfig: CalculatorConfig<CollegeTuitionInput> = {
   id: "college-tuition",
-  icon: IconSchool,
+  icon: IconBuildingCommunity,
   shortTitle: "College Savings & Tuition",
   calculatorTitle: "College Savings and Tuition Projection",
   calculatorDescription:
@@ -50,7 +50,8 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     type: "number",
     min: 1900,
     step: 1,
-  },  
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+  },
   {
     name: 'childCollegeFirstYear',
     label: "Child's First Year of College",
@@ -65,7 +66,8 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
         set('childCollegeFirstYear', values.childBirthYear + 18);
       }
     },
-  },  
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+  },
   {
     name: 'childCollegeLastYear',
     label: "Child's Last Year of College",
@@ -80,7 +82,8 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
         set('childCollegeLastYear', values.childCollegeFirstYear + 3);
       }
     },
-  },  
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
+  },
   {
     name: 'initialBalance',
     label: 'Initial Balance ($)',
@@ -113,7 +116,8 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     min: 0,
     max: 200000,
     step: 100,
-    helperText: 'Estimated college tuition at first year in future dollar'
+    helperText: 'Estimated college tuition at first year in future dollar',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
   {
     name: 'estimatedInflationRate',
@@ -123,6 +127,7 @@ export const collegeTuitionFieldConfigs: FormFieldConfig<CollegeTuitionInput, { 
     max: 100,
     step: 0.1,
     helperText: 'Estimated inflation rate to calculate rising college tuition',
+    shouldDisplay: (_, ctx) => !(ctx?.isAuthenticated ?? false),
   },
 ];
 
@@ -130,7 +135,6 @@ export function getCollegeTuitionProjectionColumns(editable: boolean = false): C
   return [
     { key: 'year', label: 'Year' },
     { key: 'age', label: 'Child\'s Age' },
-    //{ key: 'childAge', label: 'Child\'s Age' },
     { key: 'beginningBalance', label: 'Beginning Balance ($)', currency: true },
     { key: 'contribution', label: 'Contribution ($)', currency: true },
     { key: 'yieldPercent', label: 'Yield %' },
@@ -146,38 +150,38 @@ export function getCollegeTuitionScenarioColumns(): ColumnDef<any>[] {
     { key: "age", label: 'Child\'s Age' },
     { key: "endingBalance1", label: "Scenario 1 Balance ($)", currency: true },
     { key: "endingBalance2", label: "Scenario 2 Balance ($)", currency: true },
-    { 
-      key: "endingBalanceDiff", 
-      label: "Balance Difference ($)", 
-      currency: true, 
+    {
+      key: "endingBalanceDiff",
+      label: "Balance Difference ($)",
+      currency: true,
       getCellSx: (value, row) => {
         const isNegative = Number(value) < 0;
         const isZero = Number(value) === 0;
 
         return {
-          color: isZero ? "text.primary" : 
+          color: isZero ? "text.primary" :
             isNegative
-            ? "error.main"
-            : "success.main",
+              ? "error.main"
+              : "success.main",
           fontWeight: isZero ? 400 : 800,
         };
       },
     },
     { key: "annualWithdraw1", label: "Scenario 1 Tuition Withdrawal ($)", currency: true },
     { key: "annualWithdraw2", label: "Scenario 2 Tuition Withdrawal ($)", currency: true },
-    { 
-      key: "annualWithdrawDiff", 
-      label: "Tuition Withdrawal Difference ($)", 
-      currency: true, 
+    {
+      key: "annualWithdrawDiff",
+      label: "Tuition Withdrawal Difference ($)",
+      currency: true,
       getCellSx: (value, row) => {
         const isNegative = Number(value) < 0;
         const isZero = Number(value) === 0;
 
         return {
-          color: isZero ? "text.primary" : 
+          color: isZero ? "text.primary" :
             isNegative
-            ? "error.main"
-            : "success.main",
+              ? "error.main"
+              : "success.main",
           fontWeight: isZero ? 400 : 800,
         };
       },

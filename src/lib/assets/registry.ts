@@ -4,6 +4,7 @@ import {
   calculateRetirementSavingsProjectionWithOverrides, validateRetirementSavingsInput,
   calculateSocialSecurityBenefitProjectionWithOverrides, validateSocialSecurityBenefitInput,
   calculateRealEstatePropertyProjectionWithOverrides, validateRealEstatePropertyInput,
+  calculateCollegeTuitionProjectionWithOverrides, validateCollegeTuitionInput,
 } from "financial-calcs";
 import { AssetCategory, NormalizedAsset } from "./types";
 import { AnyProjectionRow } from "./types";
@@ -58,7 +59,7 @@ export function computeIncomeAsset(
       else {
         return { mergedFields, firstYear: null, firstAmount: null, currentAmount: null, rows: [] };
       }
-    } 
+    }
     catch (err) {
       console.error("Projection failed for", asset.id, err);
       return { mergedFields, firstYear: null, firstAmount: null, currentAmount: null, rows: [] };
@@ -74,7 +75,27 @@ export function computeRealEstateAsset(
 
     const mergedFields = {
       ...parsed.fields,
-      ...getBaseMergedFields(userAttributes),    
+      ...getBaseMergedFields(userAttributes),
+    };
+
+    const rows = projectionFn({
+      ...mergedFields,
+      yearOverrides: asset.parsedData.yearOverrides ?? {},
+    });
+
+    return { mergedFields, firstYear: null, firstAmount: null, currentAmount: null, rows };
+  };
+}
+
+export function computeCollegeSavingsAsset(
+  projectionFn: ProjectionFn
+) {
+  return ({ asset, userAttributes, currentYear }: ComputeArgs) => {
+    const parsed = asset.parsedData ?? {};
+
+    const mergedFields = {
+      ...parsed.fields,
+      ...getBaseMergedFields(userAttributes),
     };
 
     const rows = projectionFn({
@@ -175,6 +196,15 @@ export const assetRegistry: Record<string, AssetDefinition> = {
     ),
     incomeKey: "annualIncome",
   },
+  "college-savings": {
+    category: "college-savings",
+    title: "College Savings Account",
+    validate: validateCollegeTuitionInput,
+    compute: computeCollegeSavingsAsset(
+      calculateCollegeTuitionProjectionWithOverrides
+    ),
+    incomeKey: "annualWithdraw",
+  },
 };
 
 export const incomeAssetTypes = Object.entries(assetRegistry)
@@ -183,4 +213,8 @@ export const incomeAssetTypes = Object.entries(assetRegistry)
 
 export const realEstateAssetTypes = Object.entries(assetRegistry)
   .filter(([_, def]) => def.category === "property")
+  .map(([key]) => key as keyof typeof assetRegistry);
+
+export const collegeSavingsAssetTypes = Object.entries(assetRegistry)
+  .filter(([_, def]) => def.category === "college-savings")
   .map(([key]) => key as keyof typeof assetRegistry);
